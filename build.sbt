@@ -5,3 +5,5 @@ name := "esc"
 version := "1.0"
 
 playJavaSettings
+
+libraryDependencies += javaEbean

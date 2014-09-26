@@ -1,0 +1,15 @@
+@(configForm: Form[APIConfig])
+
+@import helper._
+
+@main("Welcome to Play") {
+
+
+    @form(routes.Application.oauth()) {
+        @inputText(configForm("clientID"))
+        @inputText(configForm("redirectURI"))
+
+        <input type="submit" value="Connect">
+    }
+
+}
