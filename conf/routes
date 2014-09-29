@@ -3,13 +3,21 @@
 # ~~~~
 
 # Home page
-GET        /                    controllers.Application.index
+GET        /                       controllers.Application.index
 
 # OAuth
-GET        /oauth               controllers.Application.oauth()
-GET        /oauth/callback      controllers.Application.callback()
+GET        /oauth                  controllers.Application.oauth()
+GET        /oauth/callback         controllers.Application.callback()
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file        controllers.Assets.at(path="/public", file)
+GET        /assets/*file           controllers.Assets.at(path="/public", file)
+
+GET        /gmail/index            controllers.GMailController.index
+GET        /gmail/authorize        controllers.GMailController.authorize()
+GET        /gmail/callback         controllers.GMailController.callback()
+GET        /gmail/test             controllers.GMailController.test()
+
+
+
 
     
