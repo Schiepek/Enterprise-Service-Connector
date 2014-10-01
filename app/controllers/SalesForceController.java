@@ -3,7 +3,7 @@ package controllers;
 import com.google.gson.Gson;
 import models.APIConfig;
 import models.salesForce.Container;
-import models.salesForce.SalesForceTokenResponse;
+import models.SalesForceTokenResponse;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
