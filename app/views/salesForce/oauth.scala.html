@@ -5,8 +5,9 @@
 @main("Welcome to Play") {
 
 
-    @form(routes.Application.oauth()) {
+    @form(routes.SalesForceController.oauth2()) {
         @inputText(configForm("clientID"))
+        @inputText(configForm("clientSecret"))
         @inputText(configForm("redirectURI"))
 
         <input type="submit" value="Connect">

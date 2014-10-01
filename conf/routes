@@ -3,11 +3,13 @@
 # ~~~~
 
 # Home page
-GET        /                       controllers.Application.index
+GET        /                       controllers.SalesForceController.index
 
-# OAuth
-GET        /oauth                  controllers.Application.oauth()
-GET        /oauth/callback         controllers.Application.callback()
+# SalesForce
+GET        /salesforce                        controllers.SalesForceController.index
+GET        /salesforce/oauth2                 controllers.SalesForceController.oauth2()
+GET        /salesforce/oauth2/callback        controllers.SalesForceController.callback()
+GET        /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file           controllers.Assets.at(path="/public", file)

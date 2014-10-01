@@ -1,0 +1,11 @@
+@(contacts: List[models.salesForce.Contact])
+
+@main("SalesForce Contacts") {
+
+    @for(contact <- contacts){
+        Name: @contact.getLastName <br />
+        Firstname: @contact.getFirstName <br />
+        Email: @contact.getEmail <br /><br />
+    }
+
+}
