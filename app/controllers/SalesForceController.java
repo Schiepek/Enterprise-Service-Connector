@@ -2,7 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import models.APIConfig;
-import models.SalesForceTokenResponse;
+import models.salesForce.SalesForceTokenResponse;
 import models.salesForce.Container;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -37,11 +37,13 @@ public class SalesForceController extends Controller {
                     views.html.index.render("Fehler Form")
             );
         } else {
-            APIConfig config = APIConfig.getConfig(1L);
-            if (config == null) {
+            APIConfig config;
+            //APIConfig config = APIConfig.getConfig(1L);
+            if (APIConfig.getConfig(1L) == null) {
                 config = filledForm.get();
                 config.save();
             } else {
+                config = APIConfig.getConfig(1L);
                 config.setClientID(filledForm.get().getClientID());
                 config.setClientSecret(filledForm.get().getClientSecret());
                 config.setRedirectURI(filledForm.get().getRedirectURI());

@@ -1,4 +1,4 @@
-package models;
+package models.salesForce;
 
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 

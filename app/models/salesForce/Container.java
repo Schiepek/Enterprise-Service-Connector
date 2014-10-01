@@ -1,6 +1,4 @@
-package models;
-
-import models.Contact;
+package models.salesForce;
 
 public class Container {
     private String totalSize;
