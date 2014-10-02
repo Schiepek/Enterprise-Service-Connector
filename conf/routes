@@ -17,7 +17,6 @@ GET        /assets/*file           controllers.Assets.at(path="/public", file)
 GET        /gmail/index            controllers.GMailController.index
 GET        /gmail/authorize        controllers.GMailController.authorize()
 GET        /gmail/callback         controllers.GMailController.callback()
-GET        /gmail/test             controllers.GMailController.test()
 
 
 

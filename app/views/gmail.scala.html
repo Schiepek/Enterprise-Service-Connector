@@ -1,5 +1,45 @@
-@(code: String)
+@(accounts: List[GMailAccount], mailForm: Form[GMailAccount])
 
-<h1>Gmail Test</h1>
+    @import helper._
 
-<h2>@code</h2>
+    @main("GMailAccounts") {
+
+        <h1>@accounts.size() account(s)</h1>
+
+        <ul>
+        @for(account <- accounts) {
+            <li>
+                <ul>
+                    <li>@account.id</li>
+                    <li>@account.getEmail_address()</li>
+                    <li>@account.getClient_id</li>
+                    <li>@account.getClient_secret()</li>
+                    <li>@account.getAccess_token()</li>
+                    <li>@account.getRefresh_token()</li>
+                </ul>
+                @form(routes.GMailController.deleteMail(account.id)) {
+                    <input type="submit" value="Delete">
+                    }
+                @form(routes.GMailController.authorize(account.id)) {
+                    <input type="submit" value="authorize">
+                    }
+                @form(routes.GMailController.service(account.id)) {
+                    <input type="submit" value="service">
+                    }
+            </li>
+        }
+        </ul>
+
+        <h2>Add a GMail Account</h2>
+
+        @form(routes.GMailController.newMail()) {
+
+            @inputText(mailForm("email_address"))
+            @inputText(mailForm("client_id"))
+            @inputText(mailForm("client_secret"))
+
+            <input type="submit" value="Create">
+
+        }
+
+    }
