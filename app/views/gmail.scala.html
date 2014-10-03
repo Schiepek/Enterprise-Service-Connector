@@ -26,6 +26,9 @@
                 @form(routes.GMailController.service(account.id)) {
                     <input type="submit" value="service">
                     }
+                @form(routes.GMailController.messages(account.id)) {
+                    <input type="submit" value="show Messages">
+                }
             </li>
         }
         </ul>

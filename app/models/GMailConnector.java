@@ -8,11 +8,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.model.ListThreadsResponse;
-import com.google.api.services.gmail.model.Thread;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 public class GMailConnector {
@@ -74,31 +71,26 @@ public class GMailConnector {
                     .setFromTokenResponse(response);
             account.setAccess_token(credential.getAccessToken());
             account.save();
-        } catch( Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void getGMailService() {
-        try {
+    public Gmail getGMailService() {
+        GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
+                .setTransport(httpTransport).setClientSecrets(account.getClient_id(), account.getClient_secret()).build();
+        credential.setAccessToken(account.getAccess_token());
+        //credential.setRefreshToken(refreshToken);
 
-            GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
-                    .setTransport(httpTransport).setClientSecrets(account.getClient_id(), account.getClient_secret()).build();
-            credential.setAccessToken(account.getAccess_token());
-            //credential.setRefreshToken(refreshToken);
-
-            Gmail service = new Gmail.Builder(httpTransport, jsonFactory, credential)
-                    .setApplicationName(APP_NAME).build();
-
-            ListThreadsResponse threadsResponse = service.users().threads().list(USER).execute();
+        Gmail service = new Gmail.Builder(httpTransport, jsonFactory, credential)
+                .setApplicationName(APP_NAME).build();
+/*            ListThreadsResponse threadsResponse = service.users().threads().list(USER).execute();
             List<Thread> threads = threadsResponse.getThreads();
 
             // Print ID of each Thread.
             for (Thread thread : threads) {
                 System.out.println("Thread ID: " + thread.getId());
-            }
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
+            }*/
+        return service;
     }
 }

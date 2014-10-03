@@ -1,6 +1,7 @@
 package controllers;
 
 
+import com.google.api.services.gmail.Gmail;
 import models.GMailAccount;
 import models.GMailConnector;
 import play.data.Form;
@@ -14,10 +15,6 @@ public class GMailController extends Controller {
 
 
     public static Result index() {
-        return ok();
-    }
-
-    public static Result mails() {
         return ok(
                 views.html.gmail.render(GMailAccount.all(), mailForm)
         );
@@ -45,12 +42,12 @@ public class GMailController extends Controller {
     }
 
     public static Result authorize(Long id) {
+        System.out.println("authorize");
         GMailConnector gmail = new GMailConnector(id);
         String authUrl = gmail.authorize();
-        redirect(authUrl);
-        return ok(
-                views.html.gmail.render(GMailAccount.all(), mailForm)
-        );
+        System.out.println(authUrl);
+
+        return redirect(authUrl);
     }
 
     public static Result callback() {
@@ -58,12 +55,17 @@ public class GMailController extends Controller {
         GMailConnector gmail = new GMailConnector(id);
         String code = request().getQueryString("code");
         gmail.generateAccessToken(code);
-        return ok();
+        return redirect(routes.GMailController.index());
     }
 
     public static Result service(Long id)  {
         GMailConnector gmail = new GMailConnector(id);
         gmail.getGMailService();
+        return ok();
+    }
+
+    public static Result messages(Long id) {
+        Gmail service = new GMailConnector(id).getGMailService();
         return ok();
     }
 }

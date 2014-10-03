@@ -3,20 +3,27 @@
 # ~~~~
 
 # Home page
-GET        /                       controllers.SalesForceController.index
+GET         /                                  controllers.SalesForceController.index
 
 # SalesForce
-GET        /salesforce                        controllers.SalesForceController.index
-GET        /salesforce/oauth2                 controllers.SalesForceController.oauth2()
-GET        /salesforce/oauth2/callback        controllers.SalesForceController.callback()
-GET        /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
+GET         /salesforce                        controllers.SalesForceController.index
+GET         /salesforce/oauth2                 controllers.SalesForceController.oauth2()
+GET         /salesforce/oauth2/callback        controllers.SalesForceController.callback()
+GET         /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file           controllers.Assets.at(path="/public", file)
+GET         /assets/*file                      controllers.Assets.at(path="/public", file)
 
-GET        /gmail/index            controllers.GMailController.index
-GET        /gmail/authorize        controllers.GMailController.authorize()
-GET        /gmail/callback         controllers.GMailController.callback()
+GET         /gmail                             controllers.GMailController.index
+POST        /gmail/authorize/:id               controllers.GMailController.authorize(id: Long)
+POST        /gmail/service/:id                 controllers.GMailController.service(id: Long)
+POST        /gmail/delete/:id                  controllers.GMailController.deleteMail(id: Long)
+POST        /gmail/new                         controllers.GMailController.newMail()
+GET         /gmail/messages/:id                controllers.GMailController.messages(id: Long)
+GET         /gmail/callback                    controllers.GMailController.callback()
+
+
+
 
 
 
