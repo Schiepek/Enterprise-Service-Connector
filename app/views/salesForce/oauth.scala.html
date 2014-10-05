@@ -4,7 +4,6 @@
 
 @main("Welcome to Play") {
 
-
     @form(routes.SalesForceController.oauth2()) {
         @inputText(configForm("clientID"))
         @inputText(configForm("clientSecret"))
@@ -12,5 +11,4 @@
 
         <input type="submit" value="Connect">
     }
-
 }
