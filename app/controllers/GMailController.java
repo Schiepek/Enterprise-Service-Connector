@@ -1,12 +1,19 @@
 package controllers;
 
 
-import com.google.api.services.gmail.Gmail;
-import models.GMailAccount;
-import models.GMailConnector;
+import com.google.gdata.client.contacts.ContactsService;
+import com.google.gdata.data.contacts.ContactEntry;
+import com.google.gdata.data.extensions.Email;
+import com.google.gdata.data.extensions.FullName;
+import com.google.gdata.data.extensions.Name;
+import models.GMail.GMailAccount;
+import models.GMail.GMailConnector;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.GMail.gmail;
+
+import java.net.URL;
 
 public class GMailController extends Controller {
 
@@ -16,7 +23,7 @@ public class GMailController extends Controller {
 
     public static Result index() {
         return ok(
-                views.html.gmail.render(GMailAccount.all(), mailForm)
+                gmail.render(GMailAccount.all(), mailForm)
         );
     }
 
@@ -24,12 +31,12 @@ public class GMailController extends Controller {
         Form<GMailAccount> filledForm = mailForm.bindFromRequest();
         if (filledForm.hasErrors()) {
             return badRequest(
-                    views.html.gmail.render(GMailAccount.all(), filledForm)
+                    gmail.render(GMailAccount.all(), filledForm)
             );
         } else {
             GMailAccount.create(filledForm.get());
             return ok(
-                    views.html.gmail.render(GMailAccount.all(), mailForm)
+                    gmail.render(GMailAccount.all(), mailForm)
             );
         }
     }
@@ -37,7 +44,7 @@ public class GMailController extends Controller {
     public static Result deleteMail(Long id) {
         GMailAccount.delete(id);
         return ok(
-                views.html.gmail.render(GMailAccount.all(), mailForm)
+                gmail.render(GMailAccount.all(), mailForm)
         );
     }
 
@@ -46,26 +53,48 @@ public class GMailController extends Controller {
         GMailConnector gmail = new GMailConnector(id);
         String authUrl = gmail.authorize();
         System.out.println(authUrl);
-
         return redirect(authUrl);
     }
 
     public static Result callback() {
-        Long id = Long.valueOf(request().getQueryString("state"));
-        GMailConnector gmail = new GMailConnector(id);
         String code = request().getQueryString("code");
+        Long id = Long.parseLong(request().getQueryString("state"));
+        GMailConnector gmail = new GMailConnector(id);
         gmail.generateAccessToken(code);
         return redirect(routes.GMailController.index());
     }
 
     public static Result service(Long id)  {
         GMailConnector gmail = new GMailConnector(id);
-        gmail.getGMailService();
+        gmail.getContactService();
         return ok();
     }
 
-    public static Result messages(Long id) {
-        Gmail service = new GMailConnector(id).getGMailService();
-        return ok();
+    public static Result insertContact(Long id) throws Exception {
+        ContactsService service = new GMailConnector(id).getContactService();
+        GMailAccount account = GMailAccount.getAccount(id);
+
+        // Create the entry to insert.
+        ContactEntry contact = new ContactEntry();
+        // Set the contact's name.
+        Name name = new Name();
+        final String NO_YOMI = null;
+        name.setFullName(new FullName("haaalo neuer kontakt", NO_YOMI));
+/*        name.setGivenName(new GivenName("Elizabeth", NO_YOMI));
+        name.setFamilyName(new FamilyName("Bennet", NO_YOMI))*/
+        contact.setName(name);
+        // Set contact's e-mail addresses.
+        Email primaryMail = new Email();
+        primaryMail.setAddress("blabla@gmail.com");
+        primaryMail.setDisplayName("blablaaaa");
+        primaryMail.setRel("http://schemas.google.com/g/2005#home");
+        primaryMail.setPrimary(true);
+        contact.addEmailAddress(primaryMail);
+
+        URL postUrl = new URL("https://www.google.com/m8/feeds/contacts/default/full");
+        ContactEntry createdContact = service.insert(postUrl, contact);
+        System.out.println("Contact's ID: " + createdContact.getId());
+
+        return redirect(routes.GMailController.index());
     }
 }

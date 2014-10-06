@@ -1,6 +1,7 @@
-@(accounts: List[GMailAccount], mailForm: Form[GMailAccount])
+@(accounts: List[models.GMail.GMailAccount], mailForm: Form[models.GMail.GMailAccount])
 
-    @import helper._
+
+@import helper._
 
     @main("GMailAccounts") {
 
@@ -26,8 +27,8 @@
                 @form(routes.GMailController.service(account.id)) {
                     <input type="submit" value="service">
                     }
-                @form(routes.GMailController.messages(account.id)) {
-                    <input type="submit" value="show Messages">
+                @form(routes.GMailController.insertContact(account.id)) {
+                    <input type="submit" value="insert Contact">
                 }
             </li>
         }

@@ -1,4 +1,4 @@
-package models;
+package models.GMail;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -7,7 +7,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.gmail.Gmail;
+import com.google.gdata.client.contacts.ContactsService;
 
 import java.util.Arrays;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class GMailConnector {
 
     // Check https://developers.google.com/gmail/api/auth/scopes for all available scopes
-    private static final String SCOPE = "https://www.googleapis.com/auth/gmail.modify";
+    private static final String SCOPE = "https://www.google.com/m8/feeds";
     private static final String APP_NAME = "My Project";
     // Email address of the user, or "me" can be used to represent the currently authorized user.
     private static final String USER = "me";
@@ -76,21 +76,17 @@ public class GMailConnector {
         }
     }
 
-    public Gmail getGMailService() {
+    public ContactsService getContactService() {
         GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
                 .setTransport(httpTransport).setClientSecrets(account.getClient_id(), account.getClient_secret()).build();
         credential.setAccessToken(account.getAccess_token());
         //credential.setRefreshToken(refreshToken);
 
-        Gmail service = new Gmail.Builder(httpTransport, jsonFactory, credential)
-                .setApplicationName(APP_NAME).build();
-/*            ListThreadsResponse threadsResponse = service.users().threads().list(USER).execute();
-            List<Thread> threads = threadsResponse.getThreads();
+/*        Gmail service = new Gmail.Builder(httpTransport, jsonFactory, credential)
+                .setApplicationName(APP_NAME).build();*/
 
-            // Print ID of each Thread.
-            for (Thread thread : threads) {
-                System.out.println("Thread ID: " + thread.getId());
-            }*/
+        ContactsService service = new ContactsService(APP_NAME);
+        service.setOAuth2Credentials(credential);
         return service;
     }
 }

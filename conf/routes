@@ -19,8 +19,11 @@ POST        /gmail/authorize/:id               controllers.GMailController.autho
 POST        /gmail/service/:id                 controllers.GMailController.service(id: Long)
 POST        /gmail/delete/:id                  controllers.GMailController.deleteMail(id: Long)
 POST        /gmail/new                         controllers.GMailController.newMail()
-GET         /gmail/messages/:id                controllers.GMailController.messages(id: Long)
+POST        /gmail/insertcontact/:id           controllers.GMailController.insertContact(id: Long)
 GET         /gmail/callback                    controllers.GMailController.callback()
+
+
+
 
 
 
