@@ -1,4 +1,4 @@
-@(accounts: List[models.gmail.GMailAccount], mailForm: Form[models.gmail.GMailAccount])
+@(accounts: List[models.APIConfig], mailForm: Form[models.APIConfig])
 
 
 @import helper._
@@ -11,23 +11,21 @@
         @for(account <- accounts) {
             <li>
                 <ul>
-                    <li>@account.id</li>
-                    <li>@account.getEmail_address()</li>
-                    <li>@account.getClient_id</li>
-                    <li>@account.getClient_secret()</li>
-                    <li>@account.getAccess_token()</li>
-                    <li>@account.getRefresh_token()</li>
+                    <li>@account.getId</li>
+                    <li>@account.getMail()</li>
+                    <li>@account.getClientID</li>
+                    <li>@account.getClientSecret()</li>
+                    <li>@account.getAccessToken()</li>
+                    <li>@account.getRefreshToken()</li>
+                    <li>@account.getProvider</li>
                 </ul>
-                @form(routes.GMailController.deleteMail(account.id)) {
+                @form(routes.GMailController.deleteMail(account.getId())) {
                     <input type="submit" value="Delete">
                     }
-                @form(routes.GMailController.authorize(account.id)) {
+                @form(routes.GMailController.authorize(account.getId())) {
                     <input type="submit" value="authorize">
                     }
-                @form(routes.GMailController.service(account.id)) {
-                    <input type="submit" value="service">
-                    }
-                @form(routes.GMailController.insertContact(account.id)) {
+                @form(routes.GMailController.insertContact(account.getId())) {
                     <input type="submit" value="insert Contact">
                 }
             </li>
@@ -38,9 +36,8 @@
 
         @form(routes.GMailController.newMail()) {
 
-            @inputText(mailForm("email_address"))
-            @inputText(mailForm("client_id"))
-            @inputText(mailForm("client_secret"))
+            @inputText(mailForm("clientId"))
+            @inputText(mailForm("clientSecret"))
 
             <input type="submit" value="Create">
 

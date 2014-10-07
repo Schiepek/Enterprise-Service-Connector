@@ -16,7 +16,6 @@ GET         /assets/*file                      controllers.Assets.at(path="/publ
 
 GET         /gmail                             controllers.GMailController.index
 POST        /gmail/authorize/:id               controllers.GMailController.authorize(id: Long)
-POST        /gmail/service/:id                 controllers.GMailController.service(id: Long)
 POST        /gmail/delete/:id                  controllers.GMailController.deleteMail(id: Long)
 POST        /gmail/new                         controllers.GMailController.newMail()
 POST        /gmail/insertcontact/:id           controllers.GMailController.insertContact(id: Long)
