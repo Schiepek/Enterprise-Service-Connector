@@ -2,8 +2,8 @@ package controllers;
 
 import com.google.gson.Gson;
 import models.APIConfig;
-import models.salesforce.Container;
-import models.salesforce.SalesForceTokenResponse;
+import models.salesforce1.Container;
+import models.salesforce1.SalesForceTokenResponse;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;

@@ -1,4 +1,4 @@
-package models.salesforce;
+package models.salesforce1;
 
 public class Container {
     private String totalSize;

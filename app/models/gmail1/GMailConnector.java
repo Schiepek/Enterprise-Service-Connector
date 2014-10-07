@@ -1,4 +1,4 @@
-package models.GMail;
+package models.gmail1;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
