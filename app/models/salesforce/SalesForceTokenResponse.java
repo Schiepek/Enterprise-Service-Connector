@@ -1,4 +1,4 @@
-package models.salesforce1;
+package models.salesforce;
 
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 
