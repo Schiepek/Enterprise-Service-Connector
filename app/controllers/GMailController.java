@@ -6,12 +6,12 @@ import com.google.gdata.data.contacts.ContactEntry;
 import com.google.gdata.data.extensions.Email;
 import com.google.gdata.data.extensions.FullName;
 import com.google.gdata.data.extensions.Name;
-import models.GMail.GMailAccount;
-import models.GMail.GMailConnector;
+import models.gmail.GMailAccount;
+import models.gmail.GMailConnector;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.GMail.gmail;
+import views.html.gmail.gmail;
 
 import java.net.URL;
 

@@ -1,4 +1,4 @@
-package models.GMail;
+package models.gmail;
 
 import play.db.ebean.Model;
 

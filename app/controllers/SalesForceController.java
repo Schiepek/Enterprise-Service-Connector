@@ -2,8 +2,8 @@ package controllers;
 
 import com.google.gson.Gson;
 import models.APIConfig;
-import models.salesForce.SalesForceTokenResponse;
-import models.salesForce.Container;
+import models.salesforce.Container;
+import models.salesforce.SalesForceTokenResponse;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -17,8 +17,9 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.salesForce.oauth;
-import views.html.salesForce.contacts;
+import views.html.salesforce.contacts;
+import views.html.salesforce.oauth;
+
 import java.util.Arrays;
 
 public class SalesForceController extends Controller {

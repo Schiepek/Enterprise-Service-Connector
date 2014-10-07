@@ -1,4 +1,4 @@
-@(accounts: List[models.GMail.GMailAccount], mailForm: Form[models.GMail.GMailAccount])
+@(accounts: List[models.gmail.GMailAccount], mailForm: Form[models.gmail.GMailAccount])
 
 
 @import helper._
@@ -34,7 +34,7 @@
         }
         </ul>
 
-        <h2>Add a GMail Account</h2>
+        <h2>Add a gmail Account</h2>
 
         @form(routes.GMailController.newMail()) {
 

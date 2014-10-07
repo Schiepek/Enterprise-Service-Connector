@@ -15,6 +15,7 @@ public class APIConfig extends Model {
     private String instance;
 
 
+
     public static Finder<Long,APIConfig> find = new Finder(
             Long.class, APIConfig.class
     );
