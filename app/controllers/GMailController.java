@@ -58,7 +58,7 @@ public class GMailController extends Controller {
 
     public static Result insertContact(Long id) throws Exception {
         ContactsService service = new GMailConnector(id).getContactService();
-    //    APIConfig account = APIConfig.get.getAccount(id);
+        APIConfig account = APIConfig.getAPIConfig(id);
 
         // Create the entry to insert.
         ContactEntry contact = new ContactEntry();

@@ -45,14 +45,14 @@ public class SalesForceController extends Controller {
                 config.save();
             } else {
                 config = APIConfig.getConfig(1L);
-                config.setClientID(filledForm.get().getClientID());
+                config.setClientId(filledForm.get().getClientId());
                 config.setClientSecret(filledForm.get().getClientSecret());
                 config.setRedirectURI(filledForm.get().getRedirectURI());
                 config.save();
                 //APIConfig config = APIConfig.getConfig(1L);
             }
 
-            clientID = config.getClientID(); // "3MVG9A_f29uWoVQtLyx_TNRfuq85aLHcIwEjVXgIOrrBWS4P5jZ6APwPmjjutvbNelxFEvodl7fpesAk9JV1l";
+            clientID = config.getClientId(); // "3MVG9A_f29uWoVQtLyx_TNRfuq85aLHcIwEjVXgIOrrBWS4P5jZ6APwPmjjutvbNelxFEvodl7fpesAk9JV1l";
             redirectURI = config.getRedirectURI(); //"http://localhost:9000/salesforce/oauth2/callback";
             //secret="5039637056870495392"
         }
@@ -78,7 +78,7 @@ public class SalesForceController extends Controller {
             OAuthClientRequest request = OAuthClientRequest
                     .tokenProvider(OAuthProviderType.SALESFORCE)
                     .setGrantType(GrantType.AUTHORIZATION_CODE)
-                    .setClientId(config.getClientID())
+                    .setClientId(config.getClientId())
                     .setClientSecret(config.getClientSecret())
                     .setRedirectURI(config.getRedirectURI())
                     .setCode(code)

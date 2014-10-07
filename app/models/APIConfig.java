@@ -9,7 +9,7 @@ public class APIConfig extends Model {
     @Id
     private Long id;
 
-    private String clientID;
+    private String clientId;
     private String clientSecret;
     private String redirectURI;
     private String accessToken;
@@ -27,16 +27,16 @@ public class APIConfig extends Model {
             Long.class, APIConfig.class
     );
 
-    public String getClientID() {
-        return clientID;
+    public String getClientId() {
+        return clientId;
     }
 
     public String getClientSecret() {
         return clientSecret;
     }
 
-    public void setClientID(String clientID) {
-        this.clientID = clientID;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public String getRedirectURI() {
