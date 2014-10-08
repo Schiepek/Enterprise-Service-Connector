@@ -1,0 +1,40 @@
+{
+    "key": "esc",
+    "name": "Enterprise Service Connector",
+    "version": "1.0",
+    "description": "Enterprise Service Connector",
+    "vendor": {
+        "name": "Schiepek, Andreoli",
+        "url": "http://www.example.com"
+    },
+    "links": {
+        "self": "${localBaseUrl}"
+    },
+    "lifecycle": {
+        "installed": "/installed"
+    },
+    "baseUrl": "${localBaseUrl}",
+    "authentication": {
+        "type": "jwt"
+    },
+    "enableLicensing": false,
+    "modules": {
+        "staticContentMacros": [
+            {
+                "name": {
+                    "value": "Enterprise Service Connector"
+                },
+                "key": "esc",
+                "method": "get",
+                "url": "/salesforce",
+                "outputType": "block",
+                "bodyType": "plain-text",
+                "featured": true
+            }
+        ]
+    },
+    "scopes": [
+        "read",
+        "write"
+    ]
+}

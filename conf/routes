@@ -24,15 +24,4 @@ GET         /gmail/callback                    controllers.GMailController.callb
 GET         /settings                          controllers.SettingsController.index
 POST        /settings                          controllers.SettingsController.setSettings()
 
-
-
-
-
-
-
-
-
-
-
-
-    
+->      /                                      ac.Routes
