@@ -89,9 +89,11 @@ public class SalesForceController extends Controller {
             SalesForceTokenResponse oAuthResponse = oAuthClient.accessToken(request, SalesForceTokenResponse.class);
 
             String accessToken = oAuthResponse.getAccessToken();
+            String refreshToken = oAuthResponse.getRefreshToken();
             String instance = oAuthResponse.getInstance();
 
             config.setAccessToken(accessToken);
+            config.setRefreshToken(refreshToken);
             config.setInstance(instance);
             config.save();
 
@@ -109,7 +111,37 @@ public class SalesForceController extends Controller {
         );
     }
 
+    public static void refreshToken() {
+        APIConfig config = APIConfig.getConfig(1L);
+        try {
+            OAuthClientRequest request = OAuthClientRequest
+                    .tokenProvider(OAuthProviderType.SALESFORCE)
+                    .setGrantType(GrantType.REFRESH_TOKEN)
+                    .setClientId(config.getClientId())
+                    .setClientSecret(config.getClientSecret())
+                    .setRefreshToken(config.getRefreshToken())
+                    .buildQueryMessage();
+
+            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+
+            SalesForceTokenResponse oAuthResponse = oAuthClient.accessToken(request, SalesForceTokenResponse.class);
+
+            String accessToken = oAuthResponse.getAccessToken();
+            String instance = oAuthResponse.getInstance();
+
+            config.setAccessToken(accessToken);
+            config.setInstance(instance);
+            config.save();
+
+        } catch (OAuthProblemException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Result getSalesforceContacts() throws OAuthSystemException, OAuthProblemException {
+        SalesForceController.refreshToken();
         APIConfig config = APIConfig.getConfig(1L);
 
         String instance = config.getInstance();
