@@ -2,6 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import models.APIConfig;
+import models.ServiceProvider;
 import models.salesforce.Container;
 import models.salesforce.SalesForceTokenResponse;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -40,14 +41,15 @@ public class SalesForceController extends Controller {
         } else {
             APIConfig config;
             //APIConfig config = APIConfig.getConfig(1L);
-            if (APIConfig.getConfig(1L) == null) {
+            if (APIConfig.getConfig(221L) == null) {
                 config = filledForm.get();
                 config.save();
             } else {
-                config = APIConfig.getConfig(1L);
+                config = APIConfig.getConfig(221L);
                 config.setClientId(filledForm.get().getClientId());
                 config.setClientSecret(filledForm.get().getClientSecret());
                 config.setRedirectURI(filledForm.get().getRedirectURI());
+                config.setProvider(ServiceProvider.SALESFORCE);
                 config.save();
                 //APIConfig config = APIConfig.getConfig(1L);
             }
@@ -73,7 +75,7 @@ public class SalesForceController extends Controller {
 
     public static Result callback() {
         String code = request().getQueryString("code");
-        APIConfig config = APIConfig.getConfig(1L);
+        APIConfig config = APIConfig.getConfig(221L);
         try {
             OAuthClientRequest request = OAuthClientRequest
                     .tokenProvider(OAuthProviderType.SALESFORCE)
