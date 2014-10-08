@@ -27,9 +27,8 @@ public class GMailController extends Controller {
 
     public static Result newMail() {
         Form<APIConfig> filledForm = mailForm.bindFromRequest();
-        if (filledForm.hasErrors()) {
-            return badRequest(gmail.render(APIConfig.all(), filledForm));
-        } else {
+        if (filledForm.hasErrors()) return badRequest(gmail.render(APIConfig.all(), filledForm));
+        else {
             APIConfig account = filledForm.get();
             account.setProvider(ServiceProvider.GMAIL);
             APIConfig.create(account);
@@ -44,15 +43,12 @@ public class GMailController extends Controller {
 
     public static Result authorize(Long id) {
         GMailConnector gmail = new GMailConnector(id);
-        String authUrl = gmail.authorize();
-        return redirect(authUrl);
+        return redirect(gmail.authorize());
     }
 
     public static Result callback() {
-        String code = request().getQueryString("code");
-        Long id = Long.parseLong(request().getQueryString("state"));
-        GMailConnector gmail = new GMailConnector(id);
-        gmail.generateAccessToken(code);
+        GMailConnector gmail = new GMailConnector(Long.parseLong(request().getQueryString("state")));
+        gmail.generateAccessToken(request().getQueryString("code"));
         return redirect(routes.GMailController.index());
     }
 

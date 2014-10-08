@@ -9,6 +9,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gdata.client.contacts.ContactsService;
 import models.APIConfig;
+import models.Settings;
 
 import java.util.Arrays;
 
@@ -17,8 +18,8 @@ public class GMailConnector {
 
     private static final String SCOPE = "https://www.google.com/m8/feeds";
     private static final String APP_NAME = "Enterprise Service Connector";
-    private static final String CALLBACK_URI = "http://localhost:9000/gmail/callback";
-    private static final String GRAND_TYPE  ="authorization_code";
+    private static final String CALLBACK_URI_PATH = "/gmail/callback";
+    private static String CALLBACK_URI;
     private static GoogleAuthorizationCodeFlow flow;
     private static APIConfig account;
     HttpTransport httpTransport = new NetHttpTransport();
@@ -30,6 +31,7 @@ public class GMailConnector {
                 httpTransport, jsonFactory, account.getClientId(), account.getClientSecret(), Arrays.asList(SCOPE))
                 .setAccessType("offline")
                 .setApprovalPrompt("auto").build();
+        CALLBACK_URI = Settings.getSettings().getServerUrl() + CALLBACK_URI_PATH;
     }
 
     public String authorize() {
