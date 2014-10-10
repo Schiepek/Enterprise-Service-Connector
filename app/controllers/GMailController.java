@@ -1,25 +1,24 @@
 package controllers;
 
-
-import com.google.gdata.client.contacts.ContactsService;
-import com.google.gdata.data.contacts.ContactEntry;
-import com.google.gdata.data.extensions.Email;
-import com.google.gdata.data.extensions.FullName;
-import com.google.gdata.data.extensions.Name;
+import com.google.gdata.util.ServiceException;
 import models.APIConfig;
 import models.ServiceProvider;
 import models.gmail.GMailConnector;
+import models.gmail.GMailContactAccess;
+import models.salesforce.Container;
+import models.salesforce.SalesForceAccess;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.gmail.gmail;
 
-import java.net.URL;
+import java.io.IOException;
 
 public class GMailController extends Controller {
 
     static Form<APIConfig> mailForm = Form.form(APIConfig.class);
-
 
     public static Result index() {
         return ok(gmail.render(APIConfig.all(), mailForm));
@@ -46,37 +45,24 @@ public class GMailController extends Controller {
         return redirect(gmail.authorize());
     }
 
-    public static Result callback() {
+    public static Result callback() throws IOException {
         GMailConnector gmail = new GMailConnector(Long.parseLong(request().getQueryString("state")));
-        gmail.generateAccessToken(request().getQueryString("code"));
+        gmail.generateRefreshToken(request().getQueryString("code"));
         return redirect(routes.GMailController.index());
     }
 
     public static Result insertContact(Long id) throws Exception {
-        ContactsService service = new GMailConnector(id).getContactService();
-        APIConfig account = APIConfig.getAPIConfig(id);
+        GMailContactAccess access = new GMailContactAccess(id);
+        //access.insertContact("77777", "77777", "lulumomo");
+        return redirect(routes.GMailController.index());
+    }
 
-        // Create the entry to insert.
-        ContactEntry contact = new ContactEntry();
-        // Set the contact's name.
-        Name name = new Name();
-        final String NO_YOMI = null;
-        name.setFullName(new FullName("newnewnen", NO_YOMI));
-/*        name.setGivenName(new GivenName("Elizabeth", NO_YOMI));
-        name.setFamilyName(new FamilyName("Bennet", NO_YOMI))*/
-        contact.setName(name);
-        // Set contact's e-mail addresses.
-        Email primaryMail = new Email();
-        primaryMail.setAddress("xxxx@gmail.com");
-        primaryMail.setDisplayName("5555555555");
-        primaryMail.setRel("http://schemas.google.com/g/2005#home");
-        primaryMail.setPrimary(true);
-        contact.addEmailAddress(primaryMail);
-
-        URL postUrl = new URL("https://www.google.com/m8/feeds/contacts/default/full");
-        ContactEntry createdContact = service.insert(postUrl, contact);
-        System.out.println("Contact's ID: " + createdContact.getId());
-
+    public static Result transferContacts(Long id) throws IOException, ServiceException, OAuthProblemException, OAuthSystemException {
+        Container container = new SalesForceAccess().getSalesforceContacts();
+/*        for (Contact c : container.getContacts()) {
+            System.out.println(c.getEmail() + "  " + c.getFirstName() + "  " + c.getLastName());
+        }*/
+        new GMailContactAccess(id).insertContacts(container);
         return redirect(routes.GMailController.index());
     }
 }

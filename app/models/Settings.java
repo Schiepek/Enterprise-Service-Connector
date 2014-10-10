@@ -22,7 +22,7 @@ public class Settings extends Model {
     public static Finder<Long,Settings> find = new Finder( Long.class, Settings.class );
 
     public static Settings getSettings() {
-        if( proofExistingSetting()) return find.ref(1L);
+        if(proofExistingSetting()) return find.ref(1L);
         else return createEmptySetting();
     }
 
@@ -37,12 +37,11 @@ public class Settings extends Model {
     public static Settings createEmptySetting() {
         Settings settings = new Settings();
         settings.setId(1L);
-        settings.setServerUrl("www.sampleserver.com/");
-        settings.save();
-        return find.ref(1L);
+        settings.setServerUrl("http://www.sampleserver.com:8000");
+        return settings;
     }
 
     private static boolean proofExistingSetting() {
-        return Settings.find.where().eq("id", Long.parseLong("1")).findRowCount() >= 0;
+        return Settings.find.where().eq("id", 1L).findUnique() != null;
     }
 }

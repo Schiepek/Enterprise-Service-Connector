@@ -28,6 +28,9 @@
                 @form(routes.GMailController.insertContact(account.getId())) {
                     <input type="submit" value="insert Contact">
                 }
+                @form(routes.GMailController.transferContacts(account.getId())) {
+                    <input type="submit" value="transfer Contact">
+                }
             </li>
         }
         </ul>

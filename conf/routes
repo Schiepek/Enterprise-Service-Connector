@@ -18,8 +18,10 @@ GET         /gmail                             controllers.GMailController.index
 POST        /gmail/authorize/:id               controllers.GMailController.authorize(id: Long)
 POST        /gmail/delete/:id                  controllers.GMailController.deleteMail(id: Long)
 POST        /gmail/new                         controllers.GMailController.newMail()
+POST        /gmail/transfer/:id                controllers.GMailController.transferContacts(id: Long)
 POST        /gmail/insertcontact/:id           controllers.GMailController.insertContact(id: Long)
 GET         /gmail/callback                    controllers.GMailController.callback()
+
 
 GET         /settings                          controllers.SettingsController.index
 POST        /settings                          controllers.SettingsController.setSettings()
