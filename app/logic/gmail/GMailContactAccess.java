@@ -1,4 +1,4 @@
-package models.gmail;
+package logic.gmail;
 
 import com.google.gdata.client.Query;
 import com.google.gdata.client.contacts.ContactsService;
@@ -8,8 +8,8 @@ import com.google.gdata.data.contacts.ContactFeed;
 import com.google.gdata.data.contacts.*;
 import com.google.gdata.data.extensions.*;
 import com.google.gdata.util.ServiceException;
-import models.salesforce.Contact;
-import models.salesforce.Container;
+import models.Contact;
+import models.Container;
 import play.data.validation.Constraints.EmailValidator;
 
 import java.io.IOException;

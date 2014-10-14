@@ -1,4 +1,4 @@
-package models.gmail;
+package logic.gmail;
 
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;

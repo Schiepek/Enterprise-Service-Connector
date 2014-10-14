@@ -1,9 +1,9 @@
 package controllers;
 
 import models.APIConfig;
-import models.salesforce.Container;
-import models.salesforce.SalesForceAccess;
-import models.salesforce.SalesForceConnector;
+import models.Container;
+import logic.salesforce.SalesForceAccess;
+import logic.salesforce.SalesForceConnector;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import play.data.Form;

@@ -1,4 +1,4 @@
-package models.salesforce;
+package models;
 
 public class Contact {
 

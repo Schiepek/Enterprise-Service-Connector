@@ -1,4 +1,4 @@
-package models.salesforce;
+package logic.salesforce;
 
 import models.APIConfig;
 import models.ServiceProvider;
