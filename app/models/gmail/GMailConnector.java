@@ -48,28 +48,11 @@ public class GMailConnector {
                 .setTransport(httpTransport).setClientSecrets(account.getClientId(), account.getClientSecret()).build();
         credential.setFromTokenResponse(response);
         account.setAccessToken(credential.getAccessToken());
-        if(credential.getRefreshToken() != null) account.setRefreshToken(credential.getRefreshToken());
-        account.setMail(credential.getServiceAccountUser());
+        if (credential.getRefreshToken() != null) account.setRefreshToken(credential.getRefreshToken());
+        System.out.println(getMailAddress(response.getIdToken()));
         account.save();
     }
 
-/*    client_id=8819981768.apps.googleusercontent.com&
-    client_secret={client_secret}&
-    refresh_token=1/6BMfW9j53gdGImsiyUH5kU5RsR4zwI9lUVX-tqf8JXQ&
-    grant_type=refresh_token*/
-
-    public void generateAccessToken() throws IOException {
-        GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
-                .setTransport(httpTransport).setClientSecrets(account.getClientId(), account.getClientSecret()).build();
-    }
-
-/*    private void getMailAddress() {
-        Oauth2 userInfoService = new Oauth2.Builder(httpTransport,
-                jsonFactory, credential.getRequestInitializer())
-                .setApplicationName(APP_NAME).build();
-
-        Userinfo userInfo = userInfoService.userinfo().get().execute();
-    }*/
 
     public ContactsService getContactService() throws IOException {
         GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
@@ -81,5 +64,10 @@ public class GMailConnector {
         ContactsService service = new ContactsService(APP_NAME);
         service.setOAuth2Credentials(credential);
         return service;
+    }
+
+    private String getMailAddress(String token) throws IOException {
+        //JwtParser parser = new JwtParser();
+        return "x;";
     }
 }

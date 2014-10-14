@@ -23,6 +23,7 @@ POST        /gmail/insertcontact/:id           controllers.GMailController.inser
 GET         /gmail/callback                    controllers.GMailController.callback()
 
 
+
 GET         /settings                          controllers.SettingsController.index
 POST        /settings                          controllers.SettingsController.setSettings()
 

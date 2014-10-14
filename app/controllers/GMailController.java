@@ -65,4 +65,5 @@ public class GMailController extends Controller {
         new GMailContactAccess(id).insertContacts(container);
         return redirect(routes.GMailController.index());
     }
+
 }
