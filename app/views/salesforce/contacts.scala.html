@@ -5,7 +5,9 @@
     @for(contact <- contacts){
         Name: @contact.getLastName <br />
         Firstname: @contact.getFirstName <br />
-        Email: @contact.getEmail <br /><br />
+        Email: @contact.getEmail <br />
+        MailingStreet: @contact.getMailingStreet <br />
+        SalutationTitle: @contact.getSalutationTitle <br /><br />
     }
 
 }
