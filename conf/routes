@@ -11,9 +11,6 @@ GET         /salesforce/oauth2                 controllers.SalesForceController.
 GET         /salesforce/oauth2/callback        controllers.SalesForceController.callback()
 GET         /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
 
-# Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                      controllers.Assets.at(path="/public", file)
-
 GET         /gmail                             controllers.GMailController.index
 POST        /gmail/authorize/:id               controllers.GMailController.authorize(id: Long)
 POST        /gmail/delete/:id                  controllers.GMailController.deleteMail(id: Long)
@@ -22,9 +19,12 @@ POST        /gmail/transfer/:id                controllers.GMailController.trans
 POST        /gmail/insertcontact/:id           controllers.GMailController.insertContact(id: Long)
 GET         /gmail/callback                    controllers.GMailController.callback()
 
-
+GET         /logs                              controllers.LoggingController.index()
 
 GET         /settings                          controllers.SettingsController.index
 POST        /settings                          controllers.SettingsController.setSettings()
 
-->      /                                      ac.Routes
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                      controllers.Assets.at(path="/public", file)
+
+->          /                                  ac.Routes

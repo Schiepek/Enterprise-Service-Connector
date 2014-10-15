@@ -1,21 +1,22 @@
 package controllers;
 
-import com.google.gdata.util.ServiceException;
+import global.TransferException;
 import models.APIConfig;
+import models.Logging;
 import models.ServiceProvider;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
 import models.Container;
 import logic.salesforce.SalesForceAccess;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import play.data.Form;
+import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.gmail.gmail;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class GMailController extends Controller {
 
@@ -65,12 +66,21 @@ public class GMailController extends Controller {
     }
 
     @Transactional
-    public static Result transferContacts(Long id) throws IOException, ServiceException, OAuthProblemException, OAuthSystemException {
-        Container container = new SalesForceAccess().getSalesforceContacts();
+    public static Result transferContacts(Long id) {
+        Container container = null;
+        try {
+            container = new SalesForceAccess().getSalesforceContacts();
+            new GMailContactAccess(id).insertContacts(container);
+        } catch (Exception e) {
+            throw new TransferException(e.getMessage());
+        }
 /*        for (Contact c : container.getContacts()) {
             System.out.println(c.getEmail() + "  " + c.getFirstName() + "  " + c.getLastName());
         }*/
-        new GMailContactAccess(id).insertContacts(container);
+            Logging log = new Logging();
+            log.setDate(new Date());
+            log.setMessage("Transfer successful");
+            log.save();
         return redirect(routes.GMailController.index());
     }
 
