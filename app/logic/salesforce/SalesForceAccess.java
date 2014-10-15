@@ -37,7 +37,7 @@ public class SalesForceAccess {
 
     public Container getSalesforceContacts() throws OAuthSystemException, OAuthProblemException {
         new SalesForceConnector().setRefreshToken();
-        APIConfig config = APIConfig.getConfig(221L);
+        APIConfig config = APIConfig.getAPIConfig(1L);
         OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(config.getInstance() + GET_ALL_CONTACTS)
                 .setAccessToken(config.getAccessToken()).buildHeaderMessage();
 

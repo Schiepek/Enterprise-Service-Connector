@@ -1,15 +1,22 @@
 package models;
 
 
-import play.db.ebean.Model;
+import play.db.jpa.JPA;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Entity
-public class Settings extends Model {
+public class Settings {
 
     @Id
+    @GeneratedValue
     private Long id;
     private String serverUrl;
 
@@ -19,17 +26,18 @@ public class Settings extends Model {
 
     public void setServerUrl(String serverUrl) {   this.serverUrl = serverUrl;   }
 
-    public static Finder<Long,Settings> find = new Finder( Long.class, Settings.class );
+    public void save() {
+        JPA.em().merge(this);
+    }
 
     public static Settings getSettings() {
-        if(proofExistingSetting()) return find.ref(1L);
+        if(proofExistingSetting()) return JPA.em().find(Settings.class, 1L);
         else return createEmptySetting();
     }
 
     public static void create(Settings newsetting) {
         Settings existing;
-        if(proofExistingSetting()) existing = find.ref(1L);
-        else existing = createEmptySetting();
+        existing = getSettings();
         existing.setServerUrl(newsetting.getServerUrl());
         existing.save();
     }
@@ -42,6 +50,6 @@ public class Settings extends Model {
     }
 
     private static boolean proofExistingSetting() {
-        return Settings.find.where().eq("id", 1L).findUnique() != null;
+        return JPA.em().find(Settings.class, 1L) != null;
     }
 }

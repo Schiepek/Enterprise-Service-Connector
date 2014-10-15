@@ -1,12 +1,17 @@
 package models;
 
-import play.db.ebean.Model;
+import play.db.jpa.JPA;
+
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Entity
-public class APIConfig extends Model {
+public class APIConfig {
     @Id
+    @GeneratedValue
     private Long id;
 
     private String clientId;
@@ -20,12 +25,6 @@ public class APIConfig extends Model {
 
     private String mail;
     private ServiceProvider provider;
-
-
-
-    public static Finder<Long,APIConfig> find = new Finder(
-            Long.class, APIConfig.class
-    );
 
     public String getClientId() {
         return clientId;
@@ -67,10 +66,6 @@ public class APIConfig extends Model {
         config.save();
     }
 
-    public static APIConfig getConfig(Long id) {
-        return find.ref(id);
-    }
-
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
@@ -90,14 +85,24 @@ public class APIConfig extends Model {
     public void setMail(String mail) { this.mail = mail;  }
 
     public static APIConfig getAPIConfig(Long id) {
-        return find.ref(id);
+        return JPA.em().find(APIConfig.class, id);
     }
 
     public static List<APIConfig> all() {
-        return find.all();
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<APIConfig> cq = cb.createQuery(APIConfig.class);
+        Root<APIConfig> root = cq.from(APIConfig.class);
+        CriteriaQuery<APIConfig> all = cq.select(root);
+        TypedQuery<APIConfig> allQuery = JPA.em().createQuery(all);
+        return allQuery.getResultList();
+    }
+
+    public void save() {
+        JPA.em().merge(this);//.find(APIConfig.class, id);
     }
 
     public static void delete(Long id) {
-        find.ref(id).delete();
+        APIConfig config = getAPIConfig(id);
+        JPA.em().remove(config);
     }
 }

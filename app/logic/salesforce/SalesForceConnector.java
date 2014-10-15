@@ -15,14 +15,14 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 //secret="5039637056870495392"
 public class SalesForceConnector {
 
-    public APIConfig safeConfig(APIConfig formConfig) {
+    public APIConfig saveConfig(APIConfig formConfig) {
         APIConfig config;
         //APIConfig config = APIConfig.getConfig(1L);
-        if (APIConfig.getConfig(221L) == null) {
+        if (APIConfig.getAPIConfig(1L) == null) {
             config = formConfig;
             config.save();
         } else {
-            config = APIConfig.getConfig(221L);
+            config = APIConfig.getAPIConfig(1L);
             config.setClientId(formConfig.getClientId());
             config.setClientSecret(formConfig.getClientSecret());
             config.setRedirectURI(formConfig.getRedirectURI());
@@ -45,7 +45,7 @@ public class SalesForceConnector {
     }
 
     public void setAccessToken(String code) throws OAuthSystemException, OAuthProblemException {
-        APIConfig config = APIConfig.getConfig(221L);
+        APIConfig config = APIConfig.getAPIConfig(1L);
         OAuthClientRequest request = OAuthClientRequest
                 .tokenProvider(OAuthProviderType.SALESFORCE)
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -65,7 +65,7 @@ public class SalesForceConnector {
     }
 
     public void setRefreshToken() throws OAuthSystemException, OAuthProblemException {
-        APIConfig config = APIConfig.getConfig(221L);
+        APIConfig config = APIConfig.getAPIConfig(1L);
 
         OAuthClientRequest request = OAuthClientRequest
                 .tokenProvider(OAuthProviderType.SALESFORCE)

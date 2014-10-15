@@ -19,17 +19,14 @@
     },
     "enableLicensing": false,
     "modules": {
-        "staticContentMacros": [
+        "generalPages": [
             {
+                "key": "enterpriseconnect",
+                "location": "system.header/left",
                 "name": {
-                    "value": "Enterprise Service Connector"
+                    "value": "ESC"
                 },
-                "key": "esc",
-                "method": "get",
-                "url": "/salesforce",
-                "outputType": "block",
-                "bodyType": "plain-text",
-                "featured": true
+                "url": "/gmail"
             }
         ]
     },
