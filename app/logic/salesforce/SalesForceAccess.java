@@ -31,7 +31,8 @@ public class SalesForceAccess {
             "MailingPostalCode," +
             "MailingCountry," +
             "f_contact__c," +
-            "OwnerId" +
+            "OwnerId," +
+            "LastModifiedDate" +
             "+FROM+Contact";
 
 
