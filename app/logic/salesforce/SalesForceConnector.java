@@ -2,6 +2,7 @@ package logic.salesforce;
 
 import models.APIConfig;
 import models.ServiceProvider;
+import models.Settings;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -15,30 +16,37 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 //secret="5039637056870495392"
 public class SalesForceConnector {
 
+    String CALLBACK_URI;
+    String CALLBACK_URI_PATH = "/salesforce/oauth2/callback";
+
+    public SalesForceConnector() {
+        CALLBACK_URI = Settings.getSettings().getServerUrl() + CALLBACK_URI_PATH;
+    }
+
     public APIConfig saveConfig(APIConfig formConfig) {
         APIConfig config;
         //APIConfig config = APIConfig.getConfig(1L);
-        if (APIConfig.getAPIConfig(1L) == null) {
+        if (APIConfig.getAPIConfig(ServiceProvider.SALESFORCE) == null) {
             config = formConfig;
             config.save();
         } else {
-            config = APIConfig.getAPIConfig(1L);
+            config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
             config.setClientId(formConfig.getClientId());
             config.setClientSecret(formConfig.getClientSecret());
             config.setRedirectURI(formConfig.getRedirectURI());
             config.setProvider(ServiceProvider.SALESFORCE);
             config.save();
-            //APIConfig config = APIConfig.getConfig(1L);
         }
         return config;
     }
 
-    public String requestLocationURI(APIConfig config) throws OAuthSystemException {
+    public String requestLocationURI() throws OAuthSystemException {
+        APIConfig config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
         OAuthClientRequest request = null;
         request = OAuthClientRequest
                 .authorizationProvider(OAuthProviderType.SALESFORCE)
                 .setClientId(config.getClientId())
-                .setRedirectURI(config.getRedirectURI())
+                .setRedirectURI(CALLBACK_URI)
                 .setResponseType("code")
                 .buildQueryMessage();
         return request.getLocationUri();
@@ -51,7 +59,7 @@ public class SalesForceConnector {
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
                 .setClientId(config.getClientId())
                 .setClientSecret(config.getClientSecret())
-                .setRedirectURI(config.getRedirectURI())
+                .setRedirectURI(CALLBACK_URI)
                 .setCode(code)
                 .buildQueryMessage();
 

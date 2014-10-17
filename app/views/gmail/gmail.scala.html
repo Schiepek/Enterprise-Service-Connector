@@ -3,47 +3,32 @@
 
 @import helper._
 
-    @main("GMailAccounts") {
+@main("Accounts") {
 
-        <h1>@accounts.size() account(s)</h1>
+    <h1>Accounts</h1>
 
-        <ul>
-        @for(account <- accounts) {
-            <li>
-                <ul>
-                    <li>@account.getId</li>
-                    <li>@account.getMail()</li>
-                    <li>@account.getClientId</li>
-                    <li>@account.getClientSecret()</li>
-                    <li>@account.getAccessToken()</li>
-                    <li>@account.getRefreshToken()</li>
-                    <li>@account.getProvider</li>
-                </ul>
-                @form(routes.GMailController.deleteMail(account.getId())) {
-                    <input type="submit" value="Delete">
-                    }
-                @form(routes.GMailController.authorize(account.getId())) {
-                    <input type="submit" value="authorize">
-                    }
-                @form(routes.GMailController.insertContact(account.getId())) {
-                    <input type="submit" value="insert Contact">
+    <ul>
+    @for(account <- accounts) {
+        <li>
+            <ul>
+                <li><h1>@account.getProvider()</h1></li>
+                <li>Status: </li>
+                @form(routes.GMailController.save(account.getProvider.toString())) {
+                    Client Id: <input name="clientId" value="@account.getClientId" size="100"><br>
+                    Client Secret: <input name="clientSecret" value="@account.getClientSecret" size="100"><br>
+                    <input type="submit" value="Save">
                 }
-                @form(routes.GMailController.transferContacts(account.getId())) {
-                    <input type="submit" value="transfer Contact">
+                <li>Access Token: @account.getAccessToken()</li>
+                <li>Refresh Token: @account.getRefreshToken()</li>
+            </ul>
+            @form(routes.GMailController.authorize(account.getProvider().toString())) {
+                <input type="submit" value="authorize">
                 }
-            </li>
-        }
-        </ul>
-
-        <h2>Add a gmail Account</h2>
-
-        @form(routes.GMailController.newMail()) {
-
-            @inputText(mailForm("clientId"))
-            @inputText(mailForm("clientSecret"))
-
-            <input type="submit" value="Create">
-
-        }
-
+        </li>
     }
+    </ul>
+
+    @form(routes.GMailController.transferContacts()) {
+        <input type="submit" value="transfer Contact">
+    }
+}

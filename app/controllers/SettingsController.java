@@ -26,4 +26,5 @@ public class SettingsController extends Controller {
             return index();
         }
     }
+
 }

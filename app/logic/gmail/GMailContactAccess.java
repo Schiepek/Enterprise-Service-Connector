@@ -20,8 +20,8 @@ public class GMailContactAccess {
     private static final String GROUP_NAME = "salesforce";
     private static final String CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/default/full";
 
-    public GMailContactAccess(Long id) throws IOException {
-        service = new GMailConnector(id).getContactService();
+    public GMailContactAccess() throws IOException {
+        service = new GMailConnector().getContactService();
     }
 
     public void insertContact(String firstname, String lastname, String mail) throws IOException, ServiceException {
@@ -53,6 +53,7 @@ public class GMailContactAccess {
             if(!contactInsertAllowed(contact)) continue;
             ContactEntry newcontact = createContactEntry(contact.getFirstName(), contact.getLastName(), contact.getEmail(), groupId);
             ContactEntry createdContact = service.insert(postUrl, newcontact);
+            //service.insert
             System.out.println("Contact's ID: " + createdContact.getId());
         }
     }

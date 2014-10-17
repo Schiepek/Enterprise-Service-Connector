@@ -12,11 +12,9 @@ GET         /salesforce/oauth2/callback        controllers.SalesForceController.
 GET         /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
 
 GET         /gmail                             controllers.GMailController.index
-POST        /gmail/authorize/:id               controllers.GMailController.authorize(id: Long)
-POST        /gmail/delete/:id                  controllers.GMailController.deleteMail(id: Long)
-POST        /gmail/new                         controllers.GMailController.newMail()
-POST        /gmail/transfer/:id                controllers.GMailController.transferContacts(id: Long)
-POST        /gmail/insertcontact/:id           controllers.GMailController.insertContact(id: Long)
+POST        /gmail/authorize                   controllers.GMailController.authorize(provider: String)
+POST        /gmail                             controllers.GMailController.save(provider: String)
+POST        /gmail/transfer                    controllers.GMailController.transferContacts()
 GET         /gmail/callback                    controllers.GMailController.callback()
 
 GET         /logs                              controllers.LoggingController.index()

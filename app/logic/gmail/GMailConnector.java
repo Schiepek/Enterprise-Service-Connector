@@ -11,6 +11,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gdata.client.contacts.ContactsService;
 import models.APIConfig;
+import models.ServiceProvider;
 import models.Settings;
 
 import java.io.IOException;
@@ -28,8 +29,8 @@ public class GMailConnector {
     HttpTransport httpTransport = new NetHttpTransport();
     JsonFactory jsonFactory = new JacksonFactory();
 
-    public GMailConnector(Long id) {
-        account = APIConfig.getAPIConfig(id);
+    public GMailConnector() {
+        account = APIConfig.getAPIConfig(ServiceProvider.GMAIL);
         flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, jsonFactory, account.getClientId(), account.getClientSecret(), Arrays.asList(SCOPE))
                 .setAccessType("offline")
@@ -38,7 +39,7 @@ public class GMailConnector {
     }
 
     public String authorize() {
-        return flow.newAuthorizationUrl().setAccessType("offline").setRedirectUri(CALLBACK_URI).setState(account.getId().toString()).build();
+        return flow.newAuthorizationUrl().setAccessType("offline").setRedirectUri(CALLBACK_URI).build();
     }
 
     public void generateRefreshToken(String code) throws IOException {

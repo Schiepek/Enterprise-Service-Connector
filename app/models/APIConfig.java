@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -88,13 +89,22 @@ public class APIConfig {
         return JPA.em().find(APIConfig.class, id);
     }
 
-    public static List<APIConfig> all() {
+    public static APIConfig getAPIConfig(ServiceProvider provider) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery<APIConfig> cq = cb.createQuery(APIConfig.class);
-        Root<APIConfig> root = cq.from(APIConfig.class);
-        CriteriaQuery<APIConfig> all = cq.select(root);
-        TypedQuery<APIConfig> allQuery = JPA.em().createQuery(all);
-        return allQuery.getResultList();
+        CriteriaQuery cq = cb.createQuery(APIConfig.class);
+        Root<APIConfig> c = cq.from(APIConfig.class);
+        cq.where(cb.equal(c.get("provider"),provider));
+        Query query = JPA.em().createQuery(cq);
+        List<APIConfig> result = query.getResultList();
+        if(result.isEmpty()) return createEmptyAPIConfig(provider);
+        return result.get(0);
+    }
+
+    public static List<APIConfig> all() {
+        List<APIConfig> configs = new ArrayList<>();
+        configs.add(getAPIConfig(ServiceProvider.SALESFORCE));
+        configs.add(getAPIConfig(ServiceProvider.GMAIL));
+        return configs;
     }
 
     public void save() {
@@ -104,5 +114,16 @@ public class APIConfig {
     public static void delete(Long id) {
         APIConfig config = getAPIConfig(id);
         JPA.em().remove(config);
+    }
+
+    private static APIConfig createEmptyAPIConfig(ServiceProvider provider) {
+        APIConfig config = new APIConfig();
+        config.setClientId("Enter Client Id");
+        config.setClientSecret("Enter Client Secret");
+        config.setAccessToken("Authorize to get an Access Token");
+        config.setRefreshToken("Authorize to get an Refresh Token");
+        config.setProvider(provider);
+        config.save();
+        return config;
     }
 }

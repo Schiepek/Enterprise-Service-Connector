@@ -61,4 +61,11 @@ public class Logging {
         Logging config = getLog(id);
         JPA.em().remove(config);
     }
+
+    public static void log(String message) {
+        Logging log = new Logging();
+        log.setDate(new Date());
+        log.setMessage(message);
+        log.save();
+    }
 }
