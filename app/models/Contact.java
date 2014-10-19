@@ -11,7 +11,7 @@ public class Contact {
     private String Birthdate;
     private String Languages__c;
     private String Phone;
-    private String MobiilePhone;
+    private String MobilePhone;
     private String ReportsToId;
     private String AccountId;
     private String MailingStreet;
@@ -58,8 +58,8 @@ public class Contact {
         return Phone;
     }
 
-    public String getMobiilePhone() {
-        return MobiilePhone;
+    public String getMobilePhone() {
+        return MobilePhone;
     }
 
     public String getReportsToId() {

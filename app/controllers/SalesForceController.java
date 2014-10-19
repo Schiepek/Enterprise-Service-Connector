@@ -29,7 +29,7 @@ public class SalesForceController extends Controller {
         APIConfig config;
         if (filledForm.hasErrors()) return badRequest(views.html.index.render());
         else config = new SalesForceConnector().saveConfig(filledForm.get());
-        return redirect(new SalesForceConnector().requestLocationURI(config));
+        return redirect(new SalesForceConnector().requestLocationURI());
     }
 
     @Transactional
