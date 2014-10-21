@@ -24,6 +24,7 @@ public class Contact {
     private String LastModifiedDate;
     private Account Account;
     private Contact ReportsTo;
+    private Contact Owner;
 
     public String getLastName() {
         return LastName;
@@ -123,5 +124,9 @@ public class Contact {
 
     public String getReportsToName() {
         return ReportsTo != null ? ReportsTo.getName() : null;
+    }
+
+    public String getOwnerName() {
+        return Owner != null ? Owner.getName() : null;
     }
 }

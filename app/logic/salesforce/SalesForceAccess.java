@@ -39,7 +39,9 @@ public class SalesForceAccess {
             "Account.Phone," +
             "ReportsTo.FirstName," +
             "ReportsTo.LastName," +
-            "LastModifiedDate" +
+            "LastModifiedDate," +
+            "Owner.FirstName," +
+            "Owner.LastName" +
             "+FROM+Contact";
 
 
