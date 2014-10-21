@@ -3,6 +3,7 @@ package logic.salesforce;
 import com.google.gson.Gson;
 import models.APIConfig;
 import models.Container;
+import models.ServiceProvider;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -32,13 +33,14 @@ public class SalesForceAccess {
             "MailingCountry," +
             "f_contact__c," +
             "OwnerId," +
+            "Id," +
             "LastModifiedDate" +
             "+FROM+Contact";
 
 
     public Container getSalesforceContacts() throws OAuthSystemException, OAuthProblemException {
         new SalesForceConnector().setRefreshToken();
-        APIConfig config = APIConfig.getAPIConfig(1L);
+        APIConfig config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
         OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(config.getInstance() + GET_ALL_CONTACTS)
                 .setAccessToken(config.getAccessToken()).buildHeaderMessage();
 

@@ -18,6 +18,7 @@ import play.mvc.Result;
 import views.html.gmail.gmail;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 public class GMailController extends Controller {
 
@@ -56,12 +57,11 @@ public class GMailController extends Controller {
     }
 
     @Transactional
-    public static Result transferContacts() throws IOException, OAuthProblemException, OAuthSystemException, ServiceException {
+    public static Result transferContacts() throws IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
         Container container = null;
       //  try {
             container = new SalesForceAccess().getSalesforceContacts();
-            new GMailContactAccess().insertContacts(container);
-            System.out.println(container.getContacts()[1].getLanguages());
+            new GMailContactAccess().transferContacts(container);
       //  } catch (Exception e) {
       //      throw new TransferException(e.getMessage());
      //   }

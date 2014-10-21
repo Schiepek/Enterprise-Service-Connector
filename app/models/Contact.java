@@ -20,6 +20,7 @@ public class Contact {
     private String MailingCountry;
     private String f_contact__c;
     private String OwnerId;
+    private String Id;
     private String LastModifiedDate;
 
     public String getLastName() {
@@ -90,9 +91,9 @@ public class Contact {
         return f_contact__c;
     }
 
-    public String getOwnerId() {
-        return OwnerId;
-    }
+    public String getOwnerId() {  return OwnerId;  }
+
+    public String getId() {   return Id;  }
 
     public String getLastModifiedDate() {
         return LastModifiedDate;
