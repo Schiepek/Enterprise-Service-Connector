@@ -34,6 +34,11 @@ public class SalesForceAccess {
             "f_contact__c," +
             "OwnerId," +
             "Id," +
+            "Account.Name," +
+            "Account.Website," +
+            "Account.Phone," +
+            "ReportsTo.FirstName," +
+            "ReportsTo.LastName," +
             "LastModifiedDate" +
             "+FROM+Contact";
 
@@ -50,4 +55,5 @@ public class SalesForceAccess {
         Container container = gson.fromJson(resourceResponse.getBody(), Container.class);
         return container;
     }
+
 }

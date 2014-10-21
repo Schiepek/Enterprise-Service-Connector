@@ -22,6 +22,8 @@ public class Contact {
     private String OwnerId;
     private String Id;
     private String LastModifiedDate;
+    private Account Account;
+    private Contact ReportsTo;
 
     public String getLastName() {
         return LastName;
@@ -91,11 +93,35 @@ public class Contact {
         return f_contact__c;
     }
 
-    public String getOwnerId() {  return OwnerId;  }
+    public String getOwnerId() {
+        return OwnerId;
+    }
 
-    public String getId() {   return Id;  }
+    public String getId() {
+        return Id;
+    }
 
     public String getLastModifiedDate() {
         return LastModifiedDate;
+    }
+
+    public String getAccountName() {
+        return Account != null ? Account.getName() : null;
+    }
+
+    public String getAccountWebsite() {
+        return Account != null ? Account.getWebsite() : null;
+    }
+
+    public String getAccountPhone() {
+        return Account != null ? Account.getPhone() : null;
+    }
+
+    public String getName() {
+        return LastName + " " + FirstName;
+    }
+
+    public String getReportsToName() {
+        return ReportsTo != null ? ReportsTo.getName() : null;
     }
 }
