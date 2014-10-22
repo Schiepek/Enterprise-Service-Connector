@@ -15,12 +15,12 @@ GET         /gmail                             controllers.GMailController.index
 POST        /gmail/authorize                   controllers.GMailController.authorize(provider: String)
 POST        /gmail                             controllers.GMailController.save(provider: String)
 POST        /gmail/transfer                    controllers.GMailController.transferContacts()
-GET         /gmail/callback                    controllers.GMailController.callback()
+GET         /gmail/callbackgmail               controllers.GMailController.callbackGmail()
+GET         /gmail/callbacksalesforce          controllers.GMailController.callbackSalesForce()
+POST        /gmail/settings                    controllers.GMailController.setSettings()
+
 
 GET         /logs                              controllers.LoggingController.index()
-
-GET         /settings                          controllers.SettingsController.index
-POST        /settings                          controllers.SettingsController.setSettings()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                      controllers.Assets.at(path="/public", file)

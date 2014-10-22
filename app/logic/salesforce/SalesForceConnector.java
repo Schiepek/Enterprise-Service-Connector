@@ -12,12 +12,12 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 // CLIENT ID =  "3MVG9A_f29uWoVQtLyx_TNRfuq85aLHcIwEjVXgIOrrBWS4P5jZ6APwPmjjutvbNelxFEvodl7fpesAk9JV1l";
-// redirectURI = "http://localhost:9000/salesforce/oauth2/callback";
+// redirectURI = "http://localhost:9000/gmail/callback";
 //secret="5039637056870495392"
 public class SalesForceConnector {
 
     String CALLBACK_URI;
-    String CALLBACK_URI_PATH = "/salesforce/oauth2/callback";
+    String CALLBACK_URI_PATH = "/gmail/callbacksalesforce";
 
     public SalesForceConnector() {
         CALLBACK_URI = Settings.getSettings().getServerUrl() + CALLBACK_URI_PATH;
@@ -25,7 +25,6 @@ public class SalesForceConnector {
 
     public APIConfig saveConfig(APIConfig formConfig) {
         APIConfig config;
-        //APIConfig config = APIConfig.getConfig(1L);
         if (APIConfig.getAPIConfig(ServiceProvider.SALESFORCE) == null) {
             config = formConfig;
             config.save();

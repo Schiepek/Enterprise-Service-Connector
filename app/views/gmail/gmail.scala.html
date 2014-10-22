@@ -1,34 +1,43 @@
-@(accounts: List[models.APIConfig], mailForm: Form[models.APIConfig])
+@(accounts: List[models.APIConfig],
+        mailForm: Form[models.APIConfig],
+        account: models.Settings,
+        settingsForm: Form[models.Settings]
+        )
 
 
-@import helper._
+    @import helper._
 
-@main("Accounts") {
+    @main("Accounts") {
 
-    <h1>Accounts</h1>
+        <b>current Server URL: @account.getServerUrl()</b>
+        @form(routes.GMailController.setSettings()) {
+            @inputText(settingsForm("serverUrl"))
+            <input type="submit" value="Create">
+        }
+        <br>
+        <h1>Accounts</h1>
+        <ul>
+        @for(account <- accounts) {
+            <li>
+                <ul>
+                    <li><h1>@account.getProvider()</h1></li>
+                    <li>Status: </li>
+                    @form(routes.GMailController.save(account.getProvider.toString())) {
+                        Client Id: <input name="clientId" value="@account.getClientId" size="100"> <br>
+                        Client Secret: <input name="clientSecret" value="@account.getClientSecret" size="100"> <br>
+                        <input type="submit" value="Save">
+                    }
+                    <li>Access Token: @account.getAccessToken()</li>
+                    <li>Refresh Token: @account.getRefreshToken()</li>
+                </ul>
+                @form(routes.GMailController.authorize(account.getProvider().toString())) {
+                    <input type="submit" value="authorize">
+                    }
+            </li>
+        }
+        </ul>
 
-    <ul>
-    @for(account <- accounts) {
-        <li>
-            <ul>
-                <li><h1>@account.getProvider()</h1></li>
-                <li>Status: </li>
-                @form(routes.GMailController.save(account.getProvider.toString())) {
-                    Client Id: <input name="clientId" value="@account.getClientId" size="100"><br>
-                    Client Secret: <input name="clientSecret" value="@account.getClientSecret" size="100"><br>
-                    <input type="submit" value="Save">
-                }
-                <li>Access Token: @account.getAccessToken()</li>
-                <li>Refresh Token: @account.getRefreshToken()</li>
-            </ul>
-            @form(routes.GMailController.authorize(account.getProvider().toString())) {
-                <input type="submit" value="authorize">
-                }
-        </li>
+        @form(routes.GMailController.transferContacts()) {
+            <input type="submit" value="transfer Contact">
+        }
     }
-    </ul>
-
-    @form(routes.GMailController.transferContacts()) {
-        <input type="submit" value="transfer Contact">
-    }
-}
