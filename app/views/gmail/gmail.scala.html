@@ -42,14 +42,8 @@
                         <li><a href="#" onclick="$('#status_@account.getProvider').load('/@account.getProvider/check')">Check Status</a></li>
                         <li><a href="#">Edit</a></li>
                         <li>@form(routes.GMailController.authorize(account.getProvider().toString()), args = 'name -> (account.getProvider().toString()+"form")) {
-                            @*<button class="aui-button aui-button-link">Link button</button>*@
-                            @*<a href="javascript:;" onclick="parentNode.submit();"><%=n%></a>*@
-                            @*<input type="submit" value="transfer Contact">*@
                             <a href="javascript:document.@account.getProvider()form.submit()">Authorize</a>
                         }
-                        @*<li>#{a @GMailController.index()}Disconnect#{/a}</li>*@
-                            @*<a href="@routes.GMailController.authorize(account.getProvider().toString())"></a></li>*@
-                        @*routes.GMailController.authorize(account.getProvider().toString())*@
                     </ul>
                 </div>
                 <tr>
