@@ -90,4 +90,14 @@ public class GMailController extends Controller {
         return index();
     }
 
+    @Transactional
+    public static Result checkStatus() {
+        try {
+
+        } catch (Exception e) {
+            return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
+        }
+        return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
+    }
+
 }

@@ -10,6 +10,8 @@ GET         /salesforce                        controllers.SalesForceController.
 GET         /salesforce/oauth2                 controllers.SalesForceController.oauth2()
 GET         /salesforce/oauth2/callback        controllers.SalesForceController.callback()
 GET         /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
+GET         /salesforce/check                  controllers.SalesForceController.checkStatus()
+GET         /SALESFORCE/check                  controllers.SalesForceController.checkStatus()
 
 GET         /gmail                             controllers.GMailController.index
 POST        /gmail/authorize                   controllers.GMailController.authorize(provider: String)
@@ -18,7 +20,8 @@ POST        /gmail/transfer                    controllers.GMailController.trans
 GET         /gmail/callbackgmail               controllers.GMailController.callbackGmail()
 GET         /gmail/callbacksalesforce          controllers.GMailController.callbackSalesForce()
 POST        /gmail/settings                    controllers.GMailController.setSettings()
-
+GET         /gmail/check                       controllers.GMailController.checkStatus()
+GET         /GMAIL/check                       controllers.GMailController.checkStatus()
 
 GET         /logs                              controllers.LoggingController.index()
 

@@ -35,7 +35,7 @@ public class SalesForceController extends Controller {
     @Transactional
     public static Result callback() throws OAuthProblemException, OAuthSystemException {
         new SalesForceConnector().setAccessToken(request().getQueryString("code"));
-        return ok(views.html.index.render());
+        return GMailController.index();
     }
 
     @Transactional
@@ -44,4 +44,15 @@ public class SalesForceController extends Controller {
         Container container = new SalesForceAccess().getSalesforceContacts();
         return ok( contacts.render(Arrays.asList(container.getContacts())) );
     }
+
+    @Transactional
+    public static Result checkStatus() {
+        try {
+            new SalesForceConnector().setRefreshToken();
+        } catch (Exception e) {
+            return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
+        }
+        return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
+    }
+
 }

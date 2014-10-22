@@ -2,13 +2,24 @@
 
 @import helper._
 
-@main("Welcome to Play") {
-
-    @form(routes.SalesForceController.oauth2()) {
-        @inputText(configForm("clientId"))
-        @inputText(configForm("clientSecret"))
-        @inputText(configForm("redirectURI"))
-
-        <input type="submit" value="Connect">
+    @main("ESC") {
+        @form(action = routes.SalesForceController.oauth2(), args = 'class -> "aui") {
+            <div class="field-group">
+                <label for="clientId">Client Id</label>
+                <input class="text long-field" type="text" id="clientId" name="clientId">
+            </div>
+            <div class="field-group">
+                <label for="clientId">Client Secret</label>
+                <input class="text long-field" type="text" id="clientSecret" name="clientSecret">
+            </div>
+            <div class="field-group">
+                <label for="clientId">Callback URI</label>
+                <input class="text long-field" type="text" id="redirectURI" name="redirectURI">
+            </div>
+            <div class="buttons-container">
+                <div class="buttons">
+                    <input class="button submit" type="submit" value="Connect">
+                </div>
+            </div>
+        }
     }
-}

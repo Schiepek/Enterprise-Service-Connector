@@ -1,43 +1,70 @@
 @(accounts: List[models.APIConfig],
         mailForm: Form[models.APIConfig],
-        account: models.Settings,
-        settingsForm: Form[models.Settings]
-        )
+        settings: models.Settings,
+        settingsForm: Form[models.Settings])
 
 
-    @import helper._
+@import helper._
 
-    @main("Accounts") {
+@main("ESC") {
 
-        <b>current Server URL: @account.getServerUrl()</b>
-        @form(routes.GMailController.setSettings()) {
-            @inputText(settingsForm("serverUrl"))
-            <input type="submit" value="Create">
-        }
-        <br>
-        <h1>Accounts</h1>
-        <ul>
-        @for(account <- accounts) {
-            <li>
-                <ul>
-                    <li><h1>@account.getProvider()</h1></li>
-                    <li>Status: </li>
-                    @form(routes.GMailController.save(account.getProvider.toString())) {
-                        Client Id: <input name="clientId" value="@account.getClientId" size="100"> <br>
-                        Client Secret: <input name="clientSecret" value="@account.getClientSecret" size="100"> <br>
-                        <input type="submit" value="Save">
-                    }
-                    <li>Access Token: @account.getAccessToken()</li>
-                    <li>Refresh Token: @account.getRefreshToken()</li>
-                </ul>
-                @form(routes.GMailController.authorize(account.getProvider().toString())) {
-                    <input type="submit" value="authorize">
-                    }
-            </li>
-        }
-        </ul>
-
-        @form(routes.GMailController.transferContacts()) {
-            <input type="submit" value="transfer Contact">
-        }
+    <h1>Settings</h1>
+    @form(action = routes.GMailController.setSettings(), args = 'class -> "aui") {
+        <div class="field-group">
+            <label for="serverUrl">Server URL</label>
+            <input class="text" type="text" id="serverUrl" name="serverUrl" value="@settings.getServerUrl">
+        </div>
+        <div class="buttons-container">
+            <div class="buttons">
+                <input class="button submit" type="submit" value="Save">
+            </div>
+        </div>
     }
+
+    <h1>Accounts</h1>
+
+    <table class="aui table-mini">
+        <thead>
+            <tr>
+                <th>Provider</th>
+                <th>Client Id</th>
+                <th>Client Secret</th>
+                @*<th id="accessToken">Access Token</th>*@
+                @*<th id="refreshToken">Refresh Token</th>*@
+                <th>Status</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(account <- accounts) {
+                <div id="actions_@account.getProvider" class="aui-dropdown2 aui-style-default dropdown-mini">
+                    <ul class="aui-list-truncate">
+                        <li><a href="#" onclick="$('#status_@account.getProvider').load('/@account.getProvider/check')">Check Status</a></li>
+                        <li><a href="#">Edit</a></li>
+                        <li>@form(routes.GMailController.authorize(account.getProvider().toString()), args = 'name -> (account.getProvider().toString()+"form")) {
+                            @*<button class="aui-button aui-button-link">Link button</button>*@
+                            @*<a href="javascript:;" onclick="parentNode.submit();"><%=n%></a>*@
+                            @*<input type="submit" value="transfer Contact">*@
+                            <a href="javascript:document.@account.getProvider()form.submit()">Authorize</a>
+                        }
+                        @*<li>#{a @GMailController.index()}Disconnect#{/a}</li>*@
+                            @*<a href="@routes.GMailController.authorize(account.getProvider().toString())"></a></li>*@
+                        @*routes.GMailController.authorize(account.getProvider().toString())*@
+                    </ul>
+                </div>
+                <tr>
+                    <td>@account.getProvider</td>
+                    <td>@account.getClientId</td>
+                    <td>@account.getClientSecret</td>
+                    @*<td>@account.getAccessToken</td>*@
+                    @*<td>@account.getRefreshToken()</td>*@
+                    <td id="status_@account.getProvider"></td>
+                    <td>
+                        <button class="aui-button aui-dropdown2-trigger btn-mini" aria-owns="actions_@account.getProvider" aria-haspopup="true">Dropdown button</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
