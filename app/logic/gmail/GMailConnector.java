@@ -21,7 +21,7 @@ import java.util.Arrays;
 public class GMailConnector {
 
     private static final String SCOPE = "https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email";
-    private static final String APP_NAME = "Enterprise Service Connector";
+    private static final String APP_NAME = "esc-project";
     private static final String CALLBACK_URI_PATH = "/gmail/callback";
     private static String CALLBACK_URI;
     private static GoogleAuthorizationCodeFlow flow;
@@ -50,7 +50,6 @@ public class GMailConnector {
         credential.setFromTokenResponse(response);
         account.setAccessToken(credential.getAccessToken());
         if (credential.getRefreshToken() != null) account.setRefreshToken(credential.getRefreshToken());
-        System.out.println(getMailAddress(response.getIdToken()));
         account.save();
     }
 
@@ -65,10 +64,5 @@ public class GMailConnector {
         ContactsService service = new ContactsService(APP_NAME);
         service.setOAuth2Credentials(credential);
         return service;
-    }
-
-    private String getMailAddress(String token) throws IOException {
-        //JwtParser parser = new JwtParser();
-        return "x;";
     }
 }
