@@ -79,28 +79,30 @@ public class AccountController extends Controller {
     @Transactional
     public static Result transferContacts() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-          try {
-        new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
-          } catch (Exception e) {
-              throw new TransferException(e.getMessage());
-           }
+        try {
+            new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
+        } catch (Exception e) {
+            throw new TransferException(e.getMessage());
+        }
         Logging.log("Transfer successfull");
         return index();
     }
 
-/*    @Transactional
+    @Transactional
     public static Result checkStatus(String provider) {
         try {
+            switch (provider) {
+                case "SALESFORCE":
+                    /////;
+                case "GMAIL":
+                    /////;
+                default:
+                    //////);
+            }
 
         } catch (Exception e) {
             return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
         }
         return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
-    }*/
-
-    @Transactional
-    public static boolean checkStatus(String provider) {
-        return true;
     }
-
 }

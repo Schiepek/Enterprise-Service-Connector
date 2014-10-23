@@ -54,13 +54,7 @@
                 <td>@account.getClientSecret</td>
                 @*<td>@account.getAccessToken</td>*@
                 @*<td>@account.getRefreshToken()</td>*@
-                @if(true)
-                {
-                    <td><span class="aui-lozenge aui-lozenge-error">NOK</span></td>
-                }else
-                {
-                    <td><span class="aui-lozenge aui-lozenge-success">OK</span></td>
-                }
+                <td id="status_@account.getProvider"></td>
                 <td>
                     <button class="aui-button aui-dropdown2-trigger btn-mini" aria-owns="actions_@account.getProvider" aria-haspopup="true">Dropdown button</button>
                 </td>

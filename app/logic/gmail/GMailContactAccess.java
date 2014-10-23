@@ -175,9 +175,17 @@ public class GMailContactAccess {
         }
     }
 
-    private void updateWebsite(ContactEntry entry, Contact c) {
-        //
-    }
+/*    private void updateLinks(ContactEntry entry, Contact c) {
+        List<Website> websites = entry.getWebsites();
+        if(websites.isEmpty()) createLinks(entry, c);
+        for(Website website : websites) {
+           if(website.getLabel().equals("Homepage") && c.getAccountWebsite()!=null) {
+               website.setHref(c.getAccountWebsite();
+           } else if(website.getLabel().equals("Homepage") && c.getAccountWebsite()==null) {
+               entry.getWebsites().remove(website);
+           }
+        }
+    }*/
 
     private void createBirthday(ContactEntry entry, Contact c) {
         if (c.getBirthdate() == null) return;
