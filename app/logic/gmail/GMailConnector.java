@@ -22,7 +22,7 @@ public class GMailConnector {
 
     private static final String SCOPE = "https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email";
     private static final String APP_NAME = "esc-project";
-    private static final String CALLBACK_URI_PATH = "/gmail/callback";
+    private static final String CALLBACK_URI_PATH = "/account/callback";
     private static String CALLBACK_URI;
     private static GoogleAuthorizationCodeFlow flow;
     private static APIConfig account;

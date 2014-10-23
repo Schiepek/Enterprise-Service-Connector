@@ -3,29 +3,22 @@
 # ~~~~
 
 # Home page
-GET         /                                  controllers.SalesForceController.index
+GET         /                                controllers.AccountController.index()
 
-# SalesForce
-GET         /salesforce                        controllers.SalesForceController.index
-GET         /salesforce/oauth2                 controllers.SalesForceController.oauth2()
-GET         /salesforce/oauth2/callback        controllers.SalesForceController.callback()
-GET         /salesforce/contacts               controllers.SalesForceController.getSalesforceContacts()
-GET         /salesforce/check                  controllers.SalesForceController.checkStatus()
-GET         /SALESFORCE/check                  controllers.SalesForceController.checkStatus()
+# Callbacks
+GET         /salesforce/callback             controllers.AccountController.callbackSalesForce()
+GET         /gmail/callback                  controllers.AccountController.callbackGmail()
 
-GET         /gmail                             controllers.GMailController.index
-POST        /gmail/authorize                   controllers.GMailController.authorize(provider: String)
-POST        /gmail                             controllers.GMailController.save(provider: String)
-POST        /gmail/transfer                    controllers.GMailController.transferContacts()
-GET         /gmail/callbackgmail               controllers.GMailController.callbackGmail()
-GET         /gmail/callbacksalesforce          controllers.GMailController.callbackSalesForce()
-POST        /gmail/settings                    controllers.GMailController.setSettings()
-GET         /gmail/check                       controllers.GMailController.checkStatus()
-GET         /GMAIL/check                       controllers.GMailController.checkStatus()
+GET         /accounts                           controllers.AccountController.index
+POST        /accounts/authorize                 controllers.AccountController.authorize(provider: String)
+POST        /accounts/save                           controllers.AccountController.save(provider: String)
+POST        /accounts/transfer                  controllers.AccountController.transferContacts()
+POST        /accounts/settings                  controllers.AccountController.setSettings()
+GET         /accounts/check                     controllers.AccountController.checkStatus(provider: String)
 
-GET         /logs                              controllers.LoggingController.index()
+GET         /logs                            controllers.LoggingController.index()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                      controllers.Assets.at(path="/public", file)
+GET         /assets/*file                    controllers.Assets.at(path="/public", file)
 
-->          /                                  ac.Routes
+->          /                                ac.Routes

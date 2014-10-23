@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gdata.util.ServiceException;
+import global.TransferException;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
 import logic.salesforce.SalesForceAccess;
@@ -12,24 +13,24 @@ import play.data.Form;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.gmail.gmail;
+import views.html.account;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-public class GMailController extends Controller {
+public class AccountController extends Controller {
 
     static Form<APIConfig> mailForm = Form.form(APIConfig.class);
     static Form<Settings> settingsForm = Form.form(Settings.class);
 
     @Transactional
     public static Result index() {
-        return ok(gmail.render(APIConfig.all(), mailForm, Settings.getSettings(), settingsForm));
+        return ok(account.render(APIConfig.all(), mailForm, Settings.getSettings(), settingsForm));
     }
 
     @Transactional
     public static Result errorRequest() {
-        return badRequest(gmail.render(APIConfig.all(), mailForm, Settings.getSettings(), settingsForm));
+        return badRequest(account.render(APIConfig.all(), mailForm, Settings.getSettings(), settingsForm));
     }
 
     @Transactional
@@ -39,7 +40,6 @@ public class GMailController extends Controller {
         Settings.create(filledForm.get());
         return index();
     }
-
 
     @Transactional
     public static Result save(String provider) {
@@ -64,40 +64,43 @@ public class GMailController extends Controller {
     }
 
     @Transactional
-    public static Result callbackSalesForce() throws IOException {
+    public static Result callbackGmail() throws IOException {
         new GMailConnector().generateRefreshToken(request().getQueryString("code"));
-        return redirect(routes.GMailController.index());
+        return index();
     }
 
 
     @Transactional
-    public static Result callbackGmail() throws OAuthProblemException, OAuthSystemException {
+    public static Result callbackSalesForce() throws OAuthProblemException, OAuthSystemException {
         new SalesForceConnector().setAccessToken(request().getQueryString("code"));
-        return redirect(routes.GMailController.index());
+        return index();
     }
 
     @Transactional
     public static Result transferContacts() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-        Container container = null;
-        //  try {
-        container = new SalesForceAccess().getSalesforceContacts();
-        new GMailContactAccess().transferContacts(container);
-        //  } catch (Exception e) {
-        //      throw new TransferException(e.getMessage());
-        //   }
+          try {
+        new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
+          } catch (Exception e) {
+              throw new TransferException(e.getMessage());
+           }
         Logging.log("Transfer successfull");
         return index();
     }
 
-    @Transactional
-    public static Result checkStatus() {
+/*    @Transactional
+    public static Result checkStatus(String provider) {
         try {
 
         } catch (Exception e) {
             return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
         }
         return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
+    }*/
+
+    @Transactional
+    public static boolean checkStatus(String provider) {
+        return true;
     }
 
 }
