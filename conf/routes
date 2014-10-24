@@ -10,11 +10,11 @@ GET         /salesforce/callback        controllers.AccountController.callbackSa
 GET         /gmail/callback             controllers.AccountController.callbackGmail()
 
 GET         /accounts                   controllers.AccountController.index
-POST        /accounts/authorize         controllers.AccountController.authorize(provider: String)
-POST        /accounts/save              controllers.AccountController.save(provider: String)
+GET        /accounts/authorize/:provider         controllers.AccountController.authorize(provider: String)
+POST        /accounts/save/:provider              controllers.AccountController.save(provider: String)
 POST        /accounts/transfer          controllers.AccountController.transferContacts()
 POST        /accounts/settings          controllers.AccountController.setSettings()
-GET         /accounts/check             controllers.AccountController.checkStatus(provider: String)
+GET         /accounts/check/:provider   controllers.AccountController.checkStatus(provider: String)
 
 
 GET         /logs                       controllers.LoggingController.index()

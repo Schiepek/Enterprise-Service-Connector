@@ -2,6 +2,8 @@
         mailForm: Form[models.APIConfig],
         settings: models.Settings,
         settingsForm: Form[models.Settings])
+@import models.ServiceProvider.GMAIL
+@import models.ServiceProvider.SALESFORCE
 
 
 @import helper._
@@ -23,40 +25,55 @@
 
     <h1>Accounts</h1>
 
+    @form(routes.AccountController.save(SALESFORCE.toString()), args = 'class -> "aui", 'name -> (SALESFORCE+"form"), 'id -> (SALESFORCE+"form")) {
+    }
+    @form(routes.AccountController.save(GMAIL.toString), args = 'class -> "aui", 'name -> (GMAIL+"form"), 'id -> (GMAIL+"form")) {
+    }
+
     <table class="aui table-mini">
         <thead>
             <tr>
                 <th>Provider</th>
-                <th>Client Id</th>
+                <th style="min-width: 500px;">Client Id</th>
                 <th>Client Secret</th>
                 @*<th id="accessToken">Access Token</th>*@
                 @*<th id="refreshToken">Refresh Token</th>*@
                 <th>Status</th>
-                <th>Aktionen</th>
+                <th style="min-width: 125px;" ">Aktionen</th>
             </tr>
         </thead>
         <tbody>
         @for(account <- accounts) {
-            <div id="actions_@account.getProvider" class="aui-dropdown2 aui-style-default dropdown-mini">
-                <ul class="aui-list-truncate">
-                    @*<li>@form(routes.GMailController.checkStatus(account.getProvider().toString())(account.getProvider().toString()), args = 'name -> (account.getProvider().toString() + "form")) {*@
-                    @*<a href="javascript:document.@account.getProvider()form.submit()">Authorize</a>*@
-                    @*}</li>*@
-                    @*<li><a href="#">Edit</a></li>*@
-                <li>@form(routes.AccountController.authorize(account.getProvider().toString()), args = 'name -> (account.getProvider().toString() + "form")) {
-                    <a href="javascript:document.@account.getProvider()form.submit()">Authorize</a>
-                }</li>
-                </ul>
-            </div>
             <tr>
                 <td>@account.getProvider</td>
-                <td>@account.getClientId</td>
-                <td>@account.getClientSecret</td>
+                <td class="textCell@account.getProvider">@account.getClientId</td>
+                <td class="textCell@account.getProvider">@account.getClientSecret</td>
+
+
+                <td class="editCell@account.getProvider editCell" style="display: none">
+                    <input class="text text-long" type="text" id="clientId@account.getProvider" name="clientId" form="@account.getProvider()form" value="@account.getClientId">
+                </td>
+                <td class="editCell@account.getProvider editCell" style="display: none">
+                    <input class="text text-middle" type="text" id="clientSecret@account.getProvider" name="clientSecret" form="@account.getProvider()form" value="@account.getClientSecret">
+                </td>
+
+
+                @*Client Id: <input name="clientId" value="@account.getClientId" size="100"> <br>*@
+                    @*Client Secret: <input name="clientSecret" value="@account.getClientSecret" size="100"> <br>*@
+                    @*<input type="submit" value="Save">*@
                 @*<td>@account.getAccessToken</td>*@
                 @*<td>@account.getRefreshToken()</td>*@
                 <td id="status_@account.getProvider"></td>
                 <td>
-                    <button class="aui-button aui-dropdown2-trigger btn-mini" aria-owns="actions_@account.getProvider" aria-haspopup="true">Dropdown button</button>
+                    @*<a href="javascript:document.@account.getProvider()form.submit()">Authorize</a>*@
+                    <a href="javascript:document.@account.getProvider()form.submit()" id="save_@account.getProvider" class="save-btn" style="display: none"><button class="aui-button btn-mini"><span title="Save" class="aui-icon aui-icon-small aui-iconfont-approve"></span></button></a>
+                    <a href="#" id="edit_@account.getProvider"><button class="aui-button btn-mini"><span title="Edit" class="aui-icon aui-icon-small aui-iconfont-edit"></span></button></a>
+                    @*<button class="aui-button btn-mini"><a href="#" onclick="$('#status_@account.getProvider').load('/accounts/authorize/@account.getProvider')"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button>*@
+                    <a href="/accounts/authorize/@account.getProvider"><button class="aui-button btn-mini"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button></a>
+                    <a href="#" onclick="$('#status_@account.getProvider').load('/accounts/check/@account.getProvider')"><button class="aui-button btn-mini"><span title="Check Status" class="aui-icon aui-icon-small aui-iconfont-build"></span></button></a>
+
+
+                    @*<button class="aui-button aui-dropdown2-trigger btn-mini" aria-owns="actions_@account.getProvider" aria-haspopup="true">Dropdown button</button>*@
                 </td>
             </tr>
         }
@@ -69,5 +86,27 @@
             <input class="button submit" type="submit" value="Transfer Contacts">
         </div>
     }
+
+    <script>
+        jQuery(document ).ready(function() {
+
+            jQuery("a[id^='edit']").click(function() {
+                var provider = $(this).attr('id' ).replace('edit_', '');
+                jQuery('#save_'+provider ).show();
+                $(this).hide();
+                jQuery('.editCell'+provider).show();
+                jQuery('.textCell'+provider).hide();
+            });
+
+            jQuery("a[id^='save']").click(function() {
+                var provider = $(this).attr('id' ).replace('save_', '');
+                jQuery('#edit_'+provider ).show();
+                $(this).hide();
+                jQuery('.editCell'+provider).hide();
+                jQuery('.textCell'+provider).show();
+            });
+        });
+
+    </script>
 
 }

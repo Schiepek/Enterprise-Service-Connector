@@ -20,17 +20,17 @@ import java.text.ParseException;
 
 public class AccountController extends Controller {
 
-    static Form<APIConfig> mailForm = Form.form(APIConfig.class);
+    static Form<APIConfig> apiForm = Form.form(APIConfig.class);
     static Form<Settings> settingsForm = Form.form(Settings.class);
 
     @Transactional
     public static Result index() {
-        return ok(account.render(APIConfig.all(), mailForm, Settings.getSettings(), settingsForm));
+        return ok(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm));
     }
 
     @Transactional
     public static Result errorRequest() {
-        return badRequest(account.render(APIConfig.all(), mailForm, Settings.getSettings(), settingsForm));
+        return badRequest(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm));
     }
 
     @Transactional
@@ -43,7 +43,7 @@ public class AccountController extends Controller {
 
     @Transactional
     public static Result save(String provider) {
-        Form<APIConfig> filledForm = mailForm.bindFromRequest();
+        Form<APIConfig> filledForm = apiForm.bindFromRequest();
         if (filledForm.hasErrors()) return errorRequest();
         APIConfig account = APIConfig.getAPIConfig(ServiceProvider.valueOf(provider));
         account.setClientId(filledForm.get().getClientId());
@@ -53,10 +53,11 @@ public class AccountController extends Controller {
 
     @Transactional
     public static Result authorize(String provider) throws OAuthSystemException {
-        switch (provider) {
-            case "SALESFORCE":
+        ;
+        switch (ServiceProvider.valueOf(provider)) {
+            case SALESFORCE:
                 return redirect(new SalesForceConnector().requestLocationURI());
-            case "GMAIL":
+            case GMAIL:
                 return redirect(new GMailConnector().authorize());
             default:
                 return badRequest("Provider doesn't exist");
@@ -91,13 +92,11 @@ public class AccountController extends Controller {
     @Transactional
     public static Result checkStatus(String provider) {
         try {
-            switch (provider) {
-                case "SALESFORCE":
-                    /////;
-                case "GMAIL":
-                    /////;
-                default:
-                    //////);
+            switch (ServiceProvider.valueOf(provider)) {
+                case SALESFORCE:
+                    new SalesForceConnector().setRefreshToken();
+                case GMAIL:
+                    new GMailConnector().getContactService();
             }
 
         } catch (Exception e) {
