@@ -1,12 +1,14 @@
 package controllers;
 
 import com.google.gdata.util.ServiceException;
-import global.TransferException;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
 import logic.salesforce.SalesForceAccess;
 import logic.salesforce.SalesForceConnector;
-import models.*;
+import models.APIConfig;
+import models.Logging;
+import models.ServiceProvider;
+import models.Settings;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import play.data.Form;
@@ -80,11 +82,11 @@ public class AccountController extends Controller {
     @Transactional
     public static Result transferContacts() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-        try {
+//        try {
             new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
-        } catch (Exception e) {
-            throw new TransferException(e.getMessage());
-        }
+ //       } catch (Exception e) {
+//            throw new TransferException(e.getMessage());
+//        }
         Logging.log("Transfer successfull");
         return index();
     }

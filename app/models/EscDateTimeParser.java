@@ -11,15 +11,12 @@ import java.util.TimeZone;
  */
 public class EscDateTimeParser {
 
-    public static DateTime parseSfToGoogle(String datestring) throws ParseException {
+    public static String parseSfDateToString(String datestring) throws ParseException {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        df.setTimeZone(TimeZone.getDefault());
+        df.setTimeZone(TimeZone.getTimeZone("DE"));
         DateTime date = new DateTime(df.parse(datestring.substring(0, 10) + " " + datestring.substring(11, 19)));
-        date.setTzShift(0);
-        return date;
-    }
-
-    public static String parseSfDateToString(String datestring) {
+        date.setTzShift(120);
+        datestring = date.toString();
         return datestring.substring(0, 10) + " " + datestring.substring(11, 19);
     }
 }
