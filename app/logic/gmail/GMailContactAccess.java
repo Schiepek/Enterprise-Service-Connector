@@ -21,7 +21,7 @@ public class GMailContactAccess {
     ContactsService service;
     private static final String GROUP_NAME = "salesforce";
     private static final String CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/darioandreoli.ch/full";
-    private static final String GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/darioandreoli.ch/full";
+    private static final String GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/" + Settings.getSettings().getDomain() + "/full";
     private static final String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
     private static final String LAST_MODIFIED = "Last Modified";
     private static final String SALESFORCE_ID = "Salesforce Id";

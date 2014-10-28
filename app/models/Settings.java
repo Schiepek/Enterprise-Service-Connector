@@ -6,11 +6,6 @@ import play.db.jpa.JPA;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.List;
 
 @Entity
 public class Settings {
@@ -19,12 +14,17 @@ public class Settings {
     @GeneratedValue
     private Long id;
     private String serverUrl;
+    private String domain;
 
     public String getServerUrl() { return serverUrl;  }
+
+    public String getDomain() { return domain; }
 
     public void setId(Long id) {   this.id = id;  }
 
     public void setServerUrl(String serverUrl) {   this.serverUrl = serverUrl;   }
+
+    public void setDomain(String domain) { this.domain = domain; }
 
     public void save() {
         JPA.em().merge(this);
@@ -39,6 +39,7 @@ public class Settings {
         Settings existing;
         existing = getSettings();
         existing.setServerUrl(newsetting.getServerUrl());
+        existing.setDomain(newsetting.getDomain());
         existing.save();
     }
 
@@ -46,6 +47,7 @@ public class Settings {
         Settings settings = new Settings();
         settings.setId(1L);
         settings.setServerUrl("http://www.sampleserver.com:8000");
+        settings.setDomain("exampledomain.com");
         return settings;
     }
 
