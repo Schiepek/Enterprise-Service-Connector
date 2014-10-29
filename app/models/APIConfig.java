@@ -23,7 +23,6 @@ public class APIConfig {
     private String instance;
 
 
-
     private String mail;
     private ServiceProvider provider;
 
@@ -71,19 +70,33 @@ public class APIConfig {
         this.clientSecret = clientSecret;
     }
 
-    public String getRefreshToken() {  return refreshToken;   }
+    public String getRefreshToken() {
+        return refreshToken;
+    }
 
-    public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken;  }
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
-    public ServiceProvider getProvider() { return provider;  }
+    public ServiceProvider getProvider() {
+        return provider;
+    }
 
-    public void setProvider(ServiceProvider provider) { this.provider = provider; }
+    public void setProvider(ServiceProvider provider) {
+        this.provider = provider;
+    }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getMail() { return mail; }
+    public String getMail() {
+        return mail;
+    }
 
-    public void setMail(String mail) { this.mail = mail;  }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
     public static APIConfig getAPIConfig(Long id) {
         return JPA.em().find(APIConfig.class, id);
@@ -93,10 +106,12 @@ public class APIConfig {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(APIConfig.class);
         Root<APIConfig> c = cq.from(APIConfig.class);
-        cq.where(cb.equal(c.get("provider"),provider));
+        cq.where(cb.equal(c.get("provider"), provider));
         Query query = JPA.em().createQuery(cq);
         List<APIConfig> result = query.getResultList();
-        if(result.isEmpty()) return createEmptyAPIConfig(provider);
+        if (result.isEmpty()) {
+            return createEmptyAPIConfig(provider);
+        }
         return result.get(0);
     }
 

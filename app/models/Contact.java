@@ -5,7 +5,6 @@ public class Contact {
     private String LastName;
     private String FirstName;
     private String Email;
-    private String Salutation;
     private String Title;
     private String Salutation_Title__c;
     private String Birthdate;
@@ -36,10 +35,6 @@ public class Contact {
 
     public String getEmail() {
         return Email;
-    }
-
-    public String getSalutation() {
-        return Salutation;
     }
 
     public String getTitle() {

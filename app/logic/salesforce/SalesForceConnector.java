@@ -23,22 +23,6 @@ public class SalesForceConnector {
         CALLBACK_URI = Settings.getSettings().getServerUrl() + CALLBACK_URI_PATH;
     }
 
-    public APIConfig saveConfig(APIConfig formConfig) {
-        APIConfig config;
-        if (APIConfig.getAPIConfig(ServiceProvider.SALESFORCE) == null) {
-            config = formConfig;
-            config.save();
-        } else {
-            config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
-            config.setClientId(formConfig.getClientId());
-            config.setClientSecret(formConfig.getClientSecret());
-            config.setRedirectURI(formConfig.getRedirectURI());
-            config.setProvider(ServiceProvider.SALESFORCE);
-            config.save();
-        }
-        return config;
-    }
-
     public String requestLocationURI() throws OAuthSystemException {
         APIConfig config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
         OAuthClientRequest request = null;

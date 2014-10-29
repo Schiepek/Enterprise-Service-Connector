@@ -16,22 +16,32 @@ public class Settings {
     private String serverUrl;
     private String domain;
 
-    public String getServerUrl() { return serverUrl;  }
+    public String getServerUrl() {
+        return serverUrl;
+    }
 
-    public String getDomain() { return domain; }
+    public String getDomain() {
+        return domain;
+    }
 
-    public void setId(Long id) {   this.id = id;  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setServerUrl(String serverUrl) {   this.serverUrl = serverUrl;   }
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
 
-    public void setDomain(String domain) { this.domain = domain; }
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
 
     public void save() {
         JPA.em().merge(this);
     }
 
     public static Settings getSettings() {
-        if(proofExistingSetting()) return JPA.em().find(Settings.class, 1L);
+        if (proofExistingSetting()) return JPA.em().find(Settings.class, 1L);
         else return createEmptySetting();
     }
 

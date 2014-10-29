@@ -41,7 +41,7 @@
                 <th style="min-width: 500px;">Client Id</th>
                 <th>Client Secret</th>
                 <th>Status</th>
-                <th style="min-width: 125px;" ">Aktionen</th>
+                <th style="min-width: 125px;">Aktionen</th>
             </tr>
         </thead>
         <tbody>
@@ -74,6 +74,12 @@
     @form(routes.AccountController.transferContacts(), args = 'class -> "aui") {
         <div class="buttons">
             <input class="button submit" type="submit" value="Transfer Contacts">
+        </div>
+    }
+
+    @form(routes.AccountController.deleteContacts(), args = 'class -> "aui") {
+        <div class="buttons">
+            <input class="button submit" type="submit" value="Delete Contacts">
         </div>
     }
 

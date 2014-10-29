@@ -92,6 +92,12 @@ public class AccountController extends Controller {
     }
 
     @Transactional
+    public static Result deleteContacts() throws IOException, ServiceException {
+        new GMailContactAccess().deleteContacts();
+        return index();
+    }
+
+    @Transactional
     public static Result checkStatus(String provider) {
         try {
             switch (ServiceProvider.valueOf(provider)) {

@@ -3,23 +3,24 @@
 # ~~~~
 
 # Home page
-GET         /                           controllers.AccountController.index()
+GET         /                                    controllers.AccountController.index()
 
 # Callbacks
-GET         /salesforce/callback        controllers.AccountController.callbackSalesForce()
-GET         /gmail/callback             controllers.AccountController.callbackGmail()
+GET         /salesforce/callback                 controllers.AccountController.callbackSalesForce()
+GET         /gmail/callback                      controllers.AccountController.callbackGmail()
 
-GET         /accounts                   controllers.AccountController.index
-GET        /accounts/authorize/:provider         controllers.AccountController.authorize(provider: String)
-POST        /accounts/save/:provider              controllers.AccountController.save(provider: String)
-POST        /accounts/transfer          controllers.AccountController.transferContacts()
-POST        /accounts/settings          controllers.AccountController.setSettings()
-GET         /accounts/check/:provider   controllers.AccountController.checkStatus(provider: String)
+GET         /accounts                            controllers.AccountController.index
+GET         /accounts/authorize/:provider        controllers.AccountController.authorize(provider: String)
+POST        /accounts/save/:provider             controllers.AccountController.save(provider: String)
+POST        /accounts/transfer                   controllers.AccountController.transferContacts()
+POST        /accounts/delete                     controllers.AccountController.deleteContacts()
+POST        /accounts/settings                   controllers.AccountController.setSettings()
+GET         /accounts/check/:provider            controllers.AccountController.checkStatus(provider: String)
 
 
-GET         /logs                       controllers.LoggingController.index()
+GET         /logs                                controllers.LoggingController.index()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file               controllers.Assets.at(path="/public", file)
+GET         /assets/*file                        controllers.Assets.at(path="/public", file)
 
-->          /                           ac.Routes
+->          /                                    ac.Routes
