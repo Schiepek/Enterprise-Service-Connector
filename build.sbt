@@ -19,7 +19,5 @@ resolvers += "Local Maven Repository" at "file://" + Path.userHome + "/.m2/repos
 libraryDependencies ++= Seq(
   javaCore,
   javaJpa,
-//  "org.hibernate" % "hibernate-core" % "4.2.3.Final",
-//  "org.hibernate" % "hibernate-entitymanager" % "4.2.3.Final"
   "com.atlassian.connect" % "ac-play-java_2.10" % "0.10.1" withSources()
 )
