@@ -98,10 +98,6 @@ public class APIConfig {
         this.mail = mail;
     }
 
-    public static APIConfig getAPIConfig(Long id) {
-        return JPA.em().find(APIConfig.class, id);
-    }
-
     public static APIConfig getAPIConfig(ServiceProvider provider) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(APIConfig.class);
@@ -124,11 +120,6 @@ public class APIConfig {
 
     public void save() {
         JPA.em().merge(this);//.find(APIConfig.class, id);
-    }
-
-    public static void delete(Long id) {
-        APIConfig config = getAPIConfig(id);
-        JPA.em().remove(config);
     }
 
     private static APIConfig createEmptyAPIConfig(ServiceProvider provider) {
