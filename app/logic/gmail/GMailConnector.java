@@ -30,7 +30,11 @@ public class GMailConnector {
     JsonFactory jsonFactory = new JacksonFactory();
 
     public GMailConnector() {
-        account = APIConfig.getAPIConfig(ServiceProvider.GMAIL);
+        this(APIConfig.getAPIConfig(ServiceProvider.GMAIL));
+    }
+
+    public GMailConnector(APIConfig account) {
+        this.account = account;
         flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, jsonFactory, account.getClientId(), account.getClientSecret(), Arrays.asList(SCOPE))
                 .setAccessType("offline")

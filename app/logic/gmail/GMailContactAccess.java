@@ -25,8 +25,16 @@ public class GMailContactAccess {
     private static final int GOOGLE_MAX_RESULTS = 1000000;
 
     public GMailContactAccess() throws IOException {
-        service = new GMailConnector().getContactService();
-        if(Settings.getSettings().getSaveInDirectory()) {
+        this(APIConfig.getAPIConfig(ServiceProvider.GMAIL), Settings.getSettings());
+    }
+
+    public GMailContactAccess(APIConfig config, Settings settings) throws IOException {
+        service = new GMailConnector(config).getContactService();
+        setDirectorySettings(settings);
+    }
+
+    private void setDirectorySettings(Settings settings) {
+        if(settings.getSaveInDirectory()) {
             CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/" + Settings.getSettings().getDomain() + "/full";
             GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/" + Settings.getSettings().getDomain() + "/full";
         } else {
