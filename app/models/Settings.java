@@ -15,6 +15,15 @@ public class Settings {
     private Long id;
     private String serverUrl;
     private String domain;
+    private boolean saveInDirectory;
+
+    public boolean getSaveInDirectory() {
+        return saveInDirectory;
+    }
+
+    public void setSaveInDirectory(boolean saveInDirectory) {
+        this.saveInDirectory = saveInDirectory;
+    }
 
     public String getServerUrl() {
         return serverUrl;
@@ -50,6 +59,7 @@ public class Settings {
         existing = getSettings();
         existing.setServerUrl(newsetting.getServerUrl());
         existing.setDomain(newsetting.getDomain());
+        existing.setSaveInDirectory(newsetting.getSaveInDirectory());
         existing.save();
     }
 
@@ -58,6 +68,7 @@ public class Settings {
         settings.setId(1L);
         settings.setServerUrl("http://www.sampleserver.com:8000");
         settings.setDomain("exampledomain.com");
+        settings.setSaveInDirectory(true);
         return settings;
     }
 

@@ -17,10 +17,8 @@ import java.util.*;
 public class GMailContactAccess {
     ContactsService service;
     private static final String GROUP_NAME = "salesforce";
-    //private static final String CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/" + Settings.getSettings().getDomain() + "/full";
-    //private static final String GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/" + Settings.getSettings().getDomain() + "/full";
-    private static final String CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/default/full";
-    private static final String GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/default/full";
+    private static String CONTACT_FEED_URL;
+    private static String GROUP_DEFAULT;
     private static final String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
     private static final String LAST_MODIFIED = "Last Modified";
     private static final String SALESFORCE_ID = "Salesforce Id";
@@ -28,13 +26,23 @@ public class GMailContactAccess {
 
     public GMailContactAccess() throws IOException {
         service = new GMailConnector().getContactService();
+        if(Settings.getSettings().getSaveInDirectory()) {
+            CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/" + Settings.getSettings().getDomain() + "/full";
+            GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/" + Settings.getSettings().getDomain() + "/full";
+        } else {
+            CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/default/full";
+            GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/default/full";
+        }
     }
 
     public void transferContacts(Container container) throws IOException, ServiceException, java.text.ParseException {
-        String groupId = getSalesForceGroupId();
+        String groupId = "";
         ContactEntry entry;
-        if (groupId == "") {
-            groupId = createContactGroup();
+        if(!Settings.getSettings().getSaveInDirectory()) {
+            groupId = getSalesForceGroupId();
+            if (groupId == "") {
+                groupId = createContactGroup();
+            }
         }
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
@@ -74,8 +82,9 @@ public class GMailContactAccess {
         List<ContactEntry> contactList = service.query(query, ContactFeed.class).getEntries();
         for (ContactEntry entry : contactList) {
             String salesforceId = getSalesForceId(entry);
-            if (salesforceId == null) continue;
-            map.put(getSalesForceId(entry), entry);
+            if (salesforceId != null) {
+                map.put(getSalesForceId(entry), entry);
+            }
         }
         return map;
     }
@@ -101,7 +110,9 @@ public class GMailContactAccess {
 
     private void createContactEntry(Contact c, String groupId, URL feedUrl) throws ServiceException, java.text.ParseException, IOException {
         ContactEntry entry = new ContactEntry();
-        entry.addGroupMembershipInfo(new GroupMembershipInfo(false, groupId));
+        if(!Settings.getSettings().getSaveInDirectory()){
+            entry.addGroupMembershipInfo(new GroupMembershipInfo(false, groupId));
+        }
         createName(entry, c);
         createMail(entry, c);
         createId(entry, c);

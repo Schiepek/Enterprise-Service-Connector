@@ -55,7 +55,6 @@ public class AccountController extends Controller {
 
     @Transactional
     public static Result authorize(String provider) throws OAuthSystemException {
-        ;
         switch (ServiceProvider.valueOf(provider)) {
             case SALESFORCE:
                 return redirect(new SalesForceConnector().requestLocationURI());

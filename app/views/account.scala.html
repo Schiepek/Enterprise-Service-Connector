@@ -20,6 +20,13 @@
             <label for="domain">Domain</label>
             <input class="text" type="text" id="domain" name="domain" value="@settings.getDomain()">
         </div>
+        <div class="field-group">
+            <label for="saveInDirectory">Google Contacts Folder</label>
+            <select class="select" id="saveInDirectory" name="saveInDirectory">
+                <option value="false">Personal Contacts Folder</option>
+                <option value="true">Enterprise Directory Folder</option>
+            </select>
+        </div>
         <div class="buttons-container">
             <div class="buttons">
                 <input class="button submit" type="submit" value="Save">
@@ -101,6 +108,16 @@
                 jQuery('.editCell'+provider).hide();
                 jQuery('.textCell'+provider).show();
             });
+
+            var sel = document.getElementById ("saveInDirectory") ;
+            var matching = "@Settings.getSettings().getSaveInDirectory()";
+
+            for ( i = 0 ; i < sel.length ; i ++ ) {
+                if ( sel.children[ i ].value == matching ) {
+                    sel.options.selectedIndex = i ;
+                    break ;
+                }
+            }
         });
 
     </script>
