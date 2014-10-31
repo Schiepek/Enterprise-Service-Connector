@@ -36,7 +36,7 @@ public class SalesForceConnector {
     }
 
     public void setAccessToken(String code) throws OAuthSystemException, OAuthProblemException {
-        APIConfig config = APIConfig.getAPIConfig(1L);
+        APIConfig config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
         OAuthClientRequest request = OAuthClientRequest
                 .tokenProvider(OAuthProviderType.SALESFORCE)
                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -56,7 +56,7 @@ public class SalesForceConnector {
     }
 
     public void setRefreshToken() throws OAuthSystemException, OAuthProblemException {
-        APIConfig config = APIConfig.getAPIConfig(1L);
+        APIConfig config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
 
         OAuthClientRequest request = OAuthClientRequest
                 .tokenProvider(OAuthProviderType.SALESFORCE)
