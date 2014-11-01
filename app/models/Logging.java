@@ -68,4 +68,22 @@ public class Logging {
         log.setMessage(message);
         log.save();
     }
+
+    public static void log(int created, int updated, int deleted) {
+        String message = "contact transfer: ";
+        if(created == 0 && updated == 0 && deleted == 0) {
+            message += "no new data ";
+        } else {
+            if (created != 0) {
+                message += created + " created ";
+            }
+            if (updated != 0) {
+                message += updated + " updated ";
+            }
+            if (deleted !=0) {
+                message += deleted + " deleted";
+            }
+        }
+        log(message);
+    }
 }

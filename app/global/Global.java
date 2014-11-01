@@ -3,12 +3,10 @@ package global;
 import com.atlassian.connect.play.java.play.AcGlobalSettings;
 import models.Logging;
 import play.db.jpa.JPA;
-import play.mvc.*;
-import play.mvc.Http.*;
-import play.libs.F.*;
+import play.libs.F.Promise;
+import play.mvc.Http.RequestHeader;
+import play.mvc.SimpleResult;
 import views.html.error;
-
-import java.util.Date;
 
 import static play.mvc.Results.badRequest;
 import static play.mvc.Results.notFound;
@@ -18,15 +16,7 @@ public class Global extends AcGlobalSettings {
 
     @Override
     public Promise<SimpleResult> onError(RequestHeader request, Throwable t) {
-        if (t.getCause() instanceof TransferException) {
-            JPA.withTransaction(() -> {
-                Logging log = new Logging();
-                log.setDate(new Date());
-                log.setMessage(t.getMessage());
-                log.save();
-            });
-
-        }
+        JPA.withTransaction(() -> Logging.log(t.getMessage()));
         return super.onError(request, t);
     }
 

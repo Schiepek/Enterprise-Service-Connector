@@ -6,7 +6,6 @@ import logic.gmail.GMailContactAccess;
 import logic.salesforce.SalesForceAccess;
 import logic.salesforce.SalesForceConnector;
 import models.APIConfig;
-import models.Logging;
 import models.ServiceProvider;
 import models.Settings;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -81,12 +80,11 @@ public class AccountController extends Controller {
     @Transactional
     public static Result transferContacts() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-//        try {
+    //    try {
             new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
- //       } catch (Exception e) {
+   //     } catch (Exception e) {
 //            throw new TransferException(e.getMessage());
-//        }
-        Logging.log("Transfer successfull");
+ //       }
         return index();
     }
 

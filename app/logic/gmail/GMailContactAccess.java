@@ -23,6 +23,7 @@ public class GMailContactAccess {
     private static final String LAST_MODIFIED = "Last Modified";
     private static final String SALESFORCE_ID = "Salesforce Id";
     private static final int GOOGLE_MAX_RESULTS = 1000000;
+    private int created, updated, deleted;
 
     public GMailContactAccess() throws IOException {
         service = new GMailConnector().getContactService();
@@ -59,15 +60,19 @@ public class GMailContactAccess {
         }
         for (ContactEntry del : googleContacts.values()) {
             del.delete();
+            deleted++;
             System.out.println("Delete: " + del.getName().getFullName());
         }
+        Logging.log(created, updated, deleted);
     }
 
     public void deleteContacts() throws IOException, ServiceException {
         for (ContactEntry del : getAllContacts(new URL(CONTACT_FEED_URL)).values()) {
             del.delete();
-            System.out.println("Delete: " + del.getName().getFullName());
+            deleted++;
+            System.out.println("Delete: " + del.getName().getFullName().getValue());
         }
+        Logging.log(created, updated, deleted);
     }
 
     private ContactEntry getContact(HashMap<String, ContactEntry> googleContacts, Contact c) throws IOException, ServiceException {
@@ -131,12 +136,14 @@ public class GMailContactAccess {
         createUserField(entry, LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
 
         service.insert(feedUrl, entry);
+        created++;
         System.out.println("Create: " + entry.getName().getFullName().getValue());
     }
 
     private void updateContactEntry(ContactEntry entry, Contact c) throws java.text.ParseException, IOException, ServiceException {
         if (c.getEmail() == null) {
             entry.delete();
+            deleted++;
         } else {
             updateName(entry, c);
             updateMail(entry, c);
@@ -156,6 +163,7 @@ public class GMailContactAccess {
 
             URL editUrl = new URL(entry.getEditLink().getHref());
             service.update(editUrl, entry);
+            updated++;
             System.out.println("Update: " + entry.getName().getFullName().getValue());
         }
     }
@@ -444,7 +452,7 @@ public class GMailContactAccess {
     private void updateUserField(ContactEntry entry, String key, String value) {
         UserDefinedField field = null;
         for (UserDefinedField f : entry.getUserDefinedFields()) {
-            if (field.getKey().equals(key)) {
+            if (f.getKey().equals(key)) {
                 field = f;
             }
         }
