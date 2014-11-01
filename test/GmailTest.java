@@ -56,7 +56,7 @@ public class GmailTest {
         em.close();
     }
 
-    @Test()
+    @Test
     public void deleteContactsTest() {
         JPA.withTransaction(new play.libs.F.Callback0() {
             public void invoke() throws IOException, ServiceException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {

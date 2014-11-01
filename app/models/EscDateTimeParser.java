@@ -6,9 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-/**
- * Created by Richard on 20.10.2014.
- */
 public class EscDateTimeParser {
 
     public static String parseSfDateToString(String datestring) throws ParseException {
