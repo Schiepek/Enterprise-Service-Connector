@@ -24,6 +24,8 @@ public class GMailContactAccess {
     private static final String SALESFORCE_ID = "Salesforce Id";
     private static final int GOOGLE_MAX_RESULTS = 1000000;
     private int created, updated, deleted;
+    private ContactEntry entry;
+    private Contact c;
 
     public GMailContactAccess() throws IOException {
         this(APIConfig.getAPIConfig(ServiceProvider.GMAIL), Settings.getSettings());
@@ -46,7 +48,6 @@ public class GMailContactAccess {
 
     public void transferContacts(Container container) throws IOException, ServiceException, java.text.ParseException {
         String groupId = "";
-        ContactEntry entry;
         if(!Settings.getSettings().getSaveInDirectory()) {
             groupId = getSalesForceGroupId();
             if (groupId == "") {
@@ -56,20 +57,18 @@ public class GMailContactAccess {
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
         for (Contact contact : container.getContacts()) {
-            entry = getContact(googleContacts, contact);
+            c = contact;
+            entry = getContact(googleContacts);
             if (entry == null && contact.getEmail() != null) {
-                createContactEntry(contact, groupId, feedUrl);
-            } else if (hasNewValues(entry, contact)) {
-                updateContactEntry(entry, contact);
-            } else if (entry!=null) {
-                System.out.println("No Update: " + entry.getName().getFullName().getValue());
+                createContactEntry(groupId, feedUrl);
+            } else if (hasNewValues()) {
+                updateContactEntry();
             }
             googleContacts.remove(SALESFORCE_INSTANCE + contact.getId());
         }
         for (ContactEntry del : googleContacts.values()) {
             del.delete();
             deleted++;
-            System.out.println("Delete: " + del.getName().getFullName());
         }
         Logging.log(created, updated, deleted);
     }
@@ -78,12 +77,11 @@ public class GMailContactAccess {
         for (ContactEntry del : getAllContacts(new URL(CONTACT_FEED_URL)).values()) {
             del.delete();
             deleted++;
-            System.out.println("Delete: " + del.getName().getFullName().getValue());
         }
         Logging.log(created, updated, deleted);
     }
 
-    private ContactEntry getContact(HashMap<String, ContactEntry> googleContacts, Contact c) throws IOException, ServiceException {
+    private ContactEntry getContact(HashMap<String, ContactEntry> googleContacts) throws IOException, ServiceException {
         if (googleContacts.isEmpty()) return null;
         return googleContacts.get(SALESFORCE_INSTANCE + c.getId());
     }
@@ -110,7 +108,7 @@ public class GMailContactAccess {
         return null;
     }
 
-    private boolean hasNewValues(ContactEntry entry, Contact c) throws ServiceException, java.text.ParseException, IOException {
+    private boolean hasNewValues() throws ServiceException, java.text.ParseException, IOException {
         if(entry==null && c.getEmail()==null) return false;
         String transferDate = EscDateTimeParser.parseSfDateToString((c.getLastModifiedDate()));
         String googleDate = null;
@@ -121,77 +119,75 @@ public class GMailContactAccess {
         return !transferDate.equals(googleDate);//TODO Account LAST EDITED???
     }
 
-    private void createContactEntry(Contact c, String groupId, URL feedUrl) throws ServiceException, java.text.ParseException, IOException {
-        ContactEntry entry = new ContactEntry();
+    private void createContactEntry(String groupId, URL feedUrl) throws ServiceException, java.text.ParseException, IOException {
+        entry = new ContactEntry();
         if(!Settings.getSettings().getSaveInDirectory()){
             entry.addGroupMembershipInfo(new GroupMembershipInfo(false, groupId));
         }
-        createName(entry, c);
-        createMail(entry, c);
-        createId(entry, c);
-        createWebsite(entry, c);
-        createBirthday(entry, c);
-        createLanguage(entry, c);
-        createPhoneNumber(entry, c.getPhone(), PhoneNumber.Rel.WORK, true);
-        createPhoneNumber(entry, c.getMobilePhone(), PhoneNumber.Rel.MOBILE, false);
-        createPhoneNumber(entry, c.getAccountPhone(), PhoneNumber.Rel.COMPANY_MAIN, false);
-        createPostalAddress(entry, c);
-        createTitle(entry, c);
-        createManager(entry, c);
-        createOrganization(entry, c);
-        createUserField(entry, "F-Contact", c.getF_contact());
-        createUserField(entry, "F-Branch", c.getOwnerName());
-        createUserField(entry, LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
+        createName();
+        createMail();
+        createId();
+        createWebsite();
+        createBirthday();
+        createLanguage();
+        createPhoneNumber(c.getPhone(), PhoneNumber.Rel.WORK, true);
+        createPhoneNumber(c.getMobilePhone(), PhoneNumber.Rel.MOBILE, false);
+        createPhoneNumber(c.getAccountPhone(), PhoneNumber.Rel.COMPANY_MAIN, false);
+        createPostalAddress();
+        createTitle();
+        createManager();
+        createOrganization();
+        createUserField("F-Contact", c.getF_contact());
+        createUserField("F-Branch", c.getOwnerName());
+        createUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
 
         service.insert(feedUrl, entry);
         created++;
-        System.out.println("Create: " + entry.getName().getFullName().getValue());
     }
 
-    private void updateContactEntry(ContactEntry entry, Contact c) throws java.text.ParseException, IOException, ServiceException {
+    private void updateContactEntry() throws java.text.ParseException, IOException, ServiceException {
         if (c.getEmail() == null) {
             entry.delete();
             deleted++;
         } else {
-            updateName(entry, c);
-            updateMail(entry, c);
-            updateWebsite(entry, c);
-            updateBirthday(entry, c);
-            updateLanguage(entry, c);
-            updatePhoneNumber(entry, c.getPhone(), PhoneNumber.Rel.WORK, true);
-            updatePhoneNumber(entry, c.getMobilePhone(), PhoneNumber.Rel.MOBILE, false);
-            updatePhoneNumber(entry, c.getAccountPhone(), PhoneNumber.Rel.COMPANY_MAIN, false);
-            updatePostalAddress(entry, c);
-            updateTitle(entry, c);
-            updateManager(entry, c);
-            updateOrganization(entry, c);
-            updateUserField(entry, "F-Contact", c.getF_contact());
-            updateUserField(entry, "F-Branch", c.getOwnerName());
-            updateUserField(entry, LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
+            updateName();
+            updateMail();
+            updateWebsite();
+            updateBirthday();
+            updateLanguage();
+            updatePhoneNumber(c.getPhone(), PhoneNumber.Rel.WORK, true);
+            updatePhoneNumber(c.getMobilePhone(), PhoneNumber.Rel.MOBILE, false);
+            updatePhoneNumber(c.getAccountPhone(), PhoneNumber.Rel.COMPANY_MAIN, false);
+            updatePostalAddress();
+            updateTitle();
+            updateManager();
+            updateOrganization();
+            updateUserField("F-Contact", c.getF_contact());
+            updateUserField("F-Branch", c.getOwnerName());
+            updateUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
 
             URL editUrl = new URL(entry.getEditLink().getHref());
             service.update(editUrl, entry);
             updated++;
-            System.out.println("Update: " + entry.getName().getFullName().getValue());
         }
     }
 
-    private void createName(ContactEntry entry, Contact c) {
+    private void createName() {
         if (c.getLastName() != null) {
             Name name = new Name();
             if (c.getFirstName() != null) {
                 name.setGivenName(new GivenName(c.getFirstName(), null));
             }
             name.setFamilyName(new FamilyName(c.getLastName(), null));
-            name.setFullName(new FullName(generateFullName(c), null));
+            name.setFullName(new FullName(generateFullName(), null));
             entry.setName(name);
         }
     }
 
-    private void updateName(ContactEntry entry, Contact c) {
+    private void updateName() {
         Name name = entry.getName();
         if (name == null) {
-            createName(entry, c);
+            createName();
         } else {
             if (name.getGivenName() != null && c.getFirstName() != null) {
                 name.getGivenName().setValue(c.getFirstName());
@@ -201,31 +197,31 @@ public class GMailContactAccess {
                 name.setGivenName(null);
             }
             name.getFamilyName().setValue(c.getLastName());
-            name.getFullName().setValue(generateFullName(c));
+            name.getFullName().setValue(generateFullName());
         }
     }
 
-    private String generateFullName(Contact c) {
+    private String generateFullName() {
         String fullname = "";
         if (c.getFirstName() != null) fullname += c.getFirstName() + " ";
         fullname += c.getLastName();
         return fullname;
     }
 
-    private void createMail(ContactEntry entry, Contact c) {
+    private void createMail() {
         if (c.getEmail() != null) {
             Email email = new Email();
             email.setAddress(c.getEmail());
-            email.setDisplayName(generateFullName(c));
+            email.setDisplayName(generateFullName());
             email.setRel(Email.Rel.WORK);
             email.setPrimary(true);
             entry.addEmailAddress(email);
         }
     }
 
-    private void updateMail(ContactEntry entry, Contact c) {
+    private void updateMail() {
         if (entry.getEmailAddresses().isEmpty()) {
-            createMail(entry, c);
+            createMail();
         } else if (c.getEmail() == null) {
             entry.getEmailAddresses().remove(0);
         } else {
@@ -233,7 +229,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createId(ContactEntry entry, Contact c) {
+    private void createId() {
         if (c.getId() != null) {
             Website id = new Website();
             id.setHref(SALESFORCE_INSTANCE + c.getId());
@@ -243,7 +239,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createWebsite(ContactEntry entry, Contact c) {
+    private void createWebsite() {
         if (c.getAccountWebsite() != null) {
             Website home = new Website();
             home.setHref(c.getAccountWebsite());
@@ -253,10 +249,10 @@ public class GMailContactAccess {
         }
     }
 
-    private void updateWebsite(ContactEntry entry, Contact c) {
+    private void updateWebsite() {
         List<Website> websites = entry.getWebsites();
         if (websites.isEmpty()) {
-            createWebsite(entry, c);
+            createWebsite();
         } else {
             for (int i = 0; i < entry.getWebsites().size(); i++) {
                 if (entry.getWebsites().get(i).getLabel().equals("Homepage")) {
@@ -276,7 +272,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createBirthday(ContactEntry entry, Contact c) {
+    private void createBirthday() {
         if (c.getBirthdate() != null) {
             Birthday birthday = new Birthday();
             birthday.setWhen(c.getBirthdate());
@@ -284,15 +280,15 @@ public class GMailContactAccess {
         }
     }
 
-    private void updateBirthday(ContactEntry entry, Contact c) {
+    private void updateBirthday() {
         if (entry.getBirthday() == null) {
-            createBirthday(entry, c);
+            createBirthday();
         } else {
             entry.getBirthday().setWhen(c.getBirthdate());
         }
     }
 
-    private void createLanguage(ContactEntry entry, Contact c) {
+    private void createLanguage() {
         if (c.getLanguages() != null && Arrays.asList(Locale.getISOLanguages()).contains(c.getLanguages())) {
             Language lang = new Language();
             lang.setCode(c.getLanguages());
@@ -301,9 +297,9 @@ public class GMailContactAccess {
 
     }
 
-    private void updateLanguage(ContactEntry entry, Contact c) {
+    private void updateLanguage() {
         if (entry.getLanguages().isEmpty()) {
-            createLanguage(entry, c);
+            createLanguage();
         } else if (c.getLanguages() == null) {
             entry.getLanguages().remove(0);
         } else if (Arrays.asList(Locale.getISOLanguages()).contains(c.getLanguages())) {
@@ -311,7 +307,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createPhoneNumber(ContactEntry entry, String number, String schema, boolean primary) {
+    private void createPhoneNumber(String number, String schema, boolean primary) {
         if (number != null) {
             PhoneNumber phoneNumber = new PhoneNumber();
             phoneNumber.setPhoneNumber(number);
@@ -321,7 +317,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void updatePhoneNumber(ContactEntry entry, String number, String schema, boolean primary) {
+    private void updatePhoneNumber(String number, String schema, boolean primary) {
         PhoneNumber phoneNumber = null;
         for (PhoneNumber pn : entry.getPhoneNumbers()) {
             if (pn.getRel().equals(schema)) {
@@ -329,7 +325,7 @@ public class GMailContactAccess {
             }
         }
         if (phoneNumber == null) {
-            createPhoneNumber(entry, number, schema, primary);
+            createPhoneNumber(number, schema, primary);
         } else if (number == null) {
             entry.getPhoneNumbers().remove(phoneNumber);
         } else {
@@ -337,7 +333,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createPostalAddress(ContactEntry entry, Contact c) {
+    private void createPostalAddress() {
         String street = c.getMailingStreet();
         String city = c.getMailingCity();
         String plz = c.getMailingPostalCode();
@@ -358,19 +354,19 @@ public class GMailContactAccess {
 
     }
 
-    private void updatePostalAddress(ContactEntry entry, Contact c) {
+    private void updatePostalAddress() {
         String street = c.getMailingStreet();
         String city = c.getMailingCity();
         String plz = c.getMailingPostalCode();
         String country = c.getMailingCountry();
 
         if (entry.getStructuredPostalAddresses().isEmpty()) {
-            createPostalAddress(entry, c);
+            createPostalAddress();
         } else if (street == null && city == null && plz == null && country == null) {
             entry.getStructuredPostalAddresses().remove(entry.getStructuredPostalAddresses().get(0));
         } else {
             entry.getStructuredPostalAddresses().remove(entry.getStructuredPostalAddresses().get(0));
-            createPostalAddress(entry, c);
+            createPostalAddress();
         }
     }
 
@@ -383,15 +379,15 @@ public class GMailContactAccess {
         return address;
     }
 
-    private void createTitle(ContactEntry entry, Contact c) {
+    private void createTitle() {
         if (c.getSalutationTitle() != null) {
             entry.setTitle(new PlainTextConstruct(c.getSalutationTitle()));
         }
     }
 
-    private void updateTitle(ContactEntry entry, Contact c) {
+    private void updateTitle() {
         if (entry.getTitle() == null) {
-            createTitle(entry, c);
+            createTitle();
         } else if (c.getSalutationTitle() == null) {
             entry.setTitle(null);
         } else {
@@ -399,7 +395,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createManager(ContactEntry entry, Contact c) {
+    private void createManager() {
         if (c.getReportsToName() != null) {
             Relation rel = new Relation();
             rel.setRel(Relation.Rel.MANAGER);
@@ -408,9 +404,9 @@ public class GMailContactAccess {
         }
     }
 
-    private void updateManager(ContactEntry entry, Contact c) {
+    private void updateManager() {
         if (entry.getRelations().isEmpty()) {
-            createManager(entry, c);
+            createManager();
         } else {
             for (Relation rel : entry.getRelations()) {
                 if (rel.getRel().equals(Relation.Rel.MANAGER)) {
@@ -425,7 +421,7 @@ public class GMailContactAccess {
         }
     }
 
-    private void createOrganization(ContactEntry entry, Contact c) {
+    private void createOrganization() {
         if (c.getAccountName() != null && c.getTitle() != null) {
             Organization org = new Organization();
             org.setRel(Organization.Rel.WORK);
@@ -440,24 +436,24 @@ public class GMailContactAccess {
 
     }
 
-    private void updateOrganization(ContactEntry entry, Contact c) {
+    private void updateOrganization() {
         if (entry.getOrganizations().isEmpty()) {
-            createOrganization(entry, c);
+            createOrganization();
         } else if (c.getTitle() == null && c.getAccountName() == null) {
             entry.getOrganizations().remove(entry.getOrganizations().get(0));
         } else {
             entry.getOrganizations().remove(entry.getOrganizations().get(0));
-            createOrganization(entry, c);
+            createOrganization();
         }
     }
 
-    private void createUserField(ContactEntry entry, String key, String value) {
+    private void createUserField(String key, String value) {
         if (value != null) {
             entry.addUserDefinedField(new UserDefinedField(key, value));
         }
     }
 
-    private void updateUserField(ContactEntry entry, String key, String value) {
+    private void updateUserField(String key, String value) {
         UserDefinedField field = null;
         for (UserDefinedField f : entry.getUserDefinedFields()) {
             if (f.getKey().equals(key)) {
@@ -465,7 +461,7 @@ public class GMailContactAccess {
             }
         }
         if (field == null) {
-            createUserField(entry, key, value);
+            createUserField(key, value);
         } else if (value == null) {
             entry.getUserDefinedFields().remove(field);
         } else {
