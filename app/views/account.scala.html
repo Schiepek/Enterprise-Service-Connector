@@ -4,6 +4,7 @@
         settingsForm: Form[models.Settings])
 @import models.ServiceProvider.GMAIL
 @import models.ServiceProvider.SALESFORCE
+@import models.ServiceProvider.JIRA
 
 
 @import helper._
@@ -39,6 +40,8 @@
     @form(routes.AccountController.save(SALESFORCE.toString()), args = 'class -> "aui", 'name -> (SALESFORCE+"form"), 'id -> (SALESFORCE+"form")) {
     }
     @form(routes.AccountController.save(GMAIL.toString), args = 'class -> "aui", 'name -> (GMAIL+"form"), 'id -> (GMAIL+"form")) {
+    }
+    @form(routes.AccountController.save(JIRA.toString), args = 'class -> "aui", 'name -> (JIRA+"form"), 'id -> (JIRA+"form")) {
     }
 
     <table class="aui table-mini">
@@ -87,6 +90,12 @@
     @form(routes.AccountController.deleteContacts(), args = 'class -> "aui") {
         <div class="buttons">
             <input class="button submit" type="submit" value="Delete Contacts">
+        </div>
+    }
+
+    @form(routes.AccountController.sample(), args = 'class -> "aui") {
+        <div class="buttons">
+            <input class="button submit" type="submit" value="sample">
         </div>
     }
 

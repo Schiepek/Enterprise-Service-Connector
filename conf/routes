@@ -8,6 +8,8 @@ GET         /                                    controllers.AccountController.i
 # Callbacks
 GET         /salesforce/callback                 controllers.AccountController.callbackSalesForce()
 GET         /gmail/callback                      controllers.AccountController.callbackGmail()
+GET         /jira/callback                       controllers.AccountController.callbackJira()
+
 
 GET         /accounts                            controllers.AccountController.index
 GET         /accounts/authorize/:provider        controllers.AccountController.authorize(provider: String)
@@ -16,6 +18,10 @@ POST        /accounts/transfer                   controllers.AccountController.t
 POST        /accounts/delete                     controllers.AccountController.deleteContacts()
 POST        /accounts/settings                   controllers.AccountController.setSettings()
 GET         /accounts/check/:provider            controllers.AccountController.checkStatus(provider: String)
+
+#TRY TODO DELETE
+POST        /accounts/sample                     controllers.AccountController.sample()
+
 
 
 GET         /logs                                controllers.LoggingController.index()
