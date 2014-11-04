@@ -42,7 +42,7 @@ public class GmailTest {
         config = new APIConfig();
         config.setClientId("806785363902-r6ra00o651o2skfplosa6f37rhog9asn.apps.googleusercontent.com");
         config.setClientSecret("aA22bOel1pJ_2JH80KIKMnH-");
-        config.setRefreshToken("ya29.rwBCBMhaqn3ntf4Err4QsgJ0oF5rr7x08zp2dhO0udwi3uvzUuFaNObf-mpt9aIWb31wfmF_DaOEAw");
+        config.setRefreshToken("1/lUnvzxVjenoUeVC24XY6iw7IpH_mlQ0qXxVdOuY6udh90RDknAdJa_sgfheVM0XT");
         config.setProvider(ServiceProvider.GMAIL);
 
         settings = new Settings();
