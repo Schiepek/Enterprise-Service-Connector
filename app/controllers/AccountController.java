@@ -1,13 +1,17 @@
 package controllers;
 
 import com.google.gdata.util.ServiceException;
+import global.TransferException;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
+import logic.jira.JiraAccess;
+import logic.jira.JiraConnector;
 import logic.salesforce.SalesForceAccess;
 import logic.salesforce.SalesForceConnector;
 import models.APIConfig;
 import models.ServiceProvider;
 import models.Settings;
+import net.oauth.OAuthException;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import play.data.Form;
@@ -17,6 +21,7 @@ import play.mvc.Result;
 import views.html.account;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 
 public class AccountController extends Controller {
@@ -53,12 +58,14 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result authorize(String provider) throws OAuthSystemException {
+    public static Result authorize(String provider) throws OAuthSystemException, OAuthException, IOException, URISyntaxException {
         switch (ServiceProvider.valueOf(provider)) {
             case SALESFORCE:
                 return redirect(new SalesForceConnector().requestLocationURI());
             case GMAIL:
                 return redirect(new GMailConnector().authorize());
+            case JIRA:
+                return redirect(new JiraConnector().authorize());
             default:
                 return badRequest("Provider doesn't exist");
         }
@@ -78,13 +85,19 @@ public class AccountController extends Controller {
     }
 
     @Transactional
+    public static Result callbackJira() throws OAuthProblemException, OAuthSystemException, OAuthException, IOException, URISyntaxException {
+        new JiraConnector().setAccessToken(request().getQueryString("oauth_token"), request().getQueryString("oauth_verifier"));
+        return index();
+    }
+
+    @Transactional
     public static Result transferContacts() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-    //    try {
+        try {
             new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
-   //     } catch (Exception e) {
-//            throw new TransferException(e.getMessage());
- //       }
+        } catch (Exception e) {
+            throw new TransferException(e.getMessage());
+       }
         return index();
     }
 
@@ -102,11 +115,19 @@ public class AccountController extends Controller {
                     new SalesForceConnector().setRefreshToken();
                 case GMAIL:
                     new GMailConnector().getContactService();
+                case JIRA:
+                    new JiraAccess(new JiraConnector().getAccessor()).checkStatus();
             }
 
         } catch (Exception e) {
             return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
         }
         return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
+    }
+
+    @Transactional
+    public static Result sample() throws IOException, OAuthException, URISyntaxException {
+        new JiraAccess(new JiraConnector().getAccessor()).sampleRequest();
+        return index();
     }
 }

@@ -115,6 +115,7 @@ public class APIConfig {
         List<APIConfig> configs = new ArrayList<>();
         configs.add(getAPIConfig(ServiceProvider.SALESFORCE));
         configs.add(getAPIConfig(ServiceProvider.GMAIL));
+        configs.add(getAPIConfig(ServiceProvider.JIRA));
         return configs;
     }
 
