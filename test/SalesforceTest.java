@@ -1,5 +1,6 @@
 
 import logic.salesforce.SalesForceAccess;
+import models.Contact;
 import models.Container;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -46,6 +47,17 @@ public class SalesforceTest {
 
                 assertThat(size).isGreaterThan(0);
                 assertThat(size).isEqualTo(container.getContacts().length);
+
+                Contact[] contacts = container.getContacts();
+
+                boolean found = false;
+                for(Contact c : contacts){
+                    if(c.getFirstName() != null && c.getBirthdate() != null && c.getFirstName().equals("Peter") && c.getBirthdate().equals("1979-10-19") ) {
+                        found = true;
+                    }
+                }
+                assertThat(found).isEqualTo(true);
+
             }
         });
     }
