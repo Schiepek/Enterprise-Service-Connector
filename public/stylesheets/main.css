@@ -6,6 +6,11 @@
     font-size: 12px;
 }
 
+.table-overflow {
+    max-width: 250px;
+    overflow: hidden;
+}
+
 .dropdown-mini {
     font-size: 12px;
 }

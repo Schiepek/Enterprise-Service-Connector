@@ -116,6 +116,7 @@ public class APIConfig {
         configs.add(getAPIConfig(ServiceProvider.SALESFORCE));
         configs.add(getAPIConfig(ServiceProvider.GMAIL));
         configs.add(getAPIConfig(ServiceProvider.JIRA));
+        configs.add(getAPIConfig(ServiceProvider.CONFLUENCE));
         return configs;
     }
 

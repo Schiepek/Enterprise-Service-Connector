@@ -9,7 +9,7 @@ GET         /                                    controllers.AccountController.i
 GET         /salesforce/callback                 controllers.AccountController.callbackSalesForce()
 GET         /gmail/callback                      controllers.AccountController.callbackGmail()
 GET         /jira/callback                       controllers.AccountController.callbackJira()
-
+GET         /confluence/callback                 controllers.AccountController.callbackConfluence()
 
 GET         /accounts                            controllers.AccountController.index
 GET         /accounts/authorize/:provider        controllers.AccountController.authorize(provider: String)

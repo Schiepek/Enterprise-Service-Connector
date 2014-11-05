@@ -16,13 +16,13 @@ import java.util.*;
 
 public class GMailContactAccess {
     ContactsService service;
-    private static final String GROUP_NAME = "salesforce";
-    private static String CONTACT_FEED_URL;
-    private static String GROUP_DEFAULT;
-    private static final String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
-    private static final String LAST_MODIFIED = "Last Modified";
-    private static final String SALESFORCE_ID = "Salesforce Id";
-    private static final int GOOGLE_MAX_RESULTS = 1000000;
+    private final String GROUP_NAME = "salesforce";
+    private String CONTACT_FEED_URL;
+    private String GROUP_DEFAULT;
+    private String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
+    private String LAST_MODIFIED = "Last Modified";
+    private String SALESFORCE_ID = "Salesforce Id";
+    private int GOOGLE_MAX_RESULTS = 1000000;
     private int created, updated, deleted;
     private ContactEntry entry;
     private Contact c;

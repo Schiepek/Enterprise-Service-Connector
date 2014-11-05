@@ -4,6 +4,7 @@ import com.google.gdata.util.ServiceException;
 import global.TransferException;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
+import logic.jira.ConfluenceConnector;
 import logic.jira.JiraAccess;
 import logic.jira.JiraConnector;
 import logic.salesforce.SalesForceAccess;
@@ -66,6 +67,8 @@ public class AccountController extends Controller {
                 return redirect(new GMailConnector().authorize());
             case JIRA:
                 return redirect(new JiraConnector().authorize());
+            case CONFLUENCE:
+                return redirect(new ConfluenceConnector().authorize());
             default:
                 return badRequest("Provider doesn't exist");
         }
@@ -87,6 +90,12 @@ public class AccountController extends Controller {
     @Transactional
     public static Result callbackJira() throws OAuthProblemException, OAuthSystemException, OAuthException, IOException, URISyntaxException {
         new JiraConnector().setAccessToken(request().getQueryString("oauth_token"), request().getQueryString("oauth_verifier"));
+        return index();
+    }
+
+    @Transactional
+    public static Result callbackConfluence() throws OAuthProblemException, OAuthSystemException, OAuthException, IOException, URISyntaxException {
+        new ConfluenceConnector().setAccessToken(request().getQueryString("oauth_token"), request().getQueryString("oauth_verifier"));
         return index();
     }
 

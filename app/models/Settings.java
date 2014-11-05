@@ -15,7 +15,17 @@ public class Settings {
     private Long id;
     private String serverUrl;
     private String domain;
+    private String jiraUrl;
+    private String confluenceUrl;
     private boolean saveInDirectory;
+
+    public String getJiraUrl() {
+        return jiraUrl;
+    }
+
+    public void setJiraUrl(String jiraUrl) {
+        this.jiraUrl = jiraUrl;
+    }
 
     public boolean getSaveInDirectory() {
         return saveInDirectory;
@@ -45,6 +55,14 @@ public class Settings {
         this.domain = domain;
     }
 
+    public String getConfluenceUrl() {
+        return confluenceUrl;
+    }
+
+    public void setConfluenceUrl(String confluenceUrl) {
+        this.confluenceUrl = confluenceUrl;
+    }
+
     public void save() {
         JPA.em().merge(this);
     }
@@ -60,6 +78,8 @@ public class Settings {
         existing.setServerUrl(newsetting.getServerUrl());
         existing.setDomain(newsetting.getDomain());
         existing.setSaveInDirectory(newsetting.getSaveInDirectory());
+        existing.setJiraUrl(newsetting.getJiraUrl());
+        existing.setConfluenceUrl(newsetting.getConfluenceUrl());
         existing.save();
     }
 
@@ -68,6 +88,8 @@ public class Settings {
         settings.setId(1L);
         settings.setServerUrl("http://www.sampleserver.com:8000");
         settings.setDomain("exampledomain.com");
+        settings.setJiraUrl("exampledomain.com/jira");
+        settings.setConfluenceUrl("exampledomain.com/confluence");
         settings.setSaveInDirectory(true);
         return settings;
     }

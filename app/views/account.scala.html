@@ -5,6 +5,8 @@
 @import models.ServiceProvider.GMAIL
 @import models.ServiceProvider.SALESFORCE
 @import models.ServiceProvider.JIRA
+@import models.ServiceProvider.CONFLUENCE
+
 
 
 @import helper._
@@ -18,8 +20,16 @@
             <input class="text" type="text" id="serverUrl" name="serverUrl" value="@settings.getServerUrl">
         </div>
         <div class="field-group">
-            <label for="domain">Domain</label>
+            <label for="domain">Google Enterprise Domain</label>
             <input class="text" type="text" id="domain" name="domain" value="@settings.getDomain()">
+        </div>
+        <div class="field-group">
+            <label for="jiraUrl">Jira Url</label>
+            <input class="text" type="text" id="jiraUrl" name="jiraUrl" value="@settings.getJiraUrl()">
+        </div>
+        <div class="field-group">
+            <label for="confluenceUrl">Confluence Url</label>
+            <input class="text" type="text" id="confluenceUrl" name="confluenceUrl" value="@settings.getConfluenceUrl()">
         </div>
         <div class="field-group">
             <label for="saveInDirectory">Google Contacts Folder</label>
@@ -43,13 +53,15 @@
     }
     @form(routes.AccountController.save(JIRA.toString), args = 'class -> "aui", 'name -> (JIRA+"form"), 'id -> (JIRA+"form")) {
     }
+    @form(routes.AccountController.save(CONFLUENCE.toString), args = 'class -> "aui", 'name -> (CONFLUENCE+"form"), 'id -> (CONFLUENCE+"form")) {
+    }
 
     <table class="aui table-mini">
         <thead>
             <tr>
                 <th>Provider</th>
                 <th style="min-width: 500px;">Client Id</th>
-                <th>Client Secret</th>
+                <th style="max-width: 250px;">Client Secret</th>
                 <th>Status</th>
                 <th style="min-width: 125px;">Aktionen</th>
             </tr>
@@ -59,7 +71,7 @@
             <tr>
                 <td>@account.getProvider</td>
                 <td class="textCell@account.getProvider">@account.getClientId</td>
-                <td class="textCell@account.getProvider">@account.getClientSecret</td>
+                <td class="textCell@account.getProvider table-overflow">@account.getClientSecret</td>
 
                 <td class="editCell@account.getProvider editCell" style="display: none">
                     <input class="text text-long" type="text" id="clientId@account.getProvider" name="clientId" form="@account.getProvider()form" value="@account.getClientId">
