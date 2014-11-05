@@ -4,6 +4,10 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import com.google.gdata.data.contacts.Birthday;
 import com.google.gdata.data.contacts.ContactEntry;
 import com.google.gdata.util.ServiceException;
 import com.google.gson.Gson;
@@ -42,7 +46,7 @@ public class GmailTest {
         config = new APIConfig();
         config.setClientId("806785363902-r6ra00o651o2skfplosa6f37rhog9asn.apps.googleusercontent.com");
         config.setClientSecret("aA22bOel1pJ_2JH80KIKMnH-");
-        config.setRefreshToken("ya29.rwBCBMhaqn3ntf4Err4QsgJ0oF5rr7x08zp2dhO0udwi3uvzUuFaNObf-mpt9aIWb31wfmF_DaOEAw");
+        config.setRefreshToken("1/lUnvzxVjenoUeVC24XY6iw7IpH_mlQ0qXxVdOuY6udh90RDknAdJa_sgfheVM0XT");
         config.setProvider(ServiceProvider.GMAIL);
 
         settings = new Settings();
@@ -155,6 +159,15 @@ public class GmailTest {
                 HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
 
                 assertThat(contacts.size()).isEqualTo(1);
+
+                Iterator it = contacts.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pairs = (Map.Entry)it.next();
+                    ContactEntry entry = (ContactEntry) pairs.getValue();
+                    Birthday birthday = new Birthday();
+                    birthday.setWhen("1962-09-06");
+                    assertThat(entry.getBirthday()).isEqualTo(birthday);
+                }
             }
         });
 
