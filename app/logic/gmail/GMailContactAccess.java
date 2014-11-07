@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.*;
 
 public class GMailContactAccess {
-    ContactsService service;
+    private ContactsService service;
     private final String GROUP_NAME = "salesforce";
     private String CONTACT_FEED_URL;
     private String GROUP_DEFAULT;

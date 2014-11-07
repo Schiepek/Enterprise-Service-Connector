@@ -9,6 +9,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.admin.directory.Directory;
+import com.google.api.services.admin.directory.DirectoryScopes;
 import com.google.gdata.client.contacts.ContactsService;
 import models.APIConfig;
 import models.ServiceProvider;
@@ -20,12 +22,14 @@ import java.util.Arrays;
 
 public class GMailConnector {
 
-    private static final String SCOPE = "https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email";
-    private static final String APP_NAME = "esc-project";
-    private static final String CALLBACK_URI_PATH = "/gmail/callback";
-    private static String CALLBACK_URI;
-    private static GoogleAuthorizationCodeFlow flow;
-    private static APIConfig account;
+    private final String[] SCOPE = {"https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email",
+            DirectoryScopes.ADMIN_DIRECTORY_GROUP_READONLY, DirectoryScopes.ADMIN_DIRECTORY_GROUP_MEMBER_READONLY,
+            DirectoryScopes.ADMIN_DIRECTORY_USER_READONLY};
+    private final String APP_NAME = "esc-project";
+    private final String CALLBACK_URI_PATH = "/gmail/callback";
+    private String CALLBACK_URI;
+    private GoogleAuthorizationCodeFlow flow;
+    private APIConfig account;
     HttpTransport httpTransport = new NetHttpTransport();
     JsonFactory jsonFactory = new JacksonFactory();
 
@@ -59,14 +63,27 @@ public class GMailConnector {
 
 
     public ContactsService getContactService() throws IOException {
+        GoogleCredential credential = getCredential();
+        ContactsService service = new ContactsService(APP_NAME);
+        service.setOAuth2Credentials(credential);
+        return service;
+    }
+
+    public Directory getDirectoryService() throws IOException {
+        GoogleCredential credential = getCredential();
+        Directory service = new Directory.Builder(httpTransport, jsonFactory, credential)
+                .setApplicationName(APP_NAME)
+                .build();
+        return service;
+    }
+
+    private GoogleCredential getCredential() throws IOException {
         GoogleCredential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
                 .setTransport(httpTransport).setClientSecrets(account.getClientId(), account.getClientSecret()).build();
         TokenResponse response = new GoogleRefreshTokenRequest(httpTransport, jsonFactory, account.getRefreshToken(),
                 account.getClientId(), account.getClientSecret()).execute();
         credential.setAccessToken(response.getAccessToken());
         credential.setRefreshToken(account.getRefreshToken());
-        ContactsService service = new ContactsService(APP_NAME);
-        service.setOAuth2Credentials(credential);
-        return service;
+        return credential;
     }
 }
