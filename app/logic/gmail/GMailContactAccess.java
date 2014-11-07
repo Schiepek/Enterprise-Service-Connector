@@ -9,6 +9,8 @@ import com.google.gdata.data.contacts.ContactFeed;
 import com.google.gdata.data.extensions.*;
 import com.google.gdata.util.ServiceException;
 import models.*;
+import models.gsonmodels.SalesforceContact;
+import models.gsonmodels.SalesforceContainer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +27,7 @@ public class GMailContactAccess {
     private int GOOGLE_MAX_RESULTS = 1000000;
     private int created, updated, deleted;
     private ContactEntry entry;
-    private Contact c;
+    private SalesforceContact c;
 
     public GMailContactAccess() throws IOException {
         this(APIConfig.getAPIConfig(ServiceProvider.GMAIL), Settings.getSettings());
@@ -46,7 +48,7 @@ public class GMailContactAccess {
         }
     }
 
-    public void transferContacts(Container container) throws IOException, ServiceException, java.text.ParseException {
+    public void transferContacts(SalesforceContainer container) throws IOException, ServiceException, java.text.ParseException {
         String groupId = "";
         if(!Settings.getSettings().getSaveInDirectory()) {
             groupId = getSalesForceGroupId();
@@ -56,7 +58,7 @@ public class GMailContactAccess {
         }
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
-        for (Contact contact : container.getContacts()) {
+        for (SalesforceContact contact : container.getContacts()) {
             c = contact;
             entry = getContact(googleContacts);
             if (entry == null && contact.getEmail() != null) {

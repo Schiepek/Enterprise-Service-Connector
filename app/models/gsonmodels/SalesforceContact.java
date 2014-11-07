@@ -1,6 +1,6 @@
-package models;
+package models.gsonmodels;
 
-public class Contact {
+public class SalesforceContact {
 
     private String LastName;
     private String FirstName;
@@ -21,9 +21,9 @@ public class Contact {
     private String OwnerId;
     private String Id;
     private String LastModifiedDate;
-    private Account Account;
-    private Contact ReportsTo;
-    private Contact Owner;
+    private SalesforceAccount Account;
+    private SalesforceContact ReportsTo;
+    private SalesforceContact Owner;
 
     public String getLastName() {
         return LastName;

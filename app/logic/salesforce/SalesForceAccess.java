@@ -2,7 +2,7 @@ package logic.salesforce;
 
 import com.google.gson.Gson;
 import models.APIConfig;
-import models.Container;
+import models.gsonmodels.SalesforceContainer;
 import models.ServiceProvider;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -45,7 +45,7 @@ public class SalesForceAccess {
             "+FROM+Contact";
 
 
-    public Container getSalesforceContacts() throws OAuthSystemException, OAuthProblemException {
+    public SalesforceContainer getSalesforceContacts() throws OAuthSystemException, OAuthProblemException {
         new SalesForceConnector().setRefreshToken();
         APIConfig config = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE);
         OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(config.getInstance() + GET_ALL_CONTACTS)
@@ -54,7 +54,7 @@ public class SalesForceAccess {
         OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
         OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         Gson gson = new Gson();
-        Container container = gson.fromJson(resourceResponse.getBody(), Container.class);
+        SalesforceContainer container = gson.fromJson(resourceResponse.getBody(), SalesforceContainer.class);
         return container;
     }
 

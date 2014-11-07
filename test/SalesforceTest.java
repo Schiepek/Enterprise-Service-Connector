@@ -1,7 +1,7 @@
 
 import logic.salesforce.SalesForceAccess;
-import models.Contact;
-import models.Container;
+import models.gsonmodels.SalesforceContact;
+import models.gsonmodels.SalesforceContainer;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.junit.*;
@@ -37,10 +37,10 @@ public class SalesforceTest {
     public void getContactTest() {
         JPA.withTransaction(new play.libs.F.Callback0() {
             public void invoke() throws OAuthProblemException, OAuthSystemException, NoSuchFieldException, IllegalAccessException {
-                Container container = new SalesForceAccess().getSalesforceContacts();
+                SalesforceContainer container = new SalesForceAccess().getSalesforceContacts();
 
                 // Use reflection because of private Field totalSize of Container class
-                Field field = Container.class.getDeclaredField("totalSize");
+                Field field = SalesforceContainer.class.getDeclaredField("totalSize");
                 field.setAccessible(true);
                 String totalSize = (String) field.get(container);
                 int size = Integer.parseInt(totalSize);
@@ -48,10 +48,10 @@ public class SalesforceTest {
                 assertThat(size).isGreaterThan(0);
                 assertThat(size).isEqualTo(container.getContacts().length);
 
-                Contact[] contacts = container.getContacts();
+                SalesforceContact[] contacts = container.getContacts();
 
                 boolean found = false;
-                for(Contact c : contacts){
+                for(SalesforceContact c : contacts){
                     if(c.getFirstName() != null && c.getBirthdate() != null && c.getFirstName().equals("Peter") && c.getBirthdate().equals("1979-10-19") ) {
                         found = true;
                     }

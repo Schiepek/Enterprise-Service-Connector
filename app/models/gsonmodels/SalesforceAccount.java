@@ -1,6 +1,6 @@
-package models;
+package models.gsonmodels;
 
-public class Account {
+public class SalesforceAccount {
 
     private String Name;
     private String Website;

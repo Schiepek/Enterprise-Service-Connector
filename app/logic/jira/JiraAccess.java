@@ -1,7 +1,14 @@
 package logic.jira;
 
+import com.google.gson.Gson;
+import logic.confluence.ConfluenceAccess;
 import models.APIConfig;
 import models.ServiceProvider;
+import models.Settings;
+import models.gsonmodels.JiraGroup;
+import models.gsonmodels.JiraGroupContainer;
+import models.gsonmodels.JiraUser;
+import models.gsonmodels.JiraUserContainer;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
@@ -18,23 +25,44 @@ import java.util.Map;
  */
 public class JiraAccess {
     OAuthAccessor accessor;
+    String JiraUrl = Settings.getSettings().getJiraUrl();
 
     public JiraAccess(OAuthAccessor accessor) {
         this.accessor = accessor;
     }
 
-    public void AuthenticatedRestRequest(String url) throws IOException, URISyntaxException, OAuthException {
+    public String AuthenticatedRestRequest(String url) throws IOException, URISyntaxException, OAuthException {
         OAuthClient client = new OAuthClient(new HttpClient4());
         accessor.accessToken = APIConfig.getAPIConfig(ServiceProvider.JIRA).getAccessToken();
         OAuthMessage response = client.invoke(accessor, url, Collections.<Map.Entry<?, ?>>emptySet());
-        System.out.println(response.getParameters());
+        return response.readBodyAsString();
     }
 
 
     public void sampleRequest() throws OAuthException, IOException, URISyntaxException {
-        String url = "http://sinv-56031.edu.hsr.ch/jira/rest/api/2/issue/SA-14";
-        AuthenticatedRestRequest(url);
+        //String url = "http://sinv-56031.edu.hsr.ch/jira/rest/api/2/issue/SA-14";
+        //AuthenticatedRestRequest(url);
+        //getAllGroups();
+        new ConfluenceAccess().exampleRequest();
     }
+
+    public void getAllGroups() throws OAuthException, IOException, URISyntaxException {
+        String getGroupsUrl = JiraUrl + "/rest/api/2/groups/picker?maxResults=10000";
+        Gson gson = new Gson();
+        JiraGroupContainer groupcontainer = gson.fromJson(AuthenticatedRestRequest(getGroupsUrl), JiraGroupContainer.class);
+
+        for(JiraGroup group : groupcontainer.getJiraGroups()) {
+            String getUsersInGroupUrl = JiraUrl + "/rest/api/2/group?groupname=" + group.getName() + "&expand=users";
+            JiraUserContainer usercontainer = gson.fromJson(AuthenticatedRestRequest(getUsersInGroupUrl), JiraUserContainer.class);
+            System.out.println(group.getName());
+            for (JiraUser user : usercontainer.getUserCollection().getJiraUsers()) {
+                System.out.print(user.getName() + " / ");
+            }
+            System.out.println("---------");
+        }
+    }
+
+
 
     public void checkStatus() throws OAuthException, IOException, URISyntaxException {
         AuthenticatedRestRequest("http://sinv-56031.edu.hsr.ch/jira/rest/api/2/project");

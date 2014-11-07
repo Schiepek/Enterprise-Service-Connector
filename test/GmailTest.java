@@ -1,3 +1,21 @@
+import com.google.gdata.data.contacts.Birthday;
+import com.google.gdata.data.contacts.ContactEntry;
+import com.google.gdata.util.ServiceException;
+import com.google.gson.Gson;
+import logic.gmail.GMailContactAccess;
+import models.APIConfig;
+import models.ServiceProvider;
+import models.Settings;
+import models.gsonmodels.Container;
+import models.gsonmodels.SalesforceContainer;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import play.db.jpa.JPA;
+import play.db.jpa.JPAPlugin;
+import play.test.FakeApplication;
+
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,22 +25,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.google.gdata.data.contacts.Birthday;
-import com.google.gdata.data.contacts.ContactEntry;
-import com.google.gdata.util.ServiceException;
-import com.google.gson.Gson;
-import logic.gmail.GMailContactAccess;
-import models.APIConfig;
-import models.Container;
-import models.ServiceProvider;
-import models.Settings;
-import org.junit.*;
-import play.db.jpa.JPA;
-import play.db.jpa.JPAPlugin;
-import play.test.*;
-import javax.persistence.EntityManager;
-import static play.test.Helpers.*;
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.start;
 
 
 
@@ -144,7 +149,7 @@ public class GmailTest {
                         "]" +
                         "}";
                 Gson gson = new Gson();
-                Container container = gson.fromJson(json, Container.class);
+                SalesforceContainer container = gson.fromJson(json, SalesforceContainer.class);
                 access.transferContacts(container);
 
                 // Sleep because API is to slow to refresh data
