@@ -20,9 +20,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * Created by Richard on 04.11.2014.
- */
 public class JiraAccess {
     OAuthAccessor accessor;
     String JiraUrl = Settings.getSettings().getJiraUrl();

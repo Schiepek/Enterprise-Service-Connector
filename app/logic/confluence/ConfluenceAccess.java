@@ -11,9 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Created by Richard on 07.11.2014.
- */
 public class ConfluenceAccess {
 
 
