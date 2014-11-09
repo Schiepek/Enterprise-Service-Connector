@@ -6,7 +6,6 @@ import logic.gmail.GMailContactAccess;
 import models.APIConfig;
 import models.ServiceProvider;
 import models.Settings;
-import models.gsonmodels.Container;
 import models.gsonmodels.SalesforceContainer;
 import org.junit.After;
 import org.junit.Before;
