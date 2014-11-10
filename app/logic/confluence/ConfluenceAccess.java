@@ -3,6 +3,7 @@ package logic.confluence;
 import com.google.gson.Gson;
 import models.APIConfig;
 import models.ServiceProvider;
+import models.Settings;
 import models.gsonmodels.ConfluenceAllContainer;
 import models.gsonmodels.ConfluenceUser;
 import models.gsonmodels.ConfluenceUserContainer;
@@ -23,6 +24,11 @@ import java.util.Map;
 public class ConfluenceAccess {
 
     private APIConfig config;
+    private final String SOAP_GETALLUSERS = "getActiveUsers";
+    private final String SOAP_GETUSER = "getUser";
+    private final String SOAP_GETUSERGROUPS = "getUserGroups";
+    private final String SOAP_GETALLGROUPS = "getGroups";
+    private final String CONFLUENCE_SOAP_URL = Settings.getSettings().getConfluenceUrl() + "/rpc/json-rpc/confluenceservice-v2";
 
     public ConfluenceAccess() {
         config = APIConfig.getAPIConfig(ServiceProvider.CONFLUENCE);
@@ -31,7 +37,7 @@ public class ConfluenceAccess {
     public Map<ConfluenceUser, String[]> getUserGroups() throws IOException, InterruptedException {
         String[] params = { "true" };
         Gson gson = new Gson();
-        String activeUsersJson = authenticatedSoapRequest("getActiveUsers", params);
+        String activeUsersJson = authenticatedSoapRequest(SOAP_GETALLUSERS, params);
         ConfluenceAllContainer alluserscontainer = gson.fromJson(activeUsersJson, ConfluenceAllContainer.class);
         int exceptionCounter = 0;
         Map<ConfluenceUser, String[]> userGroupMap = new HashMap<>();
@@ -41,9 +47,9 @@ public class ConfluenceAccess {
             if(!username.contains("\uFFFD")) {
                 String[] param = { username };
                 try {
-                    String userJson = authenticatedSoapRequest("getUser", param);
+                    String userJson = authenticatedSoapRequest(SOAP_GETUSER, param);
                     ConfluenceUserContainer usercontainer = gson.fromJson(userJson, ConfluenceUserContainer.class);
-                    String userGroupJson = authenticatedSoapRequest("getUserGroups", param);
+                    String userGroupJson = authenticatedSoapRequest(SOAP_GETUSERGROUPS, param);
                     ConfluenceUserGroupsContainer userGroupContainer = gson.fromJson(userGroupJson, ConfluenceUserGroupsContainer.class);
                     String[] groupString = new String[userGroupContainer.getUserGroups().length];
                     for (int j = 0; j < userGroupContainer.getUserGroups().length ; j++ ) {
@@ -67,17 +73,15 @@ public class ConfluenceAccess {
     public String[] getGroups() throws IOException {
         String[] params = {  };
         Gson gson = new Gson();
-        String groupsJson = authenticatedSoapRequest("getGroups", params);
+        String groupsJson = authenticatedSoapRequest(SOAP_GETALLGROUPS, params);
         ConfluenceAllContainer allGroups = gson.fromJson(groupsJson, ConfluenceAllContainer.class);
         return allGroups.getAllResults();
     }
 
 
     private String authenticatedSoapRequest(String method, String[] params) throws IOException {
-        String url = "https://foryouandyourteam.com/rpc/json-rpc/confluenceservice-v2";
-
         HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost(CONFLUENCE_SOAP_URL);
 
         String userCredentials = config.getClientId() + ":" + config.getClientSecret();
         String basicAuth = "Basic " + new String(Base64.encodeBase64(userCredentials.getBytes()));

@@ -27,7 +27,7 @@ public class GMailDataImport {
         service = new GMailConnector(config).getDirectoryService();
     }
 
-    public void importGMail() throws OAuthProblemException, OAuthSystemException, IOException {
+    public void importData() throws OAuthProblemException, OAuthSystemException, IOException {
         importGMailGroups();
         importGMailUsers();
     }

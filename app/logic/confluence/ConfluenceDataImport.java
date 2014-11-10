@@ -19,7 +19,7 @@ public class ConfluenceDataImport {
         access = new ConfluenceAccess();
     }
 
-    public void importConfluence() throws IOException, InterruptedException {
+    public void importData() throws IOException, InterruptedException {
         importConfluenceGroups();
         importConfluenceUserGroups();
     }

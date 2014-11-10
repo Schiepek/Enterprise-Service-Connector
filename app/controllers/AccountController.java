@@ -126,7 +126,7 @@ public class AccountController extends Controller {
                 case GMAIL:
                     new GMailConnector().getContactService();
                 case JIRA:
-                    new JiraAccess(new JiraConnector().getAccessor()).checkStatus();
+                    new JiraAccess().checkStatus();
             }
 
         } catch (Exception e) {

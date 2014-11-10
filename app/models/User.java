@@ -6,6 +6,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,21 @@ public class User {
         Query query = JPA.em().createQuery(cq);
         List<User> result = query.getResultList();
         return result;
+    }
+
+    public static User getUserByUsername(String username, ServiceProvider provider) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(User.class);
+        Root<User> c = cq.from(User.class);
+        Predicate isGroupName = cb.equal(c.get("name"), username);
+        Predicate hasProvider = cb.equal(c.get("provider"), provider);
+        cq.where(cb.and(isGroupName, hasProvider));
+        Query query = JPA.em().createQuery(cq);
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void setName(String name) {
