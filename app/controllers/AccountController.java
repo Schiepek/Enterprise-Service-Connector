@@ -4,7 +4,7 @@ import com.google.gdata.util.ServiceException;
 import global.TransferException;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
-import logic.jira.ConfluenceConnector;
+import logic.confluence.ConfluenceConnector;
 import logic.jira.JiraAccess;
 import logic.jira.JiraConnector;
 import logic.salesforce.SalesForceAccess;
@@ -135,7 +135,7 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result sample() throws IOException, OAuthException, URISyntaxException {
+    public static Result sample() throws IOException, OAuthException, URISyntaxException, InterruptedException {
         new JiraAccess(new JiraConnector().getAccessor()).sampleRequest();
         return index();
     }

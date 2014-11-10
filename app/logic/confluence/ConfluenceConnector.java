@@ -1,4 +1,4 @@
-package logic.jira;
+package logic.confluence;
 
 import com.google.common.collect.ImmutableList;
 import models.APIConfig;
