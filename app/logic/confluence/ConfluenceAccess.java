@@ -3,7 +3,8 @@ package logic.confluence;
 import com.google.gson.Gson;
 import models.APIConfig;
 import models.ServiceProvider;
-import models.gsonmodels.ConfluenceAllUsersContainer;
+import models.gsonmodels.ConfluenceAllContainer;
+import models.gsonmodels.ConfluenceUser;
 import models.gsonmodels.ConfluenceUserContainer;
 import models.gsonmodels.ConfluenceUserGroupsContainer;
 import org.apache.commons.codec.binary.Base64;
@@ -16,6 +17,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfluenceAccess {
 
@@ -25,15 +28,16 @@ public class ConfluenceAccess {
         config = APIConfig.getAPIConfig(ServiceProvider.CONFLUENCE);
     }
 
-    public void showAllGroups() throws IOException, InterruptedException {
+    public Map<ConfluenceUser, String[]> getUserGroups() throws IOException, InterruptedException {
         String[] params = { "true" };
         Gson gson = new Gson();
         String activeUsersJson = authenticatedSoapRequest("getActiveUsers", params);
-        ConfluenceAllUsersContainer alluserscontainer = gson.fromJson(activeUsersJson, ConfluenceAllUsersContainer.class);
+        ConfluenceAllContainer alluserscontainer = gson.fromJson(activeUsersJson, ConfluenceAllContainer.class);
         int exceptionCounter = 0;
+        Map<ConfluenceUser, String[]> userGroupMap = new HashMap<>();
 
-        for (int i = 0; i < alluserscontainer.getAllActiveUsers().length; i++) {
-            String username = alluserscontainer.getAllActiveUsers()[i];
+        for (int i = 0; i < alluserscontainer.getAllResults().length/50; i++) { //TODO Elminiere /50 (nur zum Testen)
+            String username = alluserscontainer.getAllResults()[i];
             if(!username.contains("\uFFFD")) {
                 String[] param = { username };
                 try {
@@ -41,30 +45,31 @@ public class ConfluenceAccess {
                     ConfluenceUserContainer usercontainer = gson.fromJson(userJson, ConfluenceUserContainer.class);
                     String userGroupJson = authenticatedSoapRequest("getUserGroups", param);
                     ConfluenceUserGroupsContainer userGroupContainer = gson.fromJson(userGroupJson, ConfluenceUserGroupsContainer.class);
-                    System.out.print(username + ": ");
-                    for (String group : userGroupContainer.getUserGroups()) {
-                        System.out.print(group + " / ");
+                    String[] groupString = new String[userGroupContainer.getUserGroups().length];
+                    for (int j = 0; j < userGroupContainer.getUserGroups().length ; j++ ) {
+                        groupString[j] = userGroupContainer.getUserGroups()[j];
                     }
-                    System.out.println();
+                    userGroupMap.put(usercontainer.getUser(), groupString);
                     exceptionCounter = 0;
+                    System.out.println(usercontainer.getUser().getName() + " "  + i);
                 } catch (Exception e) {
                     if(exceptionCounter > 20) {
                         throw e;
                     }
                     i--;
                     exceptionCounter++;
-                    System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                 }
             }
         }
-/*        Gson gson = new Gson();
-        String[] params = {  "j\u00E9rome.moine" };
-        String jerome = authenticatedSoapRequest("getUser", params);
-        CharSequence seq = "\uFFFD";
-        if(jerome.contains(seq)) System.out.println("xx");
-        ConfluenceUserContainer container = gson.fromJson(jerome, ConfluenceUserContainer.class);
-        System.out.println(container.getUser().getName());*/
+        return userGroupMap;
+    }
 
+    public String[] getGroups() throws IOException {
+        String[] params = {  };
+        Gson gson = new Gson();
+        String groupsJson = authenticatedSoapRequest("getGroups", params);
+        ConfluenceAllContainer allGroups = gson.fromJson(groupsJson, ConfluenceAllContainer.class);
+        return allGroups.getAllResults();
     }
 
 

@@ -68,4 +68,19 @@ public class User {
         return result;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public void setProvider(ServiceProvider provider) {
+        this.provider = provider;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 }

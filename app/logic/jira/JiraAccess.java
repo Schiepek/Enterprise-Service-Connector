@@ -40,7 +40,7 @@ public class JiraAccess {
         //String url = "http://sinv-56031.edu.hsr.ch/jira/rest/api/2/issue/SA-14";
         //authenticatedRestRequest(url);
         //getAllGroups();
-        new ConfluenceAccess().showAllGroups();
+        new ConfluenceAccess().getUserGroups();
     }
 
     public void getAllGroups() throws OAuthException, IOException, URISyntaxException {

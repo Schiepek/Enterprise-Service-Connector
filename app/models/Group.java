@@ -6,6 +6,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Group {
     private ServiceProvider provider;
 
     public Group() {
+        this.members = new ArrayList<>();
     }
 
     public Group(com.google.api.services.admin.directory.model.Group group, List<Alias> aliases) {
@@ -73,10 +75,29 @@ public class Group {
         return (Group) query.getSingleResult();
     }
 
+    public static Group getGroupByGroupname(String groupname, ServiceProvider provider) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Group.class);
+        Root<Group> c = cq.from(Group.class);
+        //cq.where(cb.equal(c.get("name"), groupname));
+        Predicate isGroupName = cb.equal(c.get("name"), groupname);
+        Predicate hasProvider = cb.equal(c.get("provider"), provider);
+        cq.where(cb.and(isGroupName, hasProvider));
+        Query query = JPA.em().createQuery(cq);
+        return (Group) query.getSingleResult();
+    }
+
     public void addMember(User user) {
         if (!members.contains(user)) {
             this.members.add(user);
         }
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProvider(ServiceProvider provider) {
+        this.provider = provider;
+    }
 }
