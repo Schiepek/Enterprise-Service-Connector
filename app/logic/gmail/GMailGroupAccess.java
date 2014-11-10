@@ -1,6 +1,9 @@
 package logic.gmail;
 
 import com.google.api.services.admin.directory.model.*;
+import com.google.api.services.admin.directory.model.Alias;
+import com.google.api.services.admin.directory.model.Group;
+import com.google.api.services.admin.directory.model.User;
 import models.*;
 import com.google.api.services.admin.directory.*;
 
@@ -55,8 +58,8 @@ public class GMailGroupAccess {
             }
         } while (request.getPageToken() != null && request.getPageToken().length() > 0 );
 
-        for (User u : allUsers) {
-            members.put(u.getId(), u);
+        for (User user : allUsers) {
+            members.put(user.getId(), user);
         }
         return members;
     }
@@ -101,14 +104,14 @@ public class GMailGroupAccess {
             }
         } while (request.getPageToken() != null && request.getPageToken().length() > 0 );
 
-        for (Member m : allMembers) {
-            if (m.getType().equals(TYPE_GROUP)) {
-                members.putAll(getGroupMembers(m.getId()));
-            } else if (m.getType().equals(TYPE_USER)) {
-                User u = getUser(m.getId());
+        for (Member member : allMembers) {
+            if (member.getType().equals(TYPE_GROUP)) {
+                members.putAll(getGroupMembers(member.getId()));
+            } else if (member.getType().equals(TYPE_USER)) {
+                User u = getUser(member.getId());
                 members.put(u.getId(), u);
-            } else if (m.getType().equals(TYPE_CUSTOMER)) {
-                members.putAll(getCustomerUsers(m.getId()));
+            } else if (member.getType().equals(TYPE_CUSTOMER)) {
+                members.putAll(getCustomerUsers(member.getId()));
             }
         }
         return members;
@@ -134,9 +137,9 @@ public class GMailGroupAccess {
             }
         } while (request.getPageToken() != null && request.getPageToken().length() > 0 );
 
-        for (Group g : allGroups) {
-            groups.put(g.getId(), g);
-            groups.putAll(getMemberGroups(g.getEmail()));
+        for (Group group : allGroups) {
+            groups.put(group.getId(), group);
+            groups.putAll(getMemberGroups(group.getEmail()));
         }
         return groups;
     }

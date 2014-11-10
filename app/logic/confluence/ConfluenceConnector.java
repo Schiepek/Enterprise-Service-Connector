@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-/**
- * Created by Richard on 04.11.2014.
- */
 public class ConfluenceConnector {
 
     private final String REQUEST_TOKEN_URL = Settings.getSettings().getConfluenceUrl() + "/plugins/servlet/oauth/request-token";

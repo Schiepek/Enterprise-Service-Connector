@@ -2,6 +2,7 @@ package logic.salesforce;
 
 import com.google.gson.Gson;
 import models.APIConfig;
+import models.gsonmodels.SalesforceContact;
 import models.gsonmodels.SalesforceContainer;
 import models.ServiceProvider;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -12,6 +13,9 @@ import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SalesForceAccess {
     private static final String GET_ALL_CONTACTS = "/services/data/v20.0/query/?q=SELECT+" +
@@ -56,6 +60,11 @@ public class SalesForceAccess {
         Gson gson = new Gson();
         SalesforceContainer container = gson.fromJson(resourceResponse.getBody(), SalesforceContainer.class);
         return container;
+    }
+
+    public ArrayList<SalesforceContact> getSalesforceContactsList() throws OAuthProblemException, OAuthSystemException {
+        SalesforceContainer container = getSalesforceContacts();
+        return new ArrayList<SalesforceContact>(Arrays.asList(container.getContacts()));
     }
 
 }
