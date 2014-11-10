@@ -1,11 +1,9 @@
 package logic.confluence;
 
-import models.Alias;
 import models.Group;
 import models.ServiceProvider;
 import models.User;
 import models.gsonmodels.ConfluenceUser;
-import play.db.jpa.JPA;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -22,7 +20,6 @@ public class ConfluenceDataImport {
     }
 
     public void importConfluence() throws IOException, InterruptedException {
-        deleteData();
         importConfluenceGroups();
         importConfluenceUserGroups();
     }
@@ -40,12 +37,12 @@ public class ConfluenceDataImport {
         Iterator it = access.getUserGroups().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry) it.next();
-            addGroupsToUser(createOrFindUser((ConfluenceUser) pairs.getKey()), (String[]) pairs.getValue());
+            addGroupsToUser(createUser((ConfluenceUser) pairs.getKey()), (String[]) pairs.getValue());
             System.out.println(((ConfluenceUser) pairs.getKey()).getFullname());
         }
     }
 
-    private User createOrFindUser(ConfluenceUser cUser) { //TODO Fullname = Firstname ISSUE
+    private User createUser(ConfluenceUser cUser) { //TODO Fullname = Firstname ISSUE
         User user = new User();
         user.setName(cUser.getName());
         user.setMail(cUser.getEmail());
@@ -58,18 +55,6 @@ public class ConfluenceDataImport {
         for (int i = 0; i < groups.length ; i++) {
             Group group = Group.getGroupByGroupname(groups[i], ServiceProvider.CONFLUENCE);
             group.addMember(user);
-        }
-    }
-
-    private void deleteData() {
-        for (models.Group group : models.Group.all()) {
-            JPA.em().remove(group);
-        }
-        for (models.User user : models.User.all()) {
-            JPA.em().remove(user);
-        }
-        for (Alias alias : models.Alias.all()) {
-            JPA.em().remove(alias);
         }
     }
 }
