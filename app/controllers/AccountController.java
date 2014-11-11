@@ -2,8 +2,8 @@ package controllers;
 
 import com.google.gdata.util.ServiceException;
 import global.TransferException;
+import logic.confluence.ConfluenceAccess;
 import logic.confluence.ConfluenceConnector;
-import logic.general.ServiceDataImport;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
 import logic.jira.JiraAccess;
@@ -127,6 +127,8 @@ public class AccountController extends Controller {
                     new GMailConnector().getContactService();
                 case JIRA:
                     new JiraAccess().checkStatus();
+                case CONFLUENCE:
+                    new ConfluenceAccess().checkStatus();
             }
 
         } catch (Exception e) {
@@ -137,7 +139,7 @@ public class AccountController extends Controller {
 
     @Transactional
     public static Result importData() throws IOException, OAuthException, URISyntaxException, InterruptedException, OAuthProblemException, OAuthSystemException {
-        new ServiceDataImport().importData();
+        //new ServiceDataImport().importData();
         return index();
     }
 }

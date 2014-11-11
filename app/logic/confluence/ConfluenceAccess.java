@@ -28,6 +28,7 @@ public class ConfluenceAccess {
     private final String SOAP_GETUSER = "getUser";
     private final String SOAP_GETUSERGROUPS = "getUserGroups";
     private final String SOAP_GETALLGROUPS = "getGroups";
+    private final String SOAP_GETSERVERINFO ="getServerInfo";
     private final String CONFLUENCE_SOAP_URL = Settings.getSettings().getConfluenceUrl() + "/rpc/json-rpc/confluenceservice-v2";
 
     public ConfluenceAccess() {
@@ -78,6 +79,13 @@ public class ConfluenceAccess {
         return allGroups.getAllResults();
     }
 
+    public void checkStatus() throws Exception {
+        String[] params = {  };
+        String serverInfo = authenticatedSoapRequest(SOAP_GETSERVERINFO, params);
+        if (!serverInfo.contains(Settings.getSettings().getConfluenceUrl())) {
+            throw new Exception();
+        }
+    }
 
     private String authenticatedSoapRequest(String method, String[] params) throws IOException {
         HttpClient client = new DefaultHttpClient();

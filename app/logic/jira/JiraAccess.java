@@ -20,9 +20,10 @@ import java.util.*;
 
 public class JiraAccess {
     OAuthAccessor accessor;
-    private final String JiraUrl = Settings.getSettings().getJiraUrl();
+    private final String JIRA_URL = Settings.getSettings().getJiraUrl();
     private final String ALL_GROUPS = "/rest/api/2/groups/picker?maxResults=10000";
     private final String SINGLE_GROUP = "/rest/api/2/group?groupname=";
+    private final String SERVER_INFO = "/rest/api/2/serverInfo";
 
 
     public JiraAccess() {
@@ -37,13 +38,13 @@ public class JiraAccess {
     }
 
     public Map<String, ArrayList<JiraUser>> getAllGroupsWithUsers() throws OAuthException, IOException, URISyntaxException {
-        String getGroupsUrl = JiraUrl + ALL_GROUPS;
+        String getGroupsUrl = JIRA_URL + ALL_GROUPS;
         Gson gson = new Gson();
         Map<String, ArrayList<JiraUser>> allGroupsWithUsersMap = new HashMap<>();
         JiraGroupContainer groupcontainer = gson.fromJson(authenticatedRestRequest(getGroupsUrl), JiraGroupContainer.class);
 
         for(JiraGroup group : groupcontainer.getJiraGroups()) {
-            String getUsersInGroupUrl = JiraUrl + SINGLE_GROUP + group.getName() + "&expand=users";
+            String getUsersInGroupUrl = JIRA_URL + SINGLE_GROUP + group.getName() + "&expand=users";
             JiraUserContainer usercontainer = gson.fromJson(authenticatedRestRequest(getUsersInGroupUrl), JiraUserContainer.class);
             allGroupsWithUsersMap.put(group.getName(),new ArrayList<>(Arrays.asList(usercontainer.getUserCollection().getJiraUsers())));
         }
@@ -52,8 +53,11 @@ public class JiraAccess {
 
 
 
-    public void checkStatus() throws OAuthException, IOException, URISyntaxException {
-        authenticatedRestRequest("http://sinv-56031.edu.hsr.ch/jira/rest/api/2/project");
+    public void checkStatus() throws Exception {
+        String serverInfo = authenticatedRestRequest(JIRA_URL + SERVER_INFO);
+        if (!serverInfo.contains(Settings.getSettings().getJiraUrl())) {
+            throw new Exception();
+        }
     }
 
 
