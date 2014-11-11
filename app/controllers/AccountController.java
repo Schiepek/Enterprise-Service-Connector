@@ -125,6 +125,7 @@ public class AccountController extends Controller {
                 case SALESFORCE:
                     new SalesForceConnector().setRefreshToken();
                 case GMAIL:
+                    new GMailConnector().getDirectoryService();
                     new GMailConnector().getContactService();
                 case JIRA:
                     new JiraAccess().checkStatus();
