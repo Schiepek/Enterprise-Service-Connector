@@ -20,7 +20,7 @@ POST        /accounts/settings                   controllers.AccountController.s
 GET         /accounts/check/:provider            controllers.AccountController.checkStatus(provider: String)
 
 #TRY TODO DELETE
-POST        /accounts/sample                     controllers.AccountController.importData()
+POST        /accounts/import                     controllers.AccountController.importData()
 
 
 
