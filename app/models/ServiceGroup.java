@@ -1,6 +1,7 @@
 package models;
 
 import com.google.api.services.admin.directory.model.Alias;
+import com.google.api.services.admin.directory.model.Group;
 import play.db.jpa.JPA;
 
 import javax.persistence.*;
@@ -40,7 +41,7 @@ public class ServiceGroup {
         this.members = new ArrayList<>();
     }
 
-    public ServiceGroup(com.google.api.services.admin.directory.model.Group group, List<Alias> aliases) {
+    public ServiceGroup(Group group, List<Alias> aliases) {
         this.providerKey = group.getId();
         this.name = group.getName();
         this.mail = group.getEmail();
@@ -79,7 +80,6 @@ public class ServiceGroup {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(ServiceGroup.class);
         Root<ServiceGroup> c = cq.from(ServiceGroup.class);
-        //cq.where(cb.equal(c.get("name"), groupname));
         Predicate isGroupName = cb.equal(c.get("name"), groupname);
         Predicate hasProvider = cb.equal(c.get("provider"), provider);
         cq.where(cb.and(isGroupName, hasProvider));

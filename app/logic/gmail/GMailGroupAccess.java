@@ -124,6 +124,17 @@ public class GMailGroupAccess {
         return user;
     }
 
+    public String[] getMemberGroupNames(String id) throws IOException {
+        HashMap<String, Group> allGroups = getMemberGroups(id);
+        String[] groups = new String[allGroups.values().size()];
+        int i = 0;
+        for (Group group : allGroups.values()) {
+            groups[i] = group.getName();
+            i++;
+        }
+        return groups;
+    }
+
     public HashMap<String, Group> getMemberGroups(String id) throws IOException {
         List<Group> allGroups = new ArrayList<>();
         HashMap<String, Group> groups = new HashMap<>();
