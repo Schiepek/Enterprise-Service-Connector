@@ -1,16 +1,13 @@
 package logic.confluence;
 
-import models.Group;
+import models.ServiceGroup;
 import models.ServiceProvider;
-import models.User;
+import models.ServiceUser;
 import models.gsonmodels.ConfluenceUser;
 
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created by Richard on 10.11.2014.
- */
 public class ConfluenceDataImport {
     ConfluenceAccess access;
 
@@ -25,7 +22,7 @@ public class ConfluenceDataImport {
 
     private void importConfluenceGroups() throws Exception {
         for (String groupname : access.getGroups()) {
-            Group group = new Group();
+            ServiceGroup group = new ServiceGroup();
             group.setName(groupname);
             group.setProvider(ServiceProvider.CONFLUENCE);
             group.save();
@@ -41,8 +38,8 @@ public class ConfluenceDataImport {
         }
     }
 
-    private User createUser(ConfluenceUser cUser) { //TODO Fullname = Firstname ISSUE
-        User user = new User();
+    private ServiceUser createUser(ConfluenceUser cUser) { //TODO Fullname = Firstname ISSUE
+        ServiceUser user = new ServiceUser();
         user.setName(cUser.getName());
         user.setMail(cUser.getEmail());
         user.setFirstName(cUser.getFullname());
@@ -50,9 +47,9 @@ public class ConfluenceDataImport {
         return user;
     }
 
-    private void addGroupsToUser(User user, String[] groups) {
+    private void addGroupsToUser(ServiceUser user, String[] groups) {
         for (int i = 0; i < groups.length ; i++) {
-            Group group = Group.getGroupByGroupname(groups[i], ServiceProvider.CONFLUENCE);
+            ServiceGroup group = ServiceGroup.getGroupByGroupname(groups[i], ServiceProvider.CONFLUENCE);
             group.addMember(user);
         }
     }

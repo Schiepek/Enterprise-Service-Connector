@@ -1,8 +1,8 @@
 package logic.jira;
 
-import models.Group;
+import models.ServiceGroup;
 import models.ServiceProvider;
-import models.User;
+import models.ServiceUser;
 import models.gsonmodels.JiraUser;
 import net.oauth.OAuthException;
 
@@ -28,7 +28,7 @@ public class JiraDataImport {
         Iterator it = access.getAllGroupsWithUsers().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry) it.next();
-            Group group = createGroup((String) pairs.getKey());
+            ServiceGroup group = createGroup((String) pairs.getKey());
             for (JiraUser jiraUser : (ArrayList<JiraUser>) pairs.getValue()) {
                 group.addMember(createOrFindUser(jiraUser));
             }
@@ -36,24 +36,24 @@ public class JiraDataImport {
         }
     }
 
-    private Group createGroup(String groupname) {
-        Group group = new Group();
+    private ServiceGroup createGroup(String groupname) {
+        ServiceGroup group = new ServiceGroup();
         group.setName(groupname);
         group.setProvider(ServiceProvider.JIRA);
         return group;
     }
 
-    private User createOrFindUser(JiraUser jiraUser) {
-        User user;
-        user = User.getUserByUsername(jiraUser.getName(), ServiceProvider.JIRA);
+    private ServiceUser createOrFindUser(JiraUser jiraUser) {
+        ServiceUser user;
+        user = ServiceUser.getUserByUsername(jiraUser.getName(), ServiceProvider.JIRA);
         if (user == null) {
             user = createNewUser(jiraUser);
         }
         return user;
     }
 
-    private User createNewUser(JiraUser jiraUser) { //TODO Firstname Fullname ISSUE
-        User user = new User();
+    private ServiceUser createNewUser(JiraUser jiraUser) { //TODO Firstname Fullname ISSUE
+        ServiceUser user = new ServiceUser();
         user.setName(jiraUser.getName());
         user.setMail(jiraUser.getEmailAddress());
         user.setFirstName(jiraUser.getDisplayName());

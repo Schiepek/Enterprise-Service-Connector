@@ -5,7 +5,9 @@ import com.google.api.services.admin.directory.model.Group;
 import com.google.api.services.admin.directory.model.User;
 import logic.salesforce.SalesForceAccess;
 import models.APIConfig;
+import models.ServiceGroup;
 import models.ServiceProvider;
+import models.ServiceUser;
 import models.gsonmodels.SalesforceContact;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -36,7 +38,7 @@ public class GMailDataImport {
         GMailGroupAccess access = new GMailGroupAccess();
         List<Group> groups = access.getAllGroups();
         for (Group group : groups) {
-            new models.Group(group, access.getGroupAliases(group.getId())).save();
+            new ServiceGroup(group, access.getGroupAliases(group.getId())).save();
         }
     }
 
@@ -47,9 +49,9 @@ public class GMailDataImport {
         for (User user : users) {
             SalesforceContact contact = getSalesForceContact(user);
             if (contact != null) {
-                models.User u = new models.User(contact, user.getId(), access.getMemberGroups(user.getId()), ServiceProvider.GMAIL);
+                ServiceUser u = new ServiceUser(contact, user.getId(), access.getMemberGroups(user.getId()), ServiceProvider.GMAIL);
             } else {
-                models.User u = new models.User(user, access.getMemberGroups(user.getId()));
+                ServiceUser u = new ServiceUser(user, access.getMemberGroups(user.getId()));
             }
         }
     }

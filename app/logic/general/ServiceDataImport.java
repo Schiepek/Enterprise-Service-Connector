@@ -3,7 +3,9 @@ package logic.general;
 import logic.confluence.ConfluenceDataImport;
 import logic.gmail.GMailDataImport;
 import logic.jira.JiraDataImport;
-import models.Alias;
+import models.ServiceAlias;
+import models.ServiceGroup;
+import models.ServiceUser;
 import play.db.jpa.JPA;
 
 public class ServiceDataImport {
@@ -16,13 +18,13 @@ public class ServiceDataImport {
     }
 
     private void deleteData() {
-        for (models.Group group : models.Group.all()) {
+        for (ServiceGroup group : ServiceGroup.all()) {
             JPA.em().remove(group);
         }
-        for (models.User user : models.User.all()) {
+        for (ServiceUser user : ServiceUser.all()) {
             JPA.em().remove(user);
         }
-        for (Alias alias : models.Alias.all()) {
+        for (ServiceAlias alias : ServiceAlias.all()) {
             JPA.em().remove(alias);
         }
     }

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "serviceUser")
-public class User {
+public class ServiceUser {
     @Id
     @GeneratedValue
     private Long id;
@@ -23,33 +23,33 @@ public class User {
     private String name;
     private String mail;
     @ManyToMany(mappedBy="members", fetch = FetchType.LAZY)
-    private List<Group> groups;
+    private List<ServiceGroup> groups;
     private ServiceProvider provider;
 
-    public User() {
+    public ServiceUser() {
     }
 
-    public User(com.google.api.services.admin.directory.model.User user, HashMap<String, com.google.api.services.admin.directory.model.Group> groups) {
+    public ServiceUser(com.google.api.services.admin.directory.model.User user, HashMap<String, com.google.api.services.admin.directory.model.Group> groups) {
         this.providerKey = user.getId();
         this.firstName = user.getName().getGivenName();
         this.name = user.getName().getFamilyName();
         this.mail = user.getPrimaryEmail();
         this.groups = new ArrayList<>();
         for (com.google.api.services.admin.directory.model.Group group : groups.values()) {
-            Group g = Group.getGroupbyProviderKey(group.getId());
+            ServiceGroup g = ServiceGroup.getGroupbyProviderKey(group.getId());
             g.addMember(this);
         }
         this.provider = ServiceProvider.GMAIL;
     }
 
-    public User(SalesforceContact contact, String providerKey, HashMap<String, com.google.api.services.admin.directory.model.Group> groups, ServiceProvider provider) {
+    public ServiceUser(SalesforceContact contact, String providerKey, HashMap<String, com.google.api.services.admin.directory.model.Group> groups, ServiceProvider provider) {
         this.providerKey = providerKey;
         this.firstName = contact.getFirstName();
         this.name = contact.getLastName();
         this.mail = contact.getEmail();
         this.groups = new ArrayList<>();
         for (com.google.api.services.admin.directory.model.Group group : groups.values()) {
-            Group g = Group.getGroupbyProviderKey(group.getId());
+            ServiceGroup g = ServiceGroup.getGroupbyProviderKey(group.getId());
             g.addMember(this);
         }
         this.provider = provider;
@@ -60,25 +60,25 @@ public class User {
     }
 
 
-    public static List<User> all() {
+    public static List<ServiceUser> all() {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(User.class);
-        Root<User> c = cq.from(User.class);
+        CriteriaQuery cq = cb.createQuery(ServiceUser.class);
+        Root<ServiceUser> c = cq.from(ServiceUser.class);
         Query query = JPA.em().createQuery(cq);
-        List<User> result = query.getResultList();
+        List<ServiceUser> result = query.getResultList();
         return result;
     }
 
-    public static User getUserByUsername(String username, ServiceProvider provider) {
+    public static ServiceUser getUserByUsername(String username, ServiceProvider provider) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(User.class);
-        Root<User> c = cq.from(User.class);
+        CriteriaQuery cq = cb.createQuery(ServiceUser.class);
+        Root<ServiceUser> c = cq.from(ServiceUser.class);
         Predicate isGroupName = cb.equal(c.get("name"), username);
         Predicate hasProvider = cb.equal(c.get("provider"), provider);
         cq.where(cb.and(isGroupName, hasProvider));
         Query query = JPA.em().createQuery(cq);
         try {
-            return (User) query.getSingleResult();
+            return (ServiceUser) query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

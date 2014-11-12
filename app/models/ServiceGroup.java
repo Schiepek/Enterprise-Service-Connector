@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "serviceGroup")
-public class Group {
+public class ServiceGroup {
     @Id
     @GeneratedValue
     private Long id;
@@ -26,27 +26,27 @@ public class Group {
             joinColumns = { @JoinColumn(name="groupId", referencedColumnName = "id")},
             inverseJoinColumns = { @JoinColumn(name="aliasId", referencedColumnName = "id", unique = true)}
     )
-    private List<models.Alias> aliases;
+    private List<ServiceAlias> aliases;
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name="serviceUserGroup",
             joinColumns = {@JoinColumn(name="groupID", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "userId", referencedColumnName = "id")}
     )
-    private List<User> members;
+    private List<ServiceUser> members;
     private ServiceProvider provider;
 
-    public Group() {
+    public ServiceGroup() {
         this.members = new ArrayList<>();
     }
 
-    public Group(com.google.api.services.admin.directory.model.Group group, List<Alias> aliases) {
+    public ServiceGroup(com.google.api.services.admin.directory.model.Group group, List<Alias> aliases) {
         this.providerKey = group.getId();
         this.name = group.getName();
         this.mail = group.getEmail();
         this.aliases = new ArrayList<>();
         for (Alias a : aliases) {
-            models.Alias alias = new models.Alias(a);
+            ServiceAlias alias = new ServiceAlias(a);
             this.aliases.add(alias);
         }
         this.members = new ArrayList<>();
@@ -57,37 +57,37 @@ public class Group {
         JPA.em().merge(this);
     }
 
-    public static List<Group> all() {
+    public static List<ServiceGroup> all() {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(Group.class);
-        Root<Group> c = cq.from(Group.class);
+        CriteriaQuery cq = cb.createQuery(ServiceGroup.class);
+        Root<ServiceGroup> c = cq.from(ServiceGroup.class);
         Query query = JPA.em().createQuery(cq);
-        List<Group> result = query.getResultList();
+        List<ServiceGroup> result = query.getResultList();
         return result;
     }
 
-    public static Group getGroupbyProviderKey(String key) {
+    public static ServiceGroup getGroupbyProviderKey(String key) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(Group.class);
-        Root<Group> c = cq.from(Group.class);
+        CriteriaQuery cq = cb.createQuery(ServiceGroup.class);
+        Root<ServiceGroup> c = cq.from(ServiceGroup.class);
         cq.where(cb.equal(c.get("providerKey"), key));
         Query query = JPA.em().createQuery(cq);
-        return (Group) query.getSingleResult();
+        return (ServiceGroup) query.getSingleResult();
     }
 
-    public static Group getGroupByGroupname(String groupname, ServiceProvider provider) {
+    public static ServiceGroup getGroupByGroupname(String groupname, ServiceProvider provider) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(Group.class);
-        Root<Group> c = cq.from(Group.class);
+        CriteriaQuery cq = cb.createQuery(ServiceGroup.class);
+        Root<ServiceGroup> c = cq.from(ServiceGroup.class);
         //cq.where(cb.equal(c.get("name"), groupname));
         Predicate isGroupName = cb.equal(c.get("name"), groupname);
         Predicate hasProvider = cb.equal(c.get("provider"), provider);
         cq.where(cb.and(isGroupName, hasProvider));
         Query query = JPA.em().createQuery(cq);
-        return (Group) query.getSingleResult();
+        return (ServiceGroup) query.getSingleResult();
     }
 
-    public void addMember(User user) {
+    public void addMember(ServiceUser user) {
         if (!members.contains(user)) {
             this.members.add(user);
         }

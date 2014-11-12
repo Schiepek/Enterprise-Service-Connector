@@ -6,9 +6,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 
-/**
- * Created by Richard on 12.11.2014.
- */
 public class AES128Encryptor {
     private final String ALGO = "AES";
     private final String keyValueString = "x9d7k8wlGq7kN1dI";
