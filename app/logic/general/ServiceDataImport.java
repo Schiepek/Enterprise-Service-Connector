@@ -6,7 +6,10 @@ import logic.jira.JiraDataImport;
 import models.ServiceAlias;
 import models.ServiceGroup;
 import models.ServiceUser;
+import models.Settings;
 import play.db.jpa.JPA;
+
+import java.util.Date;
 
 public class ServiceDataImport {
 
@@ -15,6 +18,8 @@ public class ServiceDataImport {
         new GMailDataImport().importData();
         new ConfluenceDataImport().importData();
         new JiraDataImport().importData();
+        Settings settings = Settings.getSettings();
+        settings.setLastImport(new Date());
     }
 
     private void deleteData() {

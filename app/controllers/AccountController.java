@@ -5,7 +5,6 @@ import global.TransferException;
 import logic.confluence.ConfluenceAccess;
 import logic.confluence.ConfluenceConnector;
 import logic.general.AES128Encryptor;
-import logic.general.ServiceDataImport;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
 import logic.jira.JiraAccess;
@@ -144,9 +143,4 @@ public class AccountController extends Controller {
         return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
     }
 
-    @Transactional
-    public static Result importData() throws Exception {
-        new ServiceDataImport().importData();
-        return index();
-    }
 }

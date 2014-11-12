@@ -1,0 +1,63 @@
+@(companies: List[String], lastImport: Date)
+
+@import helper._
+
+@main("Users") {
+
+    Letzter Import: @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
+
+    @for(company <- companies){
+        @if(company) {
+            <h2>@company</h2>
+        } else {
+            <h2>Firma unbekannt</h2>
+        }
+
+        <table class="aui content-report-table-macro tablesorter">
+            <thead>
+                <tr class="tablesorter-headerRow">
+                    <th>Name</th>
+                    <th>Benutzergruppen</th>
+                    <th>Zugänge</th>
+                    <th>Funktion</th>
+                    <th>Firma</th>
+                    <th>Kontaktdaten</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(user <- ServiceUser.companyUsers(company)){
+                <tr>
+                    <td>@user.getFullName</td>
+                    <td>
+                    @for(group <- user.getGroups) {
+                        @group.getName<br />
+                    }
+                    </td>
+                    <td>
+                        @if(user.getUsernameGoogle) {
+                            Google: @user.getUsernameGoogle<br />
+                        }
+                        @if(user.getUsernameJira) {
+                            Jira: @user.getUsernameJira<br />
+                        }
+                        @if(user.getUsernameConfluence) {
+                            Confluence: @user.getUsernameConfluence<br />
+                        }
+                    </td>
+                    <td>@user.getFunction</td>
+                    <td>@user.getCompany</td>
+                    <td>
+                        E-Mail: @user.getMail<br />
+                        Phone: @user.getPhoneWork<br />
+                        Mobile: @user.getPhoneMobile<br />
+                        Company Phone: @user.getPhoneCompany<br />
+                        Salesforce: @user.getSalesforceId
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+
+}
