@@ -1,7 +1,9 @@
 package models;
 
 
+import global.Global;
 import play.db.jpa.JPA;
+import play.libs.Time;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ public class Settings {
     private String domain;
     private String jiraUrl;
     private String confluenceUrl;
+    private String cronExpression;
     private boolean saveInDirectory;
 
     public String getJiraUrl() {
@@ -63,6 +66,18 @@ public class Settings {
         this.confluenceUrl = confluenceUrl;
     }
 
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        boolean hasChanged = this.cronExpression.equals(cronExpression);
+        this.cronExpression = cronExpression;
+        if (Time.CronExpression.isValidExpression(getCronExpression())&& hasChanged) {
+            Global.setNewScheduler();
+        }
+    }
+
     public void save() {
         JPA.em().merge(this);
     }
@@ -80,6 +95,7 @@ public class Settings {
         existing.setSaveInDirectory(newsetting.getSaveInDirectory());
         existing.setJiraUrl(newsetting.getJiraUrl());
         existing.setConfluenceUrl(newsetting.getConfluenceUrl());
+        existing.setCronExpression(newsetting.getCronExpression());
         existing.save();
     }
 
@@ -90,11 +106,19 @@ public class Settings {
         settings.setDomain("exampledomain.com");
         settings.setJiraUrl("exampledomain.com/jira");
         settings.setConfluenceUrl("exampledomain.com/confluence");
+        settings.setCronExpression("0 0 12 * * ?");
         settings.setSaveInDirectory(true);
         return settings;
     }
 
     private static boolean proofExistingSetting() {
         return JPA.em().find(Settings.class, 1L) != null;
+    }
+
+    public String validate() {
+        if (!Time.CronExpression.isValidExpression(getCronExpression())) {
+            return "Invalid Cron Expression";
+        }
+        return null;
     }
 }

@@ -1,19 +1,62 @@
 package global;
 
+import akka.actor.Cancellable;
 import com.atlassian.connect.play.java.play.AcGlobalSettings;
 import models.Logging;
+import models.Settings;
+import play.Application;
 import play.db.jpa.JPA;
+import play.libs.Akka;
 import play.libs.F.Promise;
+import play.libs.Time;
 import play.mvc.Http.RequestHeader;
 import play.mvc.SimpleResult;
+import scala.concurrent.duration.Duration;
+import scala.concurrent.duration.FiniteDuration;
 import views.html.error;
 import views.html.notFound;
+
+import javax.jdo.annotations.Transactional;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static play.mvc.Results.badRequest;
 import static play.mvc.Results.notFound;
 
 
 public class Global extends AcGlobalSettings {
+
+    private static Cancellable scheduler;
+
+    @Override
+    public void onStart(Application application) {
+        super.onStart(application);
+        schedule();
+    }
+
+    @Override
+    public void onStop(Application application) {
+        if (scheduler != null) {
+            scheduler.cancel();
+        }
+    }
+
+    @Transactional
+    private static void schedule() {
+        try {
+            Time.CronExpression e = new Time.CronExpression(Settings.getSettings().getCronExpression());
+            Date nextValidTimeAfter = e.getNextValidTimeAfter(new Date());
+            FiniteDuration d = Duration.create(
+                    nextValidTimeAfter.getTime() - System.currentTimeMillis(),
+                    TimeUnit.MILLISECONDS);
+            scheduler = Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
+                JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
+                schedule();
+            }, Akka.system().dispatcher());
+        } catch (Exception e) {
+            JPA.withTransaction(() -> Logging.log("Scheduling Error: " + e.getMessage()));
+        }
+    }
 
     @Override
     public Promise<SimpleResult> onError(RequestHeader request, Throwable t) {
@@ -34,6 +77,12 @@ public class Global extends AcGlobalSettings {
 
     public Promise<SimpleResult> onBadRequest(RequestHeader request, String error) {
         return Promise.<SimpleResult>pure(badRequest("Don't try to hack the URI!"));
+    }
+
+    @Transactional
+    public static void setNewScheduler() {
+        JPA.withTransaction(() -> Logging.log("Scheduling time changed to: " + Settings.getSettings().getCronExpression()));
+        schedule();
     }
 
 
