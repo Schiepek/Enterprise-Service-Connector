@@ -19,7 +19,7 @@ import java.util.List;
 public class GMailDataImport {
 
     private Directory service;
-    List<SalesforceContact> sfContacts;
+    private SalesForceAccess sfAccess;
 
     public GMailDataImport() throws IOException {
         this(APIConfig.getAPIConfig(ServiceProvider.GMAIL));
@@ -42,28 +42,28 @@ public class GMailDataImport {
         }
     }
 
-    private void importGMailUsers() throws OAuthSystemException, OAuthProblemException, IOException {
-        sfContacts = new SalesForceAccess().getSalesforceContactsList();
-        GMailGroupAccess access = new GMailGroupAccess();
-        List<User> users = access.getAllUsers();
-        for (User user : users) {
-            SalesforceContact contact = getSalesForceContact(user);
+    private void importGMailUsers() throws IOException, OAuthProblemException, OAuthSystemException {
+        SalesForceAccess sfAccess = new SalesForceAccess();
+        GMailGroupAccess groupAccess = new GMailGroupAccess();
+        List<User> users = groupAccess.getAllUsers();
+        for (User googleUser : users) {
+           createUser(googleUser, sfAccess);
+        }
+    }
+
+    private void createUser(User googleUser, SalesForceAccess sfAccess) throws IOException, OAuthSystemException, OAuthProblemException {
+        GMailGroupAccess groupAccess = new GMailGroupAccess();
+        ServiceUser user = ServiceUser.getUserByUsername(googleUser.getPrimaryEmail(), ServiceProvider.GMAIL);
+        if (user != null) {
+            user.addToGroups(groupAccess.getMemberGroupNames(googleUser.getId()), ServiceProvider.GMAIL);
+        } else {
+            SalesforceContact contact = sfAccess.getSalesForceContact(googleUser.getPrimaryEmail());
             if (contact != null) {
-                ServiceUser u = new ServiceUser(contact, user.getId(), access.getMemberGroups(user.getId()), ServiceProvider.GMAIL);
+                new ServiceUser(contact, googleUser.getPrimaryEmail(), ServiceProvider.GMAIL, groupAccess.getMemberGroupNames(googleUser.getId()));
             } else {
-                ServiceUser u = new ServiceUser(user, access.getMemberGroups(user.getId()));
+                new ServiceUser(googleUser.getName().getFullName(), googleUser.getPrimaryEmail(), googleUser.getPrimaryEmail(), ServiceProvider.GMAIL, groupAccess.getMemberGroupNames(googleUser.getId()));
             }
         }
     }
-
-    private SalesforceContact getSalesForceContact(User user) {
-        for (SalesforceContact contact : sfContacts) {
-            if (contact.getEmail() != null && user.getPrimaryEmail() != null && contact.getEmail().equals(user.getPrimaryEmail())) {
-                return contact;
-            }
-        }
-        return null;
-    }
-
 
 }

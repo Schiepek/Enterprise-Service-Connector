@@ -16,8 +16,12 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SalesForceAccess {
+
+    List<SalesforceContact> sfContacts;
+
     private static final String GET_ALL_CONTACTS = "/services/data/v20.0/query/?q=SELECT+" +
             "LastName," +
             "Firstname," +
@@ -62,9 +66,21 @@ public class SalesForceAccess {
         return container;
     }
 
-    public ArrayList<SalesforceContact> getSalesforceContactsList() throws OAuthProblemException, OAuthSystemException {
+    private ArrayList<SalesforceContact> getSalesforceContactsList() throws OAuthProblemException, OAuthSystemException {
         SalesforceContainer container = getSalesforceContacts();
         return new ArrayList<SalesforceContact>(Arrays.asList(container.getContacts()));
+    }
+
+    public SalesforceContact getSalesForceContact(String mail) throws OAuthProblemException, OAuthSystemException {
+        if (sfContacts == null) {
+            this.sfContacts = getSalesforceContactsList();
+        }
+        for (SalesforceContact contact : sfContacts) {
+            if (contact.getEmail() != null && mail != null && contact.getEmail().equals(mail)) {
+                return contact;
+            }
+        }
+        return null;
     }
 
 }
