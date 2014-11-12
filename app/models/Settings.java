@@ -7,6 +7,7 @@ import play.libs.Time;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class Settings {
@@ -20,6 +21,7 @@ public class Settings {
     private String confluenceUrl;
     private String cronExpression;
     private boolean saveInDirectory;
+    private Date lastImport;
 
     public String getJiraUrl() {
         return jiraUrl;
@@ -119,5 +121,13 @@ public class Settings {
             return "Invalid Cron Expression";
         }
         return null;
+    }
+
+    public Date getLastImport() {
+        return lastImport;
+    }
+
+    public void setLastImport(Date lastImport) {
+        this.lastImport = lastImport;
     }
 }

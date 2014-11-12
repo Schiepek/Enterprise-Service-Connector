@@ -100,4 +100,8 @@ public class ServiceGroup {
     public void setProvider(ServiceProvider provider) {
         this.provider = provider;
     }
+
+    public String getName() {
+        return name;
+    }
 }

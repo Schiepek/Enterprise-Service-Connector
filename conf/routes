@@ -5,7 +5,7 @@
 # Home page
 GET         /                                    controllers.AccountController.index()
 
-# Callbacks
+# OAuth Callbacks
 GET         /salesforce/callback                 controllers.AccountController.callbackSalesForce()
 GET         /gmail/callback                      controllers.AccountController.callbackGmail()
 GET         /jira/callback                       controllers.AccountController.callbackJira()
@@ -19,8 +19,12 @@ POST        /accounts/delete                     controllers.AccountController.d
 POST        /accounts/settings                   controllers.AccountController.setSettings()
 GET         /accounts/check/:provider            controllers.AccountController.checkStatus(provider: String)
 
-#TRY TODO DELETE
-POST        /accounts/import                     controllers.AccountController.importData()
+# routes for user and group views
+GET         /users                               controllers.UserController.users()
+GET         /users/companies                     controllers.UserController.companies()
+
+GET        /users/import                        controllers.UserController.importView()
+POST        /users/import/start                  controllers.UserController.importData()
 
 
 

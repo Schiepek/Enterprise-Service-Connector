@@ -7,7 +7,9 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "serviceUser")
@@ -88,6 +90,22 @@ public class ServiceUser {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(ServiceUser.class);
         Root<ServiceUser> c = cq.from(ServiceUser.class);
+        cq.orderBy(cb.asc(c.get("fullName")));
+        Query query = JPA.em().createQuery(cq);
+        List<ServiceUser> result = query.getResultList();
+        return result;
+    }
+
+    public static List<ServiceUser> companyUsers(String company) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(ServiceUser.class);
+        Root<ServiceUser> c = cq.from(ServiceUser.class);
+        if (company == null) {
+            cq.where(cb.isNull(c.get("company")));
+        } else {
+            cq.where(cb.equal(c.get("company"), company));
+        }
+        cq.orderBy(cb.asc(c.get("fullName")));
         Query query = JPA.em().createQuery(cq);
         List<ServiceUser> result = query.getResultList();
         return result;
@@ -123,9 +141,62 @@ public class ServiceUser {
         }
     }
 
+    public static List<String> allCompanies() {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<String> cq = cb.createQuery(String.class);
+        Root<ServiceUser> root = cq.from(ServiceUser.class);
+        cq.select(root.get("company")).distinct(true);
+        cq.orderBy(cb.asc(root.get("company")));
+        List<String> result = JPA.em().createQuery(cq).getResultList();
+        return result;
+    }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public String getUsernameJira() {
+        return usernameJira;
+    }
+
+    public String getUsernameConfluence() {
+        return usernameConfluence;
+    }
+
+    public String getUsernameGoogle() {
+        return usernameGoogle;
+    }
+
+    public String getFunction() {
+        return function;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public String getPhoneWork() {
+        return phoneWork;
+    }
+
+    public String getPhoneMobile() {
+        return phoneMobile;
+    }
+
+    public String getPhoneCompany() {
+        return phoneCompany;
+    }
+
+    public String getSalesforceId() {
+        return salesforceId;
+    }
+
+    public List<ServiceGroup> getGroups() {
+        return groups;
     }
 
 }
