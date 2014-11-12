@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gdata.util.ServiceException;
+import global.Global;
 import global.TransferException;
 import logic.confluence.ConfluenceAccess;
 import logic.confluence.ConfluenceConnector;
@@ -47,7 +48,9 @@ public class AccountController extends Controller {
     public static Result setSettings() {
         Form<Settings> filledForm = settingsForm.bindFromRequest();
         if (filledForm.hasErrors()) return errorRequest();
+        String oldCronExpression = Settings.getSettings().getCronExpression();
         Settings.create(filledForm.get());
+        Global.setNewScheduler(oldCronExpression);
         return index();
     }
 

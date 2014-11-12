@@ -1,7 +1,6 @@
 package models;
 
 
-import global.Global;
 import play.db.jpa.JPA;
 import play.libs.Time;
 
@@ -71,11 +70,11 @@ public class Settings {
     }
 
     public void setCronExpression(String cronExpression) {
-        boolean hasChanged = this.cronExpression.equals(cronExpression);
+        //boolean hasChanged = this.cronExpression.equals(cronExpression);
         this.cronExpression = cronExpression;
-        if (Time.CronExpression.isValidExpression(getCronExpression())&& hasChanged) {
-            Global.setNewScheduler();
-        }
+      //  if (Time.CronExpression.isValidExpression(getCronExpression())&& hasChanged) {
+      //      Global.setNewScheduler();
+       // }
     }
 
     public void save() {

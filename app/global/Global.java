@@ -51,6 +51,7 @@ public class Global extends AcGlobalSettings {
                     TimeUnit.MILLISECONDS);
             scheduler = Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
                 JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
+                //TODO Invoke GoogleContactstransfer and importGroupData
                 schedule();
             }, Akka.system().dispatcher());
         } catch (Exception e) {
@@ -80,10 +81,10 @@ public class Global extends AcGlobalSettings {
     }
 
     @Transactional
-    public static void setNewScheduler() {
-        JPA.withTransaction(() -> Logging.log("Scheduling time changed to: " + Settings.getSettings().getCronExpression()));
-        schedule();
+    public static void setNewScheduler(String oldCronExpression) {
+        if(!oldCronExpression.equals(Settings.getSettings().getCronExpression())) {
+                Logging.log("Scheduling time changed to: " + Settings.getSettings().getCronExpression());
+                schedule();
+        }
     }
-
-
 }
