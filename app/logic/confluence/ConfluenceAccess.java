@@ -1,6 +1,7 @@
 package logic.confluence;
 
 import com.google.gson.Gson;
+import logic.general.AES128Encryptor;
 import models.APIConfig;
 import models.ServiceProvider;
 import models.Settings;
@@ -16,7 +17,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class ConfluenceAccess {
         config = APIConfig.getAPIConfig(ServiceProvider.CONFLUENCE);
     }
 
-    public Map<ConfluenceUser, String[]> getUserGroups() throws IOException, InterruptedException {
+    public Map<ConfluenceUser, String[]> getUserGroups() throws Exception {
         String[] params = { "true" };
         Gson gson = new Gson();
         String activeUsersJson = authenticatedSoapRequest(SOAP_GETALLUSERS, params);
@@ -71,7 +71,7 @@ public class ConfluenceAccess {
         return userGroupMap;
     }
 
-    public String[] getGroups() throws IOException {
+    public String[] getGroups() throws Exception {
         String[] params = {  };
         Gson gson = new Gson();
         String groupsJson = authenticatedSoapRequest(SOAP_GETALLGROUPS, params);
@@ -87,11 +87,11 @@ public class ConfluenceAccess {
         }
     }
 
-    private String authenticatedSoapRequest(String method, String[] params) throws IOException {
+    private String authenticatedSoapRequest(String method, String[] params) throws Exception {
         HttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost(CONFLUENCE_SOAP_URL);
 
-        String userCredentials = config.getClientId() + ":" + config.getClientSecret();
+        String userCredentials = config.getClientId() + ":" + new AES128Encryptor().decrypt(config.getClientSecret());
         String basicAuth = "Basic " + new String(Base64.encodeBase64(userCredentials.getBytes()));
 
         post.setHeader("Authorization", basicAuth);

@@ -71,14 +71,25 @@
             <tr>
                 <td>@account.getProvider</td>
                 <td class="textCell@account.getProvider">@account.getClientId</td>
-                <td class="textCell@account.getProvider table-overflow">@account.getClientSecret</td>
+                @if(account.getProvider().equals(ServiceProvider.CONFLUENCE)) {
+                    <td class="textCell@account.getProvider table-overflow">* * * * *</td>
+                } else {
+                    <td class="textCell@account.getProvider table-overflow">@account.getClientSecret</td>
+                }
 
                 <td class="editCell@account.getProvider editCell" style="display: none">
                     <input class="text text-long" type="text" id="clientId@account.getProvider" name="clientId" form="@account.getProvider()form" value="@account.getClientId">
                 </td>
-                <td class="editCell@account.getProvider editCell" style="display: none">
-                    <input class="text text-middle" type="text" id="clientSecret@account.getProvider" name="clientSecret" form="@account.getProvider()form" value="@account.getClientSecret">
-                </td>
+                @if(account.getProvider().equals(ServiceProvider.CONFLUENCE)) {
+                    <td class="editCell@account.getProvider editCell" style="display: none">
+                        <input class="text text-middle" type="text" id="clientSecret@account.getProvider" name="clientSecret" form="@account.getProvider()form" value="enter a new password">
+                    </td>
+                } else {
+                    <td class="editCell@account.getProvider editCell" style="display: none">
+                        <input class="text text-middle" type="text" id="clientSecret@account.getProvider" name="clientSecret" form="@account.getProvider()form" value="@account.getClientSecret">
+                    </td>
+                }
+
 
                 <td id="status_@account.getProvider"></td>
                 <td>

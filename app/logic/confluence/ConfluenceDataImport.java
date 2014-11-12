@@ -5,7 +5,6 @@ import models.ServiceProvider;
 import models.User;
 import models.gsonmodels.ConfluenceUser;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -19,12 +18,12 @@ public class ConfluenceDataImport {
         access = new ConfluenceAccess();
     }
 
-    public void importData() throws IOException, InterruptedException {
+    public void importData() throws Exception {
         importConfluenceGroups();
         importConfluenceUserGroups();
     }
 
-    private void importConfluenceGroups() throws IOException {
+    private void importConfluenceGroups() throws Exception {
         for (String groupname : access.getGroups()) {
             Group group = new Group();
             group.setName(groupname);
@@ -33,7 +32,7 @@ public class ConfluenceDataImport {
         }
     }
 
-    private void importConfluenceUserGroups() throws IOException, InterruptedException {
+    private void importConfluenceUserGroups() throws Exception {
         Iterator it = access.getUserGroups().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry) it.next();

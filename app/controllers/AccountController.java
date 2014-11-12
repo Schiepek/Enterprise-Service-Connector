@@ -4,6 +4,7 @@ import com.google.gdata.util.ServiceException;
 import global.TransferException;
 import logic.confluence.ConfluenceAccess;
 import logic.confluence.ConfluenceConnector;
+import logic.general.AES128Encryptor;
 import logic.general.ServiceDataImport;
 import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
@@ -51,12 +52,16 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result save(String provider) {
+    public static Result save(String provider) throws Exception {
         Form<APIConfig> filledForm = apiForm.bindFromRequest();
         if (filledForm.hasErrors()) return errorRequest();
         APIConfig account = APIConfig.getAPIConfig(ServiceProvider.valueOf(provider));
         account.setClientId(filledForm.get().getClientId());
-        account.setClientSecret(filledForm.get().getClientSecret());
+        if(provider.equals("CONFLUENCE")) {
+            account.setClientSecret(new AES128Encryptor().encrypt(filledForm.get().getClientSecret()));
+        } else {
+            account.setClientSecret(filledForm.get().getClientSecret());
+        }
         return index();
     }
 
@@ -140,7 +145,7 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result importData() throws IOException, OAuthException, URISyntaxException, InterruptedException, OAuthProblemException, OAuthSystemException {
+    public static Result importData() throws Exception {
         new ServiceDataImport().importData();
         return index();
     }
