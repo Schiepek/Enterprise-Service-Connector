@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "serviceUser")
 public class ServiceUser {
     @Id
     @GeneratedValue

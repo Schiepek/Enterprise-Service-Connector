@@ -9,7 +9,6 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Entity
-@Table(name = "serviceAlias")
 public class ServiceAlias {
     @Id
     @GeneratedValue

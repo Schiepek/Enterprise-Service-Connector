@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "serviceGroup")
 public class ServiceGroup {
     @Id
     @GeneratedValue
@@ -23,14 +22,14 @@ public class ServiceGroup {
     private String mail;
     @OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true)
     @JoinTable(
-            name = "serviceGroupAlias",
+            name = "ServiceGroupAlias",
             joinColumns = { @JoinColumn(name="groupId", referencedColumnName = "id")},
             inverseJoinColumns = { @JoinColumn(name="aliasId", referencedColumnName = "id", unique = true)}
     )
     private List<ServiceAlias> aliases;
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name="serviceUserGroup",
+            name="ServiceUserGroup",
             joinColumns = {@JoinColumn(name="groupID", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "userId", referencedColumnName = "id")}
     )
