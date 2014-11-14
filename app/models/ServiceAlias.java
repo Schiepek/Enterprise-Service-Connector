@@ -42,4 +42,8 @@ public class ServiceAlias {
         List<ServiceAlias> result = query.getResultList();
         return result;
     }
+
+    public String getName() {
+        return name;
+    }
 }

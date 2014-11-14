@@ -3,6 +3,7 @@ package controllers;
 
 import logic.general.ServiceDataImport;
 import models.Logging;
+import models.ServiceProvider;
 import models.ServiceUser;
 import models.Settings;
 import play.db.jpa.JPA;
@@ -11,6 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.companies;
 import views.html.importData;
+import views.html.services;
 import views.html.users;
 
 import java.util.Date;
@@ -39,6 +41,12 @@ public class UserController extends Controller {
     public static Result companies() {
         Date lastImport = Settings.getSettings().getLastImport();
         return ok(companies.render(ServiceUser.allCompanies(), lastImport));
+    }
+
+    @Transactional
+    public static Result services() {
+        Date lastImport = Settings.getSettings().getLastImport();
+        return ok(services.render(ServiceProvider.values(), lastImport));
     }
 
 }

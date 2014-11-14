@@ -22,6 +22,7 @@ GET         /accounts/check/:provider            controllers.AccountController.c
 # routes for user and group views
 GET         /users                               controllers.UserController.users()
 GET         /users/companies                     controllers.UserController.companies()
+GET         /users/services                     controllers.UserController.services()
 
 GET        /users/import                        controllers.UserController.importView()
 POST        /users/import/start                  controllers.UserController.importData()

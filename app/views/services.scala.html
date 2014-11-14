@@ -1,0 +1,52 @@
+@(services: Array[ServiceProvider], lastImport: Date)
+
+@import helper._
+
+@main("Users") {
+    Letzter Import:
+    @if(lastImport != null) {
+        @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
+    } else {
+        es wurde noch kein Import durchgeführt.<br />
+    }
+
+
+    @for(service <- services){
+        <h2>@service</h2>
+
+        <table class="aui content-report-table-macro tablesorter">
+            <thead>
+                <tr class="tablesorter-headerRow">
+                    <th>Name</th>
+                    <th>Benutzer</th>
+                    <th>Mail</th>
+                    <th>Aliases</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(group <- ServiceGroup.serviceGroups(service)){
+                <tr>
+                    <td>@group.getName</td>
+                    <td>
+                        @for(user <- group.getMembers) {
+                            @user.getFullName
+                            @if(user.getCompany) {
+                                (@user.getCompany)
+                            }
+                            <br />
+                        }
+                    </td>
+                    <td>@group.getMail</td>
+                    <td>
+                    @for(alias <- group.getAliases) {
+                        @alias.getName<br />
+                    }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+
+}

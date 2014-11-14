@@ -86,6 +86,16 @@ public class ServiceGroup {
         return (ServiceGroup) query.getSingleResult();
     }
 
+    public static List<ServiceGroup> serviceGroups(ServiceProvider provider) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(ServiceGroup.class);
+        Root<ServiceGroup> c = cq.from(ServiceGroup.class);
+        cq.where(cb.equal(c.get("provider"), provider));
+        Query query = JPA.em().createQuery(cq);
+        List<ServiceGroup> result = query.getResultList();
+        return result;
+    }
+
     public void addMember(ServiceUser user) {
         if (!members.contains(user)) {
             this.members.add(user);
@@ -102,5 +112,17 @@ public class ServiceGroup {
 
     public String getName() {
         return name;
+    }
+
+    public List<ServiceUser> getMembers() {
+        return members;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public List<ServiceAlias> getAliases() {
+        return aliases;
     }
 }

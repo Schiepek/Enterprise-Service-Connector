@@ -4,7 +4,12 @@
 
 @main("Users") {
 
-    Letzter Import: @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
+    Letzter Import:
+    @if(lastImport != null) {
+        @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
+    } else {
+        es wurde noch kein Import durchgeführt.<br />
+    }
 
     @for(company <- companies){
         @if(company) {

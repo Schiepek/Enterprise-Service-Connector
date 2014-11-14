@@ -5,7 +5,12 @@
 @main("Import") {
 
     Um die Benutzer und Gruppen neu auszulesen, kann ein manueller Import gestartet werden. Bitte beachten Sie dabei, dass dies einige Minuten dauern kann.<br />
-    Letzter Import: @lastImport.format("dd.M.yyyy HH:mm:ss")
+    Letzter Import:
+    @if(lastImport != null) {
+        @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
+    } else {
+        es wurde noch kein Import durchgeführt.<br />
+    }
 
     @form(routes.UserController.importData(), args = 'class -> "aui") {
         <div class="buttons">
