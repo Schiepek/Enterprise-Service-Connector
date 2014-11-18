@@ -16,6 +16,7 @@ public class APIConfig {
     private Long id;
 
     private String clientId;
+    @Column( length = 1000 )
     private String clientSecret;
     private String redirectURI;
     private String accessToken;

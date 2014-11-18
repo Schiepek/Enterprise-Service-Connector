@@ -66,112 +66,107 @@ public class GmailTest {
 
     @Test
     public void deleteContactsTest() {
-        JPA.withTransaction(new play.libs.F.Callback0() {
-            public void invoke() throws IOException, ServiceException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
+        JPA.withTransaction(() -> {
+            GMailContactAccess access = new GMailContactAccess(config, settings);
+            access.deleteContacts();
 
-                GMailContactAccess access = new GMailContactAccess(config, settings);
-                access.deleteContacts();
+            // Sleep because API is to slow to refresh data
+            Thread.sleep(TIME_TO_SLEEP_MS);
 
-                // Sleep because API is to slow to refresh data
-                Thread.sleep(TIME_TO_SLEEP_MS);
+            URL feedUrl = new URL(CONTACT_FEED_URL);
+            // use reflection because of private Method getAllContacts
+            Class[] cArg = new Class[1];
+            cArg[0] = URL.class;
+            Method method = GMailContactAccess.class.getDeclaredMethod("getAllContacts", cArg);
+            method.setAccessible(true);
+            HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
 
-                URL feedUrl = new URL(CONTACT_FEED_URL);
-                // use reflection because of private Method getAllContacts
-                Class[] cArg = new Class[1];
-                cArg[0] = URL.class;
-                Method method = GMailContactAccess.class.getDeclaredMethod("getAllContacts", cArg);
-                method.setAccessible(true);
-                HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
-
-                assertThat(contacts.size()).isEqualTo(0);
-            }
+            assertThat(contacts.size()).isEqualTo(0);
         });
     }
 
     @Test
     public void transferContactsTest() {
-        JPA.withTransaction(new play.libs.F.Callback0() {
-            public void invoke() throws IOException, ServiceException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
-                GMailContactAccess access = new GMailContactAccess(config, settings);
-                access.deleteContacts();
+        JPA.withTransaction(() -> {
+            GMailContactAccess access = new GMailContactAccess(config, settings);
+            access.deleteContacts();
 
-                // Sleep because API is to slow to refresh data
-                Thread.sleep(TIME_TO_SLEEP_MS);
+            // Sleep because API is to slow to refresh data
+            Thread.sleep(TIME_TO_SLEEP_MS);
 
-                String json = "{  " +
-                        "\"totalSize\":1," +
-                        "\"done\":true," +
-                        "\"records\":[  " +
-                        "{  " +
+            String json = "{  " +
+                    "\"totalSize\":1," +
+                    "\"done\":true," +
+                    "\"records\":[  " +
+                    "{  " +
+                        "\"attributes\":{  " +
+                            "\"type\":\"Contact\"," +
+                            "\"url\":\"/services/data/v20.0/sobjects/Contact/003w000001GDZE9AAP\"" +
+                        "}," +
+                        "\"LastName\":\"Meier\"," +
+                        "\"FirstName\":\"Hans\"," +
+                        "\"Email\":\"hans.meier@foryouandyourcustomers.com\"," +
+                        "\"Title\":\"null\"," +
+                        "\"Salutation_Title__c\":null," +
+                        "\"Birthdate\":\"1962-09-06\"," +
+                        "\"Languages__c\":\"English\"," +
+                        "\"Phone\":\"(512) 757-6000\"," +
+                        "\"MobilePhone\":\"(512) 757-9340\"," +
+                        "\"ReportsToId\":null," +
+                        "\"AccountId\":\"001w000001AjnNiAAJ\"," +
+                        "\"MailingStreet\":\"313 Constitution Place\\nAustin, TX 78767\\nUSA\"," +
+                        "\"MailingCity\":null," +
+                        "\"MailingPostalCode\":null," +
+                        "\"MailingCountry\":null," +
+                        "\"f_contact__c\":null," +
+                        "\"OwnerId\":\"005w0000003ZX6SAAW\"," +
+                        "\"Id\":\"003w000001GDQE9AAP\"," +
+                        "\"Account\":{  " +
                             "\"attributes\":{  " +
-                                "\"type\":\"Contact\"," +
-                                "\"url\":\"/services/data/v20.0/sobjects/Contact/003w000001GDZE9AAP\"" +
+                                "\"type\":\"Account\"," +
+                                "\"url\":\"/services/data/v20.0/sobjects/Account/001w010001AjnNiAAJ\"" +
                             "}," +
-                            "\"LastName\":\"Meier\"," +
+                            "\"Name\":\"Edge Communications\"," +
+                            "\"Website\":\"http://edgecomm.com\"," +
+                            "\"Phone\":\"(512) 757-6000\"" +
+                        "}," +
+                        "\"ReportsTo\":null," +
+                        "\"LastModifiedDate\":\"2014-09-24T08:50:23.000+0000\"," +
+                        "\"Owner\":{  " +
+                            "\"attributes\":{  " +
+                                "\"type\":\"User\"," +
+                                "\"url\":\"/services/data/v20.0/sobjects/User/005w0010003ZX6SAAW\"" +
+                            "}," +
                             "\"FirstName\":\"Hans\"," +
-                            "\"Email\":\"hans.meier@foryouandyourcustomers.com\"," +
-                            "\"Title\":\"null\"," +
-                            "\"Salutation_Title__c\":null," +
-                            "\"Birthdate\":\"1962-09-06\"," +
-                            "\"Languages__c\":\"English\"," +
-                            "\"Phone\":\"(512) 757-6000\"," +
-                            "\"MobilePhone\":\"(512) 757-9340\"," +
-                            "\"ReportsToId\":null," +
-                            "\"AccountId\":\"001w000001AjnNiAAJ\"," +
-                            "\"MailingStreet\":\"313 Constitution Place\\nAustin, TX 78767\\nUSA\"," +
-                            "\"MailingCity\":null," +
-                            "\"MailingPostalCode\":null," +
-                            "\"MailingCountry\":null," +
-                            "\"f_contact__c\":null," +
-                            "\"OwnerId\":\"005w0000003ZX6SAAW\"," +
-                            "\"Id\":\"003w000001GDQE9AAP\"," +
-                            "\"Account\":{  " +
-                                "\"attributes\":{  " +
-                                    "\"type\":\"Account\"," +
-                                    "\"url\":\"/services/data/v20.0/sobjects/Account/001w010001AjnNiAAJ\"" +
-                                "}," +
-                                "\"Name\":\"Edge Communications\"," +
-                                "\"Website\":\"http://edgecomm.com\"," +
-                                "\"Phone\":\"(512) 757-6000\"" +
-                            "}," +
-                            "\"ReportsTo\":null," +
-                            "\"LastModifiedDate\":\"2014-09-24T08:50:23.000+0000\"," +
-                            "\"Owner\":{  " +
-                                "\"attributes\":{  " +
-                                    "\"type\":\"User\"," +
-                                    "\"url\":\"/services/data/v20.0/sobjects/User/005w0010003ZX6SAAW\"" +
-                                "}," +
-                                "\"FirstName\":\"Hans\"," +
-                                "\"LastName\":\"Meier\"" +
-                            "}" +
+                            "\"LastName\":\"Meier\"" +
                         "}" +
-                        "]" +
-                        "}";
-                Gson gson = new Gson();
-                SalesforceContainer container = gson.fromJson(json, SalesforceContainer.class);
-                access.transferContacts(container);
+                    "}" +
+                    "]" +
+                    "}";
+            Gson gson = new Gson();
+            SalesforceContainer container = gson.fromJson(json, SalesforceContainer.class);
+            access.transferContacts(container);
 
-                // Sleep because API is to slow to refresh data
-                Thread.sleep(TIME_TO_SLEEP_MS);
+            // Sleep because API is to slow to refresh data
+            Thread.sleep(TIME_TO_SLEEP_MS);
 
-                URL feedUrl = new URL(CONTACT_FEED_URL);
-                // use reflection because of private Method getAllContacts
-                Class[] cArg = new Class[1];
-                cArg[0] = URL.class;
-                Method method = GMailContactAccess.class.getDeclaredMethod("getAllContacts", cArg);
-                method.setAccessible(true);
-                HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
+            URL feedUrl = new URL(CONTACT_FEED_URL);
+            // use reflection because of private Method getAllContacts
+            Class[] cArg = new Class[1];
+            cArg[0] = URL.class;
+            Method method = GMailContactAccess.class.getDeclaredMethod("getAllContacts", cArg);
+            method.setAccessible(true);
+            HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
 
-                assertThat(contacts.size()).isEqualTo(1);
+            assertThat(contacts.size()).isEqualTo(1);
 
-                Iterator it = contacts.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry pairs = (Map.Entry)it.next();
-                    ContactEntry entry = (ContactEntry) pairs.getValue();
-                    Birthday birthday = new Birthday();
-                    birthday.setWhen("1962-09-06");
-                    assertThat(entry.getBirthday()).isEqualTo(birthday);
-                }
+            Iterator it = contacts.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pairs = (Map.Entry)it.next();
+                ContactEntry entry = (ContactEntry) pairs.getValue();
+                Birthday birthday = new Birthday();
+                birthday.setWhen("1962-09-06");
+                assertThat(entry.getBirthday()).isEqualTo(birthday);
             }
         });
 

@@ -35,30 +35,28 @@ public class SalesforceTest {
 
     @Test
     public void getContactTest() {
-        JPA.withTransaction(new play.libs.F.Callback0() {
-            public void invoke() throws OAuthProblemException, OAuthSystemException, NoSuchFieldException, IllegalAccessException {
-                SalesforceContainer container = new SalesForceAccess().getSalesforceContacts();
+        JPA.withTransaction(() -> {
+            SalesforceContainer container = new SalesForceAccess().getSalesforceContacts();
 
-                // Use reflection because of private Field totalSize of Container class
-                Field field = SalesforceContainer.class.getDeclaredField("totalSize");
-                field.setAccessible(true);
-                String totalSize = (String) field.get(container);
-                int size = Integer.parseInt(totalSize);
+            // Use reflection because of private Field totalSize of Container class
+            Field field = SalesforceContainer.class.getDeclaredField("totalSize");
+            field.setAccessible(true);
+            String totalSize = (String) field.get(container);
+            int size = Integer.parseInt(totalSize);
 
-                assertThat(size).isGreaterThan(0);
-                assertThat(size).isEqualTo(container.getContacts().length);
+            assertThat(size).isGreaterThan(0);
+            assertThat(size).isEqualTo(container.getContacts().length);
 
-                SalesforceContact[] contacts = container.getContacts();
+            SalesforceContact[] contacts = container.getContacts();
 
-                boolean found = false;
-                for(SalesforceContact c : contacts){
-                    if(c.getFirstName() != null && c.getBirthdate() != null && c.getFirstName().equals("Peter") && c.getBirthdate().equals("1979-10-19") ) {
-                        found = true;
-                    }
+            boolean found = false;
+            for(SalesforceContact c : contacts){
+                if(c.getFirstName() != null && c.getBirthdate() != null && c.getFirstName().equals("Peter") && c.getBirthdate().equals("1979-10-19") ) {
+                    found = true;
                 }
-                assertThat(found).isEqualTo(true);
-
             }
+            assertThat(found).isEqualTo(true);
+
         });
     }
 
