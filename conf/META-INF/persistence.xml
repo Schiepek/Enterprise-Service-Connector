@@ -8,6 +8,7 @@
         <class>com.atlassian.connect.play.java.AcHost</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>-->
             <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/> -->
 
             <!-- Not recommended for PRODUCTION! This will re-create all tables on restart. -->
@@ -15,6 +16,17 @@
             <!--<property name="hibernate.show_sql" value="true"/>-->
             <!--<property name="hibernate.format_sql" value="true"/>-->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="testPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <non-jta-data-source>DefaultDS</non-jta-data-source>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="false"></property>
+            <property name="hibernate.format_sql" value="true"></property>
         </properties>
     </persistence-unit>
 </persistence>
