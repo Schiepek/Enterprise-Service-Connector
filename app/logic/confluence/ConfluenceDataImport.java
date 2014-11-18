@@ -40,7 +40,6 @@ public class ConfluenceDataImport {
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry) it.next();
             createUser((ConfluenceUser) pairs.getKey(), (String[]) pairs.getValue());
-            System.out.println(((ConfluenceUser) pairs.getKey()).getFullname());
         }
     }
 
