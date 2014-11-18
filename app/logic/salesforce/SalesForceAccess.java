@@ -63,6 +63,22 @@ public class SalesForceAccess {
         OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
         Gson gson = new Gson();
         SalesforceContainer container = gson.fromJson(resourceResponse.getBody(), SalesforceContainer.class);
+        if (!container.isDone()) {
+            container.addContacts(getAdditionalContacts(container.getNextRecordsUrl(), config).getContacts());
+        }
+        return container;
+    }
+
+    private SalesforceContainer getAdditionalContacts(String nextRecordsUrl, APIConfig config) throws OAuthSystemException, OAuthProblemException {
+        OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest(config.getInstance() + nextRecordsUrl)
+                .setAccessToken(config.getAccessToken()).buildHeaderMessage();
+        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+        OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+        Gson gson = new Gson();
+        SalesforceContainer container = gson.fromJson(resourceResponse.getBody(), SalesforceContainer.class);
+        if (!container.isDone()) {
+            container.addContacts(getAdditionalContacts(container.getNextRecordsUrl(), config).getContacts());
+        }
         return container;
     }
 

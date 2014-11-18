@@ -45,7 +45,8 @@ public class SalesforceTest {
             int size = Integer.parseInt(totalSize);
 
             assertThat(size).isGreaterThan(0);
-            assertThat(size).isEqualTo(container.getContacts().length);
+            int len = container.getContacts().length;
+            assertThat(len).isEqualTo(size);
 
             SalesforceContact[] contacts = container.getContacts();
 
