@@ -24,6 +24,7 @@ public class GMailContactAccess {
     private String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
     private String LAST_MODIFIED = "Last Modified";
     private String SALESFORCE_ID = "Salesforce Id";
+    private int EXCEPTION_COUNT = 20;
     private int GOOGLE_MAX_RESULTS = 1000000;
     private int created, updated, deleted;
     private ContactEntry entry;
@@ -56,17 +57,30 @@ public class GMailContactAccess {
                 groupId = createContactGroup();
             }
         }
+        int exceptionCount = 0;
+        int count = 0; //TODO delete
+        int size = container.getContacts().length; //TODO delete
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
         for (SalesforceContact contact : container.getContacts()) {
-            c = contact;
-            entry = getContact(googleContacts);
-            if (entry == null && contact.getEmail() != null) {
-                createContactEntry(groupId, feedUrl);
-            } else if (hasNewValues()) {
-                updateContactEntry();
+            try {
+                count++;
+                System.out.println("google transfer" + count + " / " + size);//TODO delete print line
+                c = contact;
+                entry = getContact(googleContacts);
+                if (entry == null && contact.getEmail() != null) {
+                    createContactEntry(groupId, feedUrl);
+                } else if (hasNewValues()) {
+                    updateContactEntry();
+                }
+                googleContacts.remove(SALESFORCE_INSTANCE + contact.getId());
+                exceptionCount = 0;
+            } catch(Exception e) {
+                if (exceptionCount > EXCEPTION_COUNT) {
+                    throw e;
+                }
+                exceptionCount++;
             }
-            googleContacts.remove(SALESFORCE_INSTANCE + contact.getId());
         }
         for (ContactEntry del : googleContacts.values()) {
             del.delete();

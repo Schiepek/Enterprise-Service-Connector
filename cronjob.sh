@@ -1,1 +1,0 @@
-curl --data "serverurl=blabla" http://sinv-56031.edu.hsr.ch/settings

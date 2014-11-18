@@ -29,8 +29,8 @@ public class SalesForceAccess {
             "Title," +
             "Salutation_Title__c," +
             "Birthdate," +
-            //"Language__c," +
-            "Languages__c," +
+            "Language__c," +
+            //"Languages__c," +
             "Phone," +
             "MobilePhone," +
             "ReportsToId," +

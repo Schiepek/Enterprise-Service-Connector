@@ -29,6 +29,7 @@ public class ConfluenceAccess {
     private final String SOAP_GETUSERGROUPS = "getUserGroups";
     private final String SOAP_GETALLGROUPS = "getGroups";
     private final String SOAP_GETSERVERINFO ="getServerInfo";
+    private final int EXCEPTION_COUNT = 20;
     private final String CONFLUENCE_SOAP_URL = Settings.getSettings().getConfluenceUrl() + "/rpc/json-rpc/confluenceservice-v2";
 
     public ConfluenceAccess() {
@@ -43,7 +44,7 @@ public class ConfluenceAccess {
         int exceptionCounter = 0;
         Map<ConfluenceUser, String[]> userGroupMap = new HashMap<>();
 
-        for (int i = 0; i < alluserscontainer.getAllResults().length/50; i++) { //TODO Elminiere /50 (nur zum Testen)
+        for (int i = 0; i < alluserscontainer.getAllResults().length; i++) {
             String username = alluserscontainer.getAllResults()[i];
             if(!username.contains("\uFFFD")) {
                 String[] param = { username };
@@ -60,7 +61,7 @@ public class ConfluenceAccess {
                     exceptionCounter = 0;
                     System.out.println(usercontainer.getUser().getName() + " "  + i);
                 } catch (Exception e) {
-                    if(exceptionCounter > 20) {
+                    if(exceptionCounter > EXCEPTION_COUNT) {
                         throw e;
                     }
                     i--;

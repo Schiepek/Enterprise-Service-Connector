@@ -36,9 +36,9 @@ public class ConfluenceDataImport {
 
     private void importConfluenceUserGroups() throws Exception {
         Iterator it = confluenceAccess.getUserGroups().entrySet().iterator();
+        sfAccess = new SalesForceAccess();
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry) it.next();
-            sfAccess = new SalesForceAccess();
             createUser((ConfluenceUser) pairs.getKey(), (String[]) pairs.getValue());
             System.out.println(((ConfluenceUser) pairs.getKey()).getFullname());
         }
