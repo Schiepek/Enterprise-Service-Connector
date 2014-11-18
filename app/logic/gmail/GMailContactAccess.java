@@ -65,7 +65,6 @@ public class GMailContactAccess {
         for (SalesforceContact contact : container.getContacts()) {
             try {
                 count++;
-                System.out.println("google transfer" + count + " / " + size);//TODO delete print line
                 c = contact;
                 entry = getContact(googleContacts);
                 if (entry == null && contact.getEmail() != null) {

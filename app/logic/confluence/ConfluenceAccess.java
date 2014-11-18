@@ -59,7 +59,6 @@ public class ConfluenceAccess {
                     }
                     userGroupMap.put(usercontainer.getUser(), groupString);
                     exceptionCounter = 0;
-                    System.out.println(usercontainer.getUser().getName() + " "  + i);
                 } catch (Exception e) {
                     if(exceptionCounter > EXCEPTION_COUNT) {
                         throw e;
