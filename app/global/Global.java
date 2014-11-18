@@ -44,18 +44,38 @@ public class Global extends AcGlobalSettings {
     @Transactional
     private static void schedule() {
         try {
-            Time.CronExpression e = new Time.CronExpression(Settings.getSettings().getCronExpression());
+            String newCronExpression = JPA.withTransaction((() -> Settings.getSettings().getCronExpression()));
+            Time.CronExpression e = new Time.CronExpression(newCronExpression);
             Date nextValidTimeAfter = e.getNextValidTimeAfter(new Date());
             FiniteDuration d = Duration.create(
                     nextValidTimeAfter.getTime() - System.currentTimeMillis(),
                     TimeUnit.MILLISECONDS);
+            final String finalNewCronExpression = newCronExpression;
             scheduler = Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
                 JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
                 //TODO Invoke GoogleContactstransfer and importGroupData
                 schedule();
             }, Akka.system().dispatcher());
-        } catch (Exception e) {
-            JPA.withTransaction(() -> Logging.log("Scheduling Error: " + e.getMessage()));
+        } catch (Throwable t) {
+            JPA.withTransaction(() -> Logging.log("Scheduling Error: " + t.getMessage()));
+        }
+    }
+
+    private static void reschedule(String newCronExpression) {
+        try {
+            Time.CronExpression e = new Time.CronExpression(newCronExpression);
+            Date nextValidTimeAfter = e.getNextValidTimeAfter(new Date());
+            FiniteDuration d = Duration.create(
+                    nextValidTimeAfter.getTime() - System.currentTimeMillis(),
+                    TimeUnit.MILLISECONDS);
+            final String finalNewCronExpression = newCronExpression;
+            scheduler = Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
+                Logging.log("Scheduled Task executed");
+                //TODO Invoke GoogleContactstransfer and importGroupData
+                schedule();
+            }, Akka.system().dispatcher());
+        } catch (Throwable t) {
+            Logging.log("Scheduling Error: " + t.getMessage());
         }
     }
 
@@ -80,11 +100,8 @@ public class Global extends AcGlobalSettings {
         return Promise.<SimpleResult>pure(badRequest("Don't try to hack the URI!"));
     }
 
-    @Transactional
-    public static void setNewScheduler(String oldCronExpression) {
-        if(!oldCronExpression.equals(Settings.getSettings().getCronExpression())) {
-                Logging.log("Scheduling time changed to: " + Settings.getSettings().getCronExpression());
-                schedule();
-        }
+    public static void setNewScheduler(String newCronExpression) {
+        Logging.log("Scheduling time changed to: " + newCronExpression);
+        reschedule(newCronExpression);
     }
 }

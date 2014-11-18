@@ -1,9 +1,6 @@
 @(entries: List[Logging])
 
-@import helper._
-
 @main("Logs") {
-
     <table class="aui content-report-table-macro tablesorter">
         <thead>
             <tr class="tablesorter-headerRow">
@@ -13,13 +10,13 @@
             </tr>
         </thead>
         <tbody>
-        @for(entry <- entries){
-            <tr>
-                <td>@entry.getId</td>
-                <td>@entry.getDate</td>
-                <td>@entry.getMessage</td>
-            </tr>
-        }
+            @for(i <- entries.length-1 to 0 by -1) {
+                <tr>
+                    <td>@entries.get(i).getId</td>
+                    <td>@entries.get(i).getDate</td>
+                    <td>@entries.get(i).getMessage</td>
+                </tr>
+            }
         </tbody>
     </table>
 

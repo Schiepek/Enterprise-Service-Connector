@@ -44,12 +44,15 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result setSettings() {
+    public static Result setSettings() throws Throwable {
         Form<Settings> filledForm = settingsForm.bindFromRequest();
         if (filledForm.hasErrors()) return errorRequest();
         String oldCronExpression = Settings.getSettings().getCronExpression();
+        String newCronExpression = filledForm.get().getCronExpression();
         Settings.create(filledForm.get());
-        Global.setNewScheduler(oldCronExpression);
+        if(!oldCronExpression.equals(newCronExpression)) {
+            Global.setNewScheduler(newCronExpression);
+        }
         return index();
     }
 
