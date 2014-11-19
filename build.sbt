@@ -8,6 +8,8 @@ scalaVersion := "2.10.3"
 
 playJavaSettings
 
+libraryDependencies += "org.postgresql" % "postgresql" % "9.3-1100-jdbc4"
+
 resolvers += "Atlassian's Maven Public Repository" at "https://maven.atlassian.com/content/groups/public"
 
 resolvers += "Local Maven Repository" at "file://" + Path.userHome + "/.m2/repository"
@@ -15,7 +17,7 @@ resolvers += "Local Maven Repository" at "file://" + Path.userHome + "/.m2/repos
 libraryDependencies ++= Seq(
   javaCore,
   javaJpa,
-  "com.atlassian.connect" % "ac-play-java_2.10" % "0.10.1" withSources(),
-  "mysql" % "mysql-connector-java" % "5.1.19",
-  "org.hibernate" % "hibernate-entitymanager" % "4.1.2.Final"
+  "com.atlassian.connect" % "ac-play-java_2.10" % "0.10.1" withSources()
+//  "mysql" % "mysql-connector-java" % "5.1.19",
+//  "org.hibernate" % "hibernate-entitymanager" % "4.1.2.Final"
 )

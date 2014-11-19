@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 public class Logging {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private Date date;

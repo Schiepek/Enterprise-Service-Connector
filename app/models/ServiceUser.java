@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Entity
 public class ServiceUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     private String fullName;
     private String company;

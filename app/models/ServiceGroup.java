@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 public class ServiceGroup {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     private String providerKey;
     private String name;
