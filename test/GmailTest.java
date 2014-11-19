@@ -104,7 +104,7 @@ public class GmailTest {
     @Test
     public void transferContactsTest() {
 
-        JPA.withTransaction(() -> {
+        JPA.withTransaction((play.libs.F.Callback0) () -> {
             GMailContactAccess access = new GMailContactAccess(config, settings);
             access.deleteContacts();
             // Sleep because API is to slow to refresh data
