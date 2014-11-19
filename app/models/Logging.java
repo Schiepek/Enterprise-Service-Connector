@@ -2,10 +2,7 @@ package models;
 
 import play.db.jpa.JPA;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -72,7 +69,7 @@ public class Logging {
     public static void log(int created, int updated, int deleted) {
         String message = "contact transfer: ";
         if(created == 0 && updated == 0 && deleted == 0) {
-            message += "no new data ";
+            message += "no new data";
         } else {
             if (created != 0) {
                 message += created + " created ";
@@ -85,5 +82,16 @@ public class Logging {
             }
         }
         log(message);
+    }
+
+    public static Logging getLast() {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Logging.class);
+        Root<Logging> c = cq.from(Logging.class);
+        cq.orderBy(cb.desc(c.get("date")));
+        Query query = JPA.em().createQuery(cq);
+        query.setMaxResults(1);
+        List<Logging> result = query.getResultList();
+        return result.get(0);
     }
 }

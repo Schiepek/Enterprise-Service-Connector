@@ -1,25 +1,26 @@
 import com.google.gdata.data.contacts.Birthday;
 import com.google.gdata.data.contacts.ContactEntry;
-import com.google.gdata.util.ServiceException;
 import com.google.gson.Gson;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import logic.gmail.GMailContactAccess;
 import models.APIConfig;
+import models.Logging;
 import models.ServiceProvider;
 import models.Settings;
 import models.gsonmodels.SalesforceContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.Configuration;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
 import play.test.FakeApplication;
 
 import javax.persistence.EntityManager;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,10 +39,14 @@ public class GmailTest {
     protected APIConfig config;
     protected Settings settings;
     private static final int TIME_TO_SLEEP_MS = 4000;
+    private Configuration additionalConfigurations;
 
     @Before
     public void setUpIntegrationTest() {
-        FakeApplication app = fakeApplication();
+        Config additionalConfig = ConfigFactory.parseFile(new File("conf/test.conf"));
+        additionalConfigurations = new Configuration(additionalConfig);
+
+        FakeApplication app = fakeApplication(additionalConfigurations.asMap());
         start(app);
         em = app.getWrappedApplication().plugin(JPAPlugin.class).get().em("default");
         JPA.bindForCurrentThread(em);
@@ -67,32 +72,49 @@ public class GmailTest {
     @Test
     public void deleteContactsTest() {
         JPA.withTransaction(() -> {
-            GMailContactAccess access = new GMailContactAccess(config, settings);
-            access.deleteContacts();
-
-            // Sleep because API is to slow to refresh data
-            Thread.sleep(TIME_TO_SLEEP_MS);
-
-            URL feedUrl = new URL(CONTACT_FEED_URL);
             // use reflection because of private Method getAllContacts
+            URL feedUrl = new URL(CONTACT_FEED_URL);
             Class[] cArg = new Class[1];
             cArg[0] = URL.class;
             Method method = GMailContactAccess.class.getDeclaredMethod("getAllContacts", cArg);
             method.setAccessible(true);
             HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
+            int size = contacts.size();
 
-            assertThat(contacts.size()).isEqualTo(0);
-        });
-    }
-
-    @Test
-    public void transferContactsTest() {
-        JPA.withTransaction(() -> {
             GMailContactAccess access = new GMailContactAccess(config, settings);
             access.deleteContacts();
 
             // Sleep because API is to slow to refresh data
             Thread.sleep(TIME_TO_SLEEP_MS);
+
+            // use reflection because of private Method getAllContacts
+            contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
+
+            assertThat(contacts.size()).isEqualTo(0);
+
+            Logging l = Logging.getLast();
+            if (size == 0) {
+                assertThat(l.getMessage()).isEqualTo("contact transfer: no new data");
+            } else {
+                assertThat(l.getMessage()).isEqualTo("contact transfer: " + size +" deleted");
+            }
+        });
+    }
+
+    @Test
+    public void transferContactsTest() {
+
+        JPA.withTransaction(() -> {
+            GMailContactAccess access = new GMailContactAccess(config, settings);
+            access.deleteContacts();
+            // Sleep because API is to slow to refresh data
+            Thread.sleep(TIME_TO_SLEEP_MS);
+        });
+
+        // new transaction beacause of Logging
+        JPA.withTransaction(() -> {
+            GMailContactAccess access = new GMailContactAccess(config, settings);
+
 
             String json = "{  " +
                     "\"totalSize\":1," +
@@ -157,6 +179,9 @@ public class GmailTest {
             Method method = GMailContactAccess.class.getDeclaredMethod("getAllContacts", cArg);
             method.setAccessible(true);
             HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
+
+            Logging l = Logging.getLast();
+            assertThat(l.getMessage()).isEqualTo("contact transfer: 1 created ");
 
             assertThat(contacts.size()).isEqualTo(1);
 
