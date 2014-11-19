@@ -13,6 +13,7 @@ import logic.jira.JiraConnector;
 import logic.salesforce.SalesForceAccess;
 import logic.salesforce.SalesForceConnector;
 import models.APIConfig;
+import models.Logging;
 import models.ServiceProvider;
 import models.Settings;
 import net.oauth.OAuthException;
@@ -134,16 +135,21 @@ public class AccountController extends Controller {
             switch (ServiceProvider.valueOf(provider)) {
                 case SALESFORCE:
                     new SalesForceConnector().setRefreshToken();
+                    break;
                 case GMAIL:
                     new GMailConnector().getDirectoryService();
                     new GMailConnector().getContactService();
+                    break;
                 case JIRA:
                     new JiraAccess().checkStatus();
+                    break;
                 case CONFLUENCE:
                     new ConfluenceAccess().checkStatus();
+                    break;
             }
 
         } catch (Exception e) {
+            Logging.log("Authorization Error: " + e.getMessage());
             return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
         }
         return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
