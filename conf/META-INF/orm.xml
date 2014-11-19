@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="1.0"
+                       xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+    <description>Override Annotations...</description>
+
+    <!-- Set the default to FIELD-access, if you like -->
+    <!--<persistence-unit-metadata>-->
+        <!--<persistence-unit-defaults>-->
+            <!--<access>FIELD</access>-->
+        <!--</persistence-unit-defaults>-->
+    <!--</persistence-unit-metadata>-->
+
+    <entity class="com.atlassian.connect.play.java.AcHost">
+        <attribute-override name="key">
+            <column name="ac_key"/>
+        </attribute-override>
+    </entity>
+
+</entity-mappings>
