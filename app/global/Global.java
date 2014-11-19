@@ -17,6 +17,7 @@ import views.html.error;
 import views.html.notFound;
 
 import javax.jdo.annotations.Transactional;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +32,7 @@ public class Global extends AcGlobalSettings {
     @Override
     public void onStart(Application application) {
         super.onStart(application);
+        JPA.withTransaction(() -> Logging.log("PLAY START"));
         schedule();
     }
 
@@ -45,38 +47,23 @@ public class Global extends AcGlobalSettings {
     private static void schedule() {
         try {
             String newCronExpression = JPA.withTransaction((() -> Settings.getSettings().getCronExpression()));
-            Time.CronExpression e = new Time.CronExpression(newCronExpression);
-            Date nextValidTimeAfter = e.getNextValidTimeAfter(new Date());
-            FiniteDuration d = Duration.create(
-                    nextValidTimeAfter.getTime() - System.currentTimeMillis(),
-                    TimeUnit.MILLISECONDS);
-            final String finalNewCronExpression = newCronExpression;
-            scheduler = Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
-                JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
-                //TODO Invoke GoogleContactstransfer and importGroupData
-                schedule();
-            }, Akka.system().dispatcher());
+            defineScheduledTask(newCronExpression);
         } catch (Throwable t) {
             JPA.withTransaction(() -> Logging.log("Scheduling Error: " + t.getMessage()));
         }
     }
 
-    private static void reschedule(String newCronExpression) {
-        try {
-            Time.CronExpression e = new Time.CronExpression(newCronExpression);
-            Date nextValidTimeAfter = e.getNextValidTimeAfter(new Date());
-            FiniteDuration d = Duration.create(
-                    nextValidTimeAfter.getTime() - System.currentTimeMillis(),
-                    TimeUnit.MILLISECONDS);
-            final String finalNewCronExpression = newCronExpression;
-            scheduler = Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
-                Logging.log("Scheduled Task executed");
-                //TODO Invoke GoogleContactstransfer and importGroupData
-                schedule();
-            }, Akka.system().dispatcher());
-        } catch (Throwable t) {
-            Logging.log("Scheduling Error: " + t.getMessage());
-        }
+    private static void defineScheduledTask(String newCronExpression) throws ParseException {
+        Time.CronExpression e = new Time.CronExpression(newCronExpression);
+        Date nextValidTimeAfter = e.getNextValidTimeAfter(new Date());
+        FiniteDuration d = Duration.create(
+                nextValidTimeAfter.getTime() - System.currentTimeMillis(),
+                TimeUnit.MILLISECONDS);
+        Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
+            JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
+            //TODO Invoke GoogleContactstransfer and importGroupData
+            schedule();
+        }, Akka.system().dispatcher());
     }
 
     @Override
@@ -102,6 +89,10 @@ public class Global extends AcGlobalSettings {
 
     public static void setNewScheduler(String newCronExpression) {
         Logging.log("Scheduling time changed to: " + newCronExpression);
-        reschedule(newCronExpression);
+        try {
+            defineScheduledTask(newCronExpression);
+        } catch (Throwable t) {
+            Logging.log("Scheduling Error: " + t.getMessage());
+        }
     }
 }
