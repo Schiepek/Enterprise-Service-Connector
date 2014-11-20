@@ -7,9 +7,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class ServiceUser {
@@ -52,7 +50,7 @@ public class ServiceUser {
         this.phoneWork = contact.getPhone();
         this.phoneMobile = contact.getMobilePhone();
         this.phoneCompany = contact.getAccountPhone();
-        this.salesforceId = contact.getId();
+        this.salesforceId = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/" + contact.getId();
         for (String group : groups) {
                 ServiceGroup g = ServiceGroup.getGroupByGroupname(group, provider);
                 g.addMember(this);
