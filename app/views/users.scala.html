@@ -28,7 +28,7 @@
                 <td>@user.getFullName</td>
                 <td>
                     @for(group <- user.getGroups) {
-                        @group.getName<br />
+                        @group.getName (@group.getProvider().toString().toLowerCase())<br />
                     }
                 </td>
                 <td>

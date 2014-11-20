@@ -110,6 +110,10 @@ public class ServiceGroup {
         this.provider = provider;
     }
 
+    public ServiceProvider getProvider() {
+        return provider;
+    }
+
     public String getName() {
         return name;
     }
