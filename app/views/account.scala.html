@@ -39,7 +39,7 @@
             </select>
         </div>
         <div class="field-group">
-            <label for="cronExpression">Cron Expression</label>
+            <label for="cronExpression">Quartz Cron Expression</label>
             <input class="text" type="text" id="cronExpresson" name="cronExpression" value="@settings.getCronExpression()">
         </div>
         <div class="buttons-container">
@@ -66,8 +66,8 @@
                 <th>Provider</th>
                 <th style="min-width: 500px;">Client Id</th>
                 <th style="max-width: 250px;">Client Secret</th>
+                <th style="min-width: 125px;">Actions</th>
                 <th>Status</th>
-                <th style="min-width: 125px;">Aktionen</th>
             </tr>
         </thead>
         <tbody>
@@ -93,15 +93,13 @@
                         <input class="text text-middle" type="text" id="clientSecret@account.getProvider" name="clientSecret" form="@account.getProvider()form" value="@account.getClientSecret">
                     </td>
                 }
-
-
-                <td id="status_@account.getProvider"></td>
                 <td>
                     <a href="javascript:document.@account.getProvider()form.submit()" id="save_@account.getProvider" class="save-btn" style="display: none"><button class="aui-button btn-mini"><span title="Save" class="aui-icon aui-icon-small aui-iconfont-approve"></span></button></a>
                     <a href="#" id="edit_@account.getProvider"><button class="aui-button btn-mini"><span title="Edit" class="aui-icon aui-icon-small aui-iconfont-edit"></span></button></a>
                     <a href="/accounts/authorize/@account.getProvider"><button class="aui-button btn-mini"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button></a>
                     <a href="#" onclick="$('#status_@account.getProvider').load('/accounts/check/@account.getProvider')"><button class="aui-button btn-mini"><span title="Check Status" class="aui-icon aui-icon-small aui-iconfont-build"></span></button></a>
                 </td>
+                <td id="status_@account.getProvider"></td>
             </tr>
         }
         </tbody>

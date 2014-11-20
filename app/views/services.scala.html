@@ -3,11 +3,11 @@
 @import helper._
 
 @main("Users") {
-    Letzter Import:
+    Last Import:
     @if(lastImport != null) {
         @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
     } else {
-        es wurde noch kein Import durchgeführt.<br />
+        No import executed yet.<br />
     }
 
 
@@ -18,7 +18,7 @@
             <thead>
                 <tr class="tablesorter-headerRow">
                     <th>Name</th>
-                    <th>Benutzer</th>
+                    <th>User</th>
                     <th>Mail</th>
                     <th>Aliases</th>
                 </tr>

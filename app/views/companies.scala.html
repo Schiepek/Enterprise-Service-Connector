@@ -4,29 +4,29 @@
 
 @main("Users") {
 
-    Letzter Import:
+    Last import:
     @if(lastImport != null) {
         @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
     } else {
-        es wurde noch kein Import durchgeführt.<br />
+        no import executed yet.<br />
     }
 
     @for(company <- companies){
         @if(company) {
             <h2>@company</h2>
         } else {
-            <h2>Firma unbekannt</h2>
+            <h2>Company unknown</h2>
         }
 
         <table class="aui content-report-table-macro tablesorter">
             <thead>
                 <tr class="tablesorter-headerRow">
                     <th>Name</th>
-                    <th>Benutzergruppen</th>
-                    <th>Zugänge</th>
-                    <th>Funktion</th>
-                    <th>Firma</th>
-                    <th>Kontaktdaten</th>
+                    <th>Usergroups</th>
+                    <th>Access</th>
+                    <th>Function</th>
+                    <th>Company</th>
+                    <th>Contact Data</th>
                 </tr>
             </thead>
             <tbody>

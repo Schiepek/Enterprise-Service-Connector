@@ -4,12 +4,13 @@
 
 @main("Import") {
 
-    Um die Benutzer und Gruppen neu auszulesen, kann ein manueller Import gestartet werden. Bitte beachten Sie dabei, dass dies einige Minuten dauern kann.<br />
-    Letzter Import:
+    This import is to create the groups and user lists manually instead of using cronjob<br/>
+    The Job can take up to 30 minutes<br/>
+    Last import:
     @if(lastImport != null) {
         @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
     } else {
-        es wurde noch kein Import durchgeführt.<br />
+        no import executed yet<br />
     }
 
     @form(routes.UserController.importData(), args = 'class -> "aui") {
