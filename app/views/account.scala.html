@@ -3,6 +3,7 @@
         settings: models.Settings,
         settingsForm: Form[models.Settings])
 @import models.ServiceProvider.GMAIL
+@import models.ServiceProvider.GOOGLEPHONE
 @import models.ServiceProvider.SALESFORCE
 @import models.ServiceProvider.JIRA
 @import models.ServiceProvider.CONFLUENCE
@@ -54,6 +55,8 @@
     @form(routes.AccountController.save(SALESFORCE.toString()), args = 'class -> "aui", 'name -> (SALESFORCE+"form"), 'id -> (SALESFORCE+"form")) {
     }
     @form(routes.AccountController.save(GMAIL.toString), args = 'class -> "aui", 'name -> (GMAIL+"form"), 'id -> (GMAIL+"form")) {
+    }
+    @form(routes.AccountController.save(GOOGLEPHONE.toString), args = 'class -> "aui", 'name -> (GOOGLEPHONE+"form"), 'id -> (GOOGLEPHONE+"form")) {
     }
     @form(routes.AccountController.save(JIRA.toString), args = 'class -> "aui", 'name -> (JIRA+"form"), 'id -> (JIRA+"form")) {
     }
@@ -109,6 +112,12 @@
     @form(routes.AccountController.transferContacts(), args = 'class -> "aui") {
         <div class="buttons">
             <input class="button submit" type="submit" value="Transfer Contacts">
+        </div>
+    }
+
+    @form(routes.AccountController.transferContactsToPhone(), args = 'class -> "aui") {
+        <div class="buttons">
+            <input class="button submit" type="submit" value="Transfer Contacts To Phone">
         </div>
     }
 

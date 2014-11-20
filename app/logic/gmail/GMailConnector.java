@@ -26,7 +26,7 @@ public class GMailConnector {
             DirectoryScopes.ADMIN_DIRECTORY_GROUP_READONLY, DirectoryScopes.ADMIN_DIRECTORY_GROUP_MEMBER_READONLY,
             DirectoryScopes.ADMIN_DIRECTORY_USER_READONLY};
     private final String APP_NAME = "esc-project";
-    private final String CALLBACK_URI_PATH = "/gmail/callback";
+    private String CALLBACK_URI_PATH;
     private String CALLBACK_URI;
     private GoogleAuthorizationCodeFlow flow;
     private APIConfig account;
@@ -38,6 +38,12 @@ public class GMailConnector {
     }
 
     public GMailConnector(APIConfig account) {
+        if (account.getProvider().equals(ServiceProvider.GMAIL)) {
+            CALLBACK_URI_PATH = "/gmail/callback";
+        }
+        if (account.getProvider().equals(ServiceProvider.GOOGLEPHONE)) {
+            CALLBACK_URI_PATH = "/googlephone/callback";
+        }
         this.account = account;
         flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, jsonFactory, account.getClientId(), account.getClientSecret(), Arrays.asList(SCOPE))

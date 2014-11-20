@@ -8,6 +8,7 @@ GET         /                                    controllers.AccountController.i
 # OAuth Callbacks
 GET         /salesforce/callback                 controllers.AccountController.callbackSalesForce()
 GET         /gmail/callback                      controllers.AccountController.callbackGmail()
+GET         /googlephone/callback                controllers.AccountController.callbackGooglePhone()
 GET         /jira/callback                       controllers.AccountController.callbackJira()
 GET         /confluence/callback                 controllers.AccountController.callbackConfluence()
 
@@ -15,6 +16,7 @@ GET         /accounts                            controllers.AccountController.i
 GET         /accounts/authorize/:provider        controllers.AccountController.authorize(provider: String)
 POST        /accounts/save/:provider             controllers.AccountController.save(provider: String)
 POST        /accounts/transfer                   controllers.AccountController.transferContacts()
+POST        /accounts/transferphone              controllers.AccountController.transferContactsToPhone()
 POST        /accounts/delete                     controllers.AccountController.deleteContacts()
 POST        /accounts/settings                   controllers.AccountController.setSettings()
 GET         /accounts/check/:provider            controllers.AccountController.checkStatus(provider: String)
@@ -22,9 +24,9 @@ GET         /accounts/check/:provider            controllers.AccountController.c
 # routes for user and group views
 GET         /users                               controllers.UserController.users()
 GET         /users/companies                     controllers.UserController.companies()
-GET         /users/services                     controllers.UserController.services()
+GET         /users/services                      controllers.UserController.services()
 
-GET        /users/import                        controllers.UserController.importView()
+GET         /users/import                        controllers.UserController.importView()
 POST        /users/import/start                  controllers.UserController.importData()
 
 

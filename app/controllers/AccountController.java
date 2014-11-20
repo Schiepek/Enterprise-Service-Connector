@@ -78,6 +78,8 @@ public class AccountController extends Controller {
                 return redirect(new SalesForceConnector().requestLocationURI());
             case GMAIL:
                 return redirect(new GMailConnector().authorize());
+            case GOOGLEPHONE:
+                return redirect(new GMailConnector(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).authorize());
             case JIRA:
                 return redirect(new JiraConnector().authorize());
             case CONFLUENCE:
@@ -90,6 +92,12 @@ public class AccountController extends Controller {
     @Transactional
     public static Result callbackGmail() throws IOException {
         new GMailConnector().generateRefreshToken(request().getQueryString("code"));
+        return index();
+    }
+
+    @Transactional
+    public static Result callbackGooglePhone() throws IOException {
+        new GMailConnector(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).generateRefreshToken(request().getQueryString("code"));
         return index();
     }
 
@@ -124,6 +132,17 @@ public class AccountController extends Controller {
     }
 
     @Transactional
+    public static Result transferContactsToPhone() throws
+            IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
+        try {
+            new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts());
+        } catch (Exception e) {
+            throw new TransferException(e.getMessage());
+        }
+        return index();
+    }
+
+    @Transactional
     public static Result deleteContacts() throws IOException, ServiceException {
         new GMailContactAccess().deleteContacts();
         return index();
@@ -139,6 +158,10 @@ public class AccountController extends Controller {
                 case GMAIL:
                     new GMailConnector().getDirectoryService();
                     new GMailConnector().getContactService();
+                    break;
+                case GOOGLEPHONE:
+                    new GMailConnector(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).getDirectoryService();
+                    new GMailConnector(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).getContactService();
                     break;
                 case JIRA:
                     new JiraAccess().checkStatus();

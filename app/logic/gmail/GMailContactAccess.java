@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.*;
 
 public class GMailContactAccess {
+    private APIConfig account;
     private ContactsService service;
     private final String GROUP_NAME = "System Group: My Contacts";
     private String CONTACT_FEED_URL;
@@ -33,16 +34,17 @@ public class GMailContactAccess {
     private List<String> loggingInformation = new ArrayList<String>();
 
     public GMailContactAccess() throws IOException {
-        this(APIConfig.getAPIConfig(ServiceProvider.GMAIL), Settings.getSettings());
+        this(APIConfig.getAPIConfig(ServiceProvider.GMAIL));
     }
 
-    public GMailContactAccess(APIConfig config, Settings settings) throws IOException {
+    public GMailContactAccess(APIConfig config) throws IOException {
+        this.account = config;
         service = new GMailConnector(config).getContactService();
-        setDirectorySettings(settings);
+        setDirectorySettings(Settings.getSettings());
     }
 
     private void setDirectorySettings(Settings settings) {
-        if (settings.getSaveInDirectory()) {
+        if (settings.getSaveInDirectory() && account.getProvider().equals(ServiceProvider.GMAIL)) {
             CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/" + Settings.getSettings().getDomain() + "/full";
             GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/" + Settings.getSettings().getDomain() + "/full";
         } else {
@@ -53,7 +55,7 @@ public class GMailContactAccess {
 
     public void transferContacts(SalesforceContainer container) throws IOException, ServiceException, java.text.ParseException {
         String groupId = "";
-        if (!Settings.getSettings().getSaveInDirectory()) {
+        if (!Settings.getSettings().getSaveInDirectory() || account.getProvider().equals(ServiceProvider.GOOGLEPHONE)) {
             groupId = getMyContactsGroupId();
         }
         int exceptionCount = 0;
@@ -141,7 +143,7 @@ public class GMailContactAccess {
 
     private void createContactEntry(String groupId, URL feedUrl) throws ServiceException, java.text.ParseException, IOException {
         entry = new ContactEntry();
-        if (!Settings.getSettings().getSaveInDirectory()) {
+        if (!Settings.getSettings().getSaveInDirectory() || account.getProvider().equals(ServiceProvider.GOOGLEPHONE)) {
             entry.addGroupMembershipInfo(new GroupMembershipInfo(false, groupId));
         }
         createName();
