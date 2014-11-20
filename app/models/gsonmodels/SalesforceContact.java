@@ -122,6 +122,6 @@ public class SalesforceContact {
     }
 
     public String getOwnerName() {
-        return Owner != null ? Owner.getName() : null;
+        return Owner != null ? Owner.getLastName() : null;
     }
 }

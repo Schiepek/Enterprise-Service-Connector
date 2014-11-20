@@ -6,6 +6,13 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +26,9 @@ public class Logging {
     private String message;
 
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
     public Date getDate() {
         return date;
@@ -66,22 +75,31 @@ public class Logging {
         log.save();
     }
 
-    public static void log(int created, int updated, int deleted) {
-        String message = "contact transfer: ";
-        if(created == 0 && updated == 0 && deleted == 0) {
-            message += "no new data";
-        } else {
-            if (created != 0) {
-                message += created + " created ";
-            }
-            if (updated != 0) {
-                message += updated + " updated ";
-            }
-            if (deleted !=0) {
-                message += deleted + " deleted";
-            }
+    public static void logTransfer(List<String> transferInformation) throws IOException {
+        PrintWriter out = null;
+        BufferedWriter bufWriter;
+
+        bufWriter = Files.newBufferedWriter(
+                Paths.get("transfer.log"),
+                Charset.forName("UTF8"),
+                StandardOpenOption.WRITE,
+                StandardOpenOption.APPEND,
+                StandardOpenOption.CREATE);
+        out = new PrintWriter(bufWriter, true);
+
+        out.println("*********************************************************************");
+        out.println("Salesforce > Gmail Transfer");
+        out.println("Date: "  + new Date().toString());
+        out.println("---------------------------");
+        for(String line : transferInformation) {
+            out.println(line);
         }
-        log(message);
+        if(transferInformation.isEmpty()) {
+            out.println("No data transfered, everything up to date!");
+        }
+        out.println("*********************************************************************");
+        out.close();
+        Logging.log("Salesforce > Gmail Transfer successfull: " + transferInformation.size() + " Contacts modified");
     }
 
     public static Logging getLast() {

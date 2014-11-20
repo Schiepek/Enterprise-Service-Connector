@@ -14,10 +14,7 @@ import models.gsonmodels.SalesforceContainer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class GMailContactAccess {
     private ContactsService service;
@@ -31,9 +28,9 @@ public class GMailContactAccess {
     private String F_CONTACT = "f-Contact";
     private int EXCEPTION_COUNT = 20;
     private int GOOGLE_MAX_RESULTS = 1000000;
-    private int created, updated, deleted;
     private ContactEntry entry;
     private SalesforceContact c;
+    private List<String> loggingInformation = new ArrayList<String>();
 
     public GMailContactAccess() throws IOException {
         this(APIConfig.getAPIConfig(ServiceProvider.GMAIL), Settings.getSettings());
@@ -45,7 +42,7 @@ public class GMailContactAccess {
     }
 
     private void setDirectorySettings(Settings settings) {
-        if(settings.getSaveInDirectory()) {
+        if (settings.getSaveInDirectory()) {
             CONTACT_FEED_URL = "https://www.google.com/m8/feeds/contacts/" + Settings.getSettings().getDomain() + "/full";
             GROUP_DEFAULT = "https://www.google.com/m8/feeds/groups/" + Settings.getSettings().getDomain() + "/full";
         } else {
@@ -56,13 +53,16 @@ public class GMailContactAccess {
 
     public void transferContacts(SalesforceContainer container) throws IOException, ServiceException, java.text.ParseException {
         String groupId = "";
-        if(!Settings.getSettings().getSaveInDirectory()) {
+        if (!Settings.getSettings().getSaveInDirectory()) {
             groupId = getMyContactsGroupId();
         }
         int exceptionCount = 0;
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
+        int counter = 0; //TODO remove reducer
         for (SalesforceContact contact : container.getContacts()) {
+            counter++;
+            if (counter > 20) break; //TODO remove reducer
             try {
                 c = contact;
                 entry = getContact(googleContacts);
@@ -73,7 +73,7 @@ public class GMailContactAccess {
                 }
                 googleContacts.remove(SALESFORCE_INSTANCE + contact.getId());
                 exceptionCount = 0;
-            } catch(Exception e) {
+            } catch (Exception e) {
                 if (exceptionCount > EXCEPTION_COUNT) {
                     throw e;
                 }
@@ -81,18 +81,24 @@ public class GMailContactAccess {
             }
         }
         for (ContactEntry del : googleContacts.values()) {
-            del.delete();
-            deleted++;
+            if(getSalesForceId(del)!=null) {
+                entry = del;
+                addLoggingInformation("DELETE");
+                del.delete();
+            }
         }
-        Logging.log(created, updated, deleted);
+        Logging.logTransfer(loggingInformation);
     }
 
     public void deleteContacts() throws IOException, ServiceException {
         for (ContactEntry del : getAllContacts(new URL(CONTACT_FEED_URL)).values()) {
-            del.delete();
-            deleted++;
+            if(getSalesForceId(del)!=null) {
+                entry = del;
+                addLoggingInformation("DELETE");
+                del.delete();
+            }
         }
-        Logging.log(created, updated, deleted);
+        Logging.logTransfer(loggingInformation);
     }
 
     private ContactEntry getContact(HashMap<String, ContactEntry> googleContacts) throws IOException, ServiceException {
@@ -123,7 +129,7 @@ public class GMailContactAccess {
     }
 
     private boolean hasNewValues() throws ServiceException, java.text.ParseException, IOException {
-        if(entry==null) return false;
+        if (entry == null) return false;
         String transferDate = EscDateTimeParser.parseSfDateToString((c.getLastModifiedDate()));
         String googleDate = null;
         for (UserDefinedField field : entry.getUserDefinedFields()) {
@@ -135,7 +141,7 @@ public class GMailContactAccess {
 
     private void createContactEntry(String groupId, URL feedUrl) throws ServiceException, java.text.ParseException, IOException {
         entry = new ContactEntry();
-        if(!Settings.getSettings().getSaveInDirectory()){
+        if (!Settings.getSettings().getSaveInDirectory()) {
             entry.addGroupMembershipInfo(new GroupMembershipInfo(false, groupId));
         }
         createName();
@@ -156,34 +162,29 @@ public class GMailContactAccess {
         createUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
 
         service.insert(feedUrl, entry);
-        created++;
+        addLoggingInformation("CREATE");
     }
 
     private void updateContactEntry() throws java.text.ParseException, IOException, ServiceException {
-        if (c.getEmail() == null) {
-            entry.delete();
-            deleted++;
-        } else {
-            updateName();
-            updateMail();
-            updateWebsite();
-            updateBirthday();
-            updateLanguage();
-            updatePhoneNumber(c.getPhone(), PhoneNumber.Rel.WORK, true);
-            updatePhoneNumber(c.getMobilePhone(), PhoneNumber.Rel.MOBILE, false);
-            updatePhoneNumber(c.getAccountPhone(), PhoneNumber.Rel.COMPANY_MAIN, false);
-            updatePostalAddress();
-            updateTitle();
-            updateManager();
-            updateOrganization();
-            updateUserField("F-Contact", c.getF_contact());
-            updateUserField("F-Branch", c.getOwnerName());
-            updateUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
+        updateName();
+        updateMail();
+        updateWebsite();
+        updateBirthday();
+        updateLanguage();
+        updatePhoneNumber(c.getPhone(), PhoneNumber.Rel.WORK, true);
+        updatePhoneNumber(c.getMobilePhone(), PhoneNumber.Rel.MOBILE, false);
+        updatePhoneNumber(c.getAccountPhone(), PhoneNumber.Rel.COMPANY_MAIN, false);
+        updatePostalAddress();
+        updateTitle();
+        updateManager();
+        updateOrganization();
+        updateUserField(F_CONTACT, c.getF_contact());
+        updateUserField(F_BRANCH, c.getOwnerName());
+        updateUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
 
-            URL editUrl = new URL(entry.getEditLink().getHref());
-            service.update(editUrl, entry);
-            updated++;
-        }
+        URL editUrl = new URL(entry.getEditLink().getHref());
+        service.update(editUrl, entry);
+        addLoggingInformation("UPDATE");
     }
 
     private void createName() {
@@ -494,5 +495,9 @@ public class GMailContactAccess {
             }
         }
         return myContactsGroupId;
+    }
+
+    private void addLoggingInformation(String action) {
+        loggingInformation.add(action + ": " + getSalesForceId(entry) + " | " + entry.getName().getFullName().getValue());
     }
 }
