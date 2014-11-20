@@ -131,6 +131,19 @@ public class ServiceUser {
         }
     }
 
+    public static ServiceUser getUserByMail(String mail) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(ServiceUser.class);
+        Root<ServiceUser> c = cq.from(ServiceUser.class);
+        cq.where(cb.equal(c.get("mail"), mail));
+        Query query = JPA.em().createQuery(cq);
+        try {
+            return (ServiceUser) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     public void addToGroups(String[] groups, ServiceProvider provider) {
         for (String groupName : groups) {
             ServiceGroup group = ServiceGroup.getGroupByGroupname(groupName, provider);
@@ -196,4 +209,15 @@ public class ServiceUser {
         return groups;
     }
 
+    public void setUsernameJira(String usernameJira) {
+        this.usernameJira = usernameJira;
+    }
+
+    public void setUsernameConfluence(String usernameConfluence) {
+        this.usernameConfluence = usernameConfluence;
+    }
+
+    public void setUsernameGoogle(String usernameGoogle) {
+        this.usernameGoogle = usernameGoogle;
+    }
 }

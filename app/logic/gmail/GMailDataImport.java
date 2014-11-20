@@ -53,9 +53,11 @@ public class GMailDataImport {
 
     private void createUser(User googleUser, SalesForceAccess sfAccess) throws IOException, OAuthSystemException, OAuthProblemException {
         GMailGroupAccess groupAccess = new GMailGroupAccess();
-        ServiceUser user = ServiceUser.getUserByUsername(googleUser.getPrimaryEmail(), ServiceProvider.GMAIL);
+        ServiceUser user = ServiceUser.getUserByMail(googleUser.getPrimaryEmail());
         if (user != null) {
+            user.setUsernameGoogle(googleUser.getPrimaryEmail());
             user.addToGroups(groupAccess.getMemberGroupNames(googleUser.getId()), ServiceProvider.GMAIL);
+            user.save();
         } else {
             SalesforceContact contact = sfAccess.getSalesForceContact(googleUser.getPrimaryEmail());
             if (contact != null) {

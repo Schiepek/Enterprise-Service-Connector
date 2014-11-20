@@ -36,7 +36,8 @@ public class JiraDataImport {
             Map.Entry pairs = (Map.Entry) it.next();
             ServiceGroup group = createGroup((String) pairs.getKey());
             for (JiraUser jiraUser : (ArrayList<JiraUser>) pairs.getValue()) {
-                group.addMember(createOrFindUser(jiraUser));
+                ServiceUser user = createOrFindUser(jiraUser);
+                group.addMember(user);
             }
             group.save();
         }
@@ -50,10 +51,12 @@ public class JiraDataImport {
     }
 
     private ServiceUser createOrFindUser(JiraUser jiraUser) throws OAuthProblemException, OAuthSystemException {
-        ServiceUser user;
-        user = ServiceUser.getUserByUsername(jiraUser.getName(), ServiceProvider.JIRA);
+        ServiceUser user = ServiceUser.getUserByMail(jiraUser.getEmailAddress());
         if (user == null) {
             user = createUser(jiraUser);
+        } else {
+            user.setUsernameJira(jiraUser.getName());
+            user.save();
         }
         return user;
     }

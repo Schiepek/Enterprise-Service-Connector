@@ -44,9 +44,11 @@ public class ConfluenceDataImport {
     }
 
     private void createUser(ConfluenceUser cUser, String[] groups) throws OAuthSystemException, OAuthProblemException {
-        ServiceUser user = ServiceUser.getUserByUsername(cUser.getName(), ServiceProvider.CONFLUENCE);
+        ServiceUser user = ServiceUser.getUserByMail(cUser.getEmail());
         if (user != null) {
+            user.setUsernameConfluence(cUser.getName());
             user.addToGroups(groups, ServiceProvider.CONFLUENCE);
+            user.save();
         } else {
             SalesforceContact contact = sfAccess.getSalesForceContact(cUser.getEmail());
             if (contact != null) {
