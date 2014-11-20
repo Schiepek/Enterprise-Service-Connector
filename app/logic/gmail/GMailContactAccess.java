@@ -14,16 +14,21 @@ import models.gsonmodels.SalesforceContainer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class GMailContactAccess {
     private ContactsService service;
-    private final String GROUP_NAME = "salesforce";
+    private final String GROUP_NAME = "System Group: My Contacts";
     private String CONTACT_FEED_URL;
     private String GROUP_DEFAULT;
     private String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
     private String LAST_MODIFIED = "Last Modified";
     private String SALESFORCE_ID = "Salesforce Id";
+    private String F_BRANCH = "f-Branch";
+    private String F_CONTACT = "f-Contact";
     private int EXCEPTION_COUNT = 20;
     private int GOOGLE_MAX_RESULTS = 1000000;
     private int created, updated, deleted;
@@ -52,10 +57,7 @@ public class GMailContactAccess {
     public void transferContacts(SalesforceContainer container) throws IOException, ServiceException, java.text.ParseException {
         String groupId = "";
         if(!Settings.getSettings().getSaveInDirectory()) {
-            groupId = getSalesForceGroupId();
-            if (groupId == "") {
-                groupId = createContactGroup();
-            }
+            groupId = getMyContactsGroupId();
         }
         int exceptionCount = 0;
         URL feedUrl = new URL(CONTACT_FEED_URL);
@@ -64,7 +66,7 @@ public class GMailContactAccess {
             try {
                 c = contact;
                 entry = getContact(googleContacts);
-                if (entry == null && contact.getEmail() != null) {
+                if (entry == null) {
                     createContactEntry(groupId, feedUrl);
                 } else if (hasNewValues()) {
                     updateContactEntry();
@@ -121,7 +123,7 @@ public class GMailContactAccess {
     }
 
     private boolean hasNewValues() throws ServiceException, java.text.ParseException, IOException {
-        if(entry==null && c.getEmail()==null) return false;
+        if(entry==null) return false;
         String transferDate = EscDateTimeParser.parseSfDateToString((c.getLastModifiedDate()));
         String googleDate = null;
         for (UserDefinedField field : entry.getUserDefinedFields()) {
@@ -149,8 +151,8 @@ public class GMailContactAccess {
         createTitle();
         createManager();
         createOrganization();
-        createUserField("F-Contact", c.getF_contact());
-        createUserField("F-Branch", c.getOwnerName());
+        createUserField(F_CONTACT, c.getF_contact());
+        createUserField(F_BRANCH, c.getOwnerName());
         createUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
 
         service.insert(feedUrl, entry);
@@ -481,24 +483,16 @@ public class GMailContactAccess {
         }
     }
 
-    private String createContactGroup() throws IOException, ServiceException {
-        ContactGroupEntry group = new ContactGroupEntry();
-        group.setTitle(new PlainTextConstruct(GROUP_NAME));
-        URL postUrl = new URL(GROUP_DEFAULT);
-        ContactGroupEntry createdGroup = service.insert(postUrl, group);
-        return createdGroup.getId();
-    }
-
-    private String getSalesForceGroupId() throws IOException, ServiceException {
-        String salesForceGroupId = "";
+    private String getMyContactsGroupId() throws IOException, ServiceException {
+        String myContactsGroupId = "";
         URL feedUrl = new URL(GROUP_DEFAULT);
         ContactGroupFeed resultFeed = service.getFeed(feedUrl, ContactGroupFeed.class);
         for (ContactGroupEntry groupEntry : resultFeed.getEntries()) {
             if (groupEntry.getTitle().getPlainText().equals(GROUP_NAME)) {
-                salesForceGroupId = groupEntry.getId();
+                myContactsGroupId = groupEntry.getId();
                 break;
             }
         }
-        return salesForceGroupId;
+        return myContactsGroupId;
     }
 }
