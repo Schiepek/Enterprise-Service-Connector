@@ -78,25 +78,7 @@
                 ],
                 "scrollY": 1000,
                 "scrollX": true,
-                "order": [[0, "asc"]],
-                "drawCallback": function ( settings ) {
-                    var api = this.api();
-                    var rows = api.rows( {page:'current'} ).nodes();
-                    var last=null;
-
-                    api.column(4, {page:'current'} ).data().each( function ( group, i )$
-                    if ( last !== group ) {
-                    last = group;
-                    if ( group == '' ) {
-                    group = 'Company unknown';
-                    }
-                    $(rows).eq( i ).before(
-                    '   <tr class="group"><td colspan="5">'+group+'</td></tr>'
-                    );
-
-
-                    }
-                } );
+                "order": [[0, "asc"]]
             });
         } );
     </script>
