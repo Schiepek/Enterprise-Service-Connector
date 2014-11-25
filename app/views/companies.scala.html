@@ -1,68 +1,126 @@
-@(companies: List[String], lastImport: Date)
+@(users: List[ServiceUser], lastImport: Date)
 
 @import helper._
 
-@main("Users") {
-
+@main("Companies") {
     Last import:
     @if(lastImport != null) {
         @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
     } else {
-        no import executed yet.<br />
+        No import executed yet.<br />
     }
 
-    @for(company <- companies){
-        @if(company) {
-            <h2>@company</h2>
-        } else {
-            <h2>Company unknown</h2>
-        }
 
-        <table class="aui content-report-table-macro tablesorter">
-            <thead>
-                <tr class="tablesorter-headerRow">
-                    <th>Name</th>
-                    <th>Usergroups</th>
-                    <th>Access</th>
-                    <th>Function</th>
-                    <th>Company</th>
-                    <th>Contact Data</th>
-                </tr>
-            </thead>
-            <tbody>
-            @for(user <- ServiceUser.companyUsers(company)){
-                <tr>
-                    <td>@user.getFullName</td>
-                    <td>
+    <table id="user_table" class="display aui content-report-table-macro tablesorter">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Usergroups</th>
+                <th>Access</th>
+                <th>Function</th>
+                <th>Company</th>
+                <th>Contact Data</th>
+            </tr>
+        </thead>
+
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Usergroups</th>
+                <th>Access</th>
+                <th>Function</th>
+                <th>Company</th>
+                <th>Contact Data</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        @for(user <- users){
+            <tr>
+                <td>@user.getFullName</td>
+                <td>
                     @for(group <- user.getGroups) {
-                        @group.getName (@group.getProvider.toString.toLowerCase())<br />
+                        @group.getName (@group.getProvider().toString().toLowerCase())<br />
                     }
-                    </td>
-                    <td>
-                        @if(user.getUsernameGoogle) {
-                            Google: @user.getUsernameGoogle<br />
-                        }
-                        @if(user.getUsernameJira) {
-                            Jira: @user.getUsernameJira<br />
-                        }
-                        @if(user.getUsernameConfluence) {
-                            Confluence: @user.getUsernameConfluence<br />
-                        }
-                    </td>
-                    <td>@user.getFunction</td>
-                    <td>@user.getCompany</td>
-                    <td>
-                        E-Mail: @user.getMail<br />
+                </td>
+                <td>
+                    @if(user.getUsernameGoogle) {
+                        Google: @user.getUsernameGoogle<br />
+                    }
+                    @if(user.getUsernameJira) {
+                        Jira: @user.getUsernameJira<br />
+                    }
+                    @if(user.getUsernameConfluence) {
+                        Confluence: @user.getUsernameConfluence<br />
+                    }
+                </td>
+                <td>@user.getFunction</td>
+                <td>@user.getCompany</td>
+                <td>
+                    @if(user.getMail) {
+                        E-Mail: <a href="mailto:@user.getMail">@user.getMail</a><br />
+                    }
+                    @if(user.getPhoneWork) {
                         Phone: @user.getPhoneWork<br />
+                    }
+                    @if(user.getPhoneMobile) {
                         Mobile: @user.getPhoneMobile<br />
+                    }
+                    @if(user.getPhoneCompany) {
                         Company Phone: @user.getPhoneCompany<br />
-                        Salesforce: <a>@user.getSalesforceId</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    }
+                    }
+                    @if(user.getSalesforceId) {
+                        <a target="_blank" href="@user.getSalesforceId">Salesforce Contact</a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
+    <script>
+        $(document).ready( function () {
+            var table = $('#user_table').DataTable({
+                "columnDefs": [
+                    { 'bSortable': false, 'aTargets': [0] },
+                    { 'bSortable': false, 'aTargets': [1] },
+                    { 'bSortable': false, 'aTargets': [2] },
+                    { 'bSortable': false, 'aTargets': [3] },
+                    { 'bSortable': false, 'aTargets': [5] }
+                ],
+                "order": [[ 4, 'asc' ]],
+                "displayLength": 25,
+                "scrollY": 1000,
+                "scrollX": true,
+                "drawCallback": function ( settings ) {
+                    var api = this.api();
+                    var rows = api.rows( {page:'current'} ).nodes();
+                    var last=null;
+
+                    api.column(4, {page:'current'} ).data().each( function ( group, i ) {
+                        if ( last !== group ) {
+                            last = group;
+                            if ( group == '' ) {
+                                group = 'Company unknown';
+                            }
+                            $(rows).eq( i ).before(
+                                '<tr class="group"><td colspan="6">'+group+'</td></tr>'
+                            );
+                        }
+                    } );
+                }
+            } );
+
+            // Order by the grouping
+            $('#user_table tbody').on( 'click', 'tr.group', function () {
+                var currentOrder = table.order()[0];
+                if ( currentOrder[0] === 4 && currentOrder[1] === 'asc' ) {
+                    table.order( [ 4, 'desc' ] ).draw();
+                }
+                else {
+                    table.order( [ 4, 'asc' ] ).draw();
+                }
+            } );
+        } );
+    </script>
 
 }

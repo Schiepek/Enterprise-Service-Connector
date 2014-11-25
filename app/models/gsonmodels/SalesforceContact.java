@@ -114,7 +114,7 @@ public class SalesforceContact {
     }
 
     public String getName() {
-        return LastName + " " + FirstName;
+        return FirstName + " " + LastName;
     }
 
     public String getReportsToName() {

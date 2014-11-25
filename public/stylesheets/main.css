@@ -41,3 +41,9 @@ input[type=text] {
 .text-middle {
     min-width: 150px;
 }
+
+tr.group,
+tr.group:hover {
+    background-color: #ddd !important;
+    font-weight: bold;
+}

@@ -2,7 +2,7 @@
 
 @import helper._
 
-@main("Users") {
+@main("Services") {
     Last Import:
     @if(lastImport != null) {
         @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
@@ -12,40 +12,44 @@
 
 
     @for(service <- services){
-        <h2>@service</h2>
+        @if(service == ServiceProvider.GMAIL || service == ServiceProvider.CONFLUENCE || service == ServiceProvider.JIRA) {
 
-        <table class="aui content-report-table-macro tablesorter">
-            <thead>
-                <tr class="tablesorter-headerRow">
-                    <th>Name</th>
-                    <th>User</th>
-                    <th>Mail</th>
-                    <th>Aliases</th>
-                </tr>
-            </thead>
-            <tbody>
-            @for(group <- ServiceGroup.serviceGroups(service)){
-                <tr>
-                    <td>@group.getName</td>
-                    <td>
-                        @for(user <- group.getMembers) {
-                            @user.getFullName
-                            @if(user.getCompany) {
-                                (@user.getCompany)
+            <h2>@service</h2>
+
+            <table class="aui content-report-table-macro tablesorter">
+                <thead>
+                    <tr class="tablesorter-headerRow">
+                        <th>Name</th>
+                        <th>User</th>
+                        <th>Mail</th>
+                        <th>Aliases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(group <- ServiceGroup.serviceGroups(service)){
+                    <tr>
+                        <td>@group.getName</td>
+                        <td>
+                            @for(user <- group.getMembers) {
+                                @user.getFullName
+                                @if(user.getCompany) {
+                                    (@user.getCompany)
+                                }
+                                <br />
                             }
-                            <br />
+                        </td>
+                        <td>@group.getMail</td>
+                        <td>
+                        @for(alias <- group.getAliases) {
+                            @alias.getName<br />
                         }
-                    </td>
-                    <td>@group.getMail</td>
-                    <td>
-                    @for(alias <- group.getAliases) {
-                        @alias.getName<br />
-                    }
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
     }
 
 
