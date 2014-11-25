@@ -120,6 +120,7 @@
                     <a href="/accounts/authorize/@account.getProvider"><button class="aui-button btn-mini"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button></a>
                     }
                     <a href="#" onclick="$('#status_@account.getProvider').load('/accounts/check/@account.getProvider')"><button class="aui-button btn-mini"><span title="Check Status" class="aui-icon aui-icon-small aui-iconfont-build"></span></button></a>
+                    <a href="#" id="cancel_@account.getProvider" style="display: none"><button class="aui-button btn-mini"><span title="Cancel" class="aui-icon aui-icon-small aui-iconfont-remove"></span></button></a>
                 </td>
                 <td id="status_@account.getProvider"></td>
             </tr>
@@ -151,19 +152,31 @@
 
             jQuery("a[id^='edit']").click(function() {
                 var provider = $(this).attr('id' ).replace('edit_', '');
-                jQuery('#save_'+provider ).show();
+                jQuery('#save_'+provider).show();
+                jQuery('#cancel_'+provider).show();
                 $(this).hide();
                 jQuery('.editCell'+provider).show();
                 jQuery('.textCell'+provider).hide();
+
             });
 
             jQuery("a[id^='save']").click(function() {
                 var provider = $(this).attr('id' ).replace('save_', '');
-                jQuery('#edit_'+provider ).show();
+                jQuery('#edit_'+provider).show();
+                jQuery('#cancel'+provider).hide();
                 $(this).hide();
                 jQuery('.editCell'+provider).hide();
                 jQuery('.textCell'+provider).show();
-            });s
+            });
+
+            jQuery("a[id^='cancel']").click(function() {
+                var provider = $(this).attr('id' ).replace('cancel_', '');
+                jQuery('#edit_'+provider).show();
+                jQuery('#save_'+provider).hide();
+                $(this).hide();
+                jQuery('.editCell'+provider).hide();
+                jQuery('.textCell'+provider).show();
+            });
 
             var sel = document.getElementById ("saveInDirectory") ;
             var matching = "@Settings.getSettings().getSaveInDirectory()";
