@@ -31,7 +31,7 @@ public class GMailContactAccess {
     private int GOOGLE_MAX_RESULTS = 1000000;
     private ContactEntry entry;
     private SalesforceContact c;
-    private List<String> loggingInformation = new ArrayList<String>();
+    private List<String> loggingInformation = new ArrayList<>();
 
     public GMailContactAccess() throws IOException {
         this(APIConfig.getAPIConfig(ServiceProvider.GMAIL));
@@ -61,10 +61,10 @@ public class GMailContactAccess {
         int exceptionCount = 0;
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
-        int counter = 0; //TODO remove reducer
+        //int counter = 0; //TODO remove reducer
         for (SalesforceContact contact : container.getContacts()) {
-            counter++;
-            if (counter > 20) break; //TODO remove reducer
+            //counter++;
+            //if (counter > 20) break; //TODO remove reducer
             try {
                 c = contact;
                 entry = getContact(googleContacts);

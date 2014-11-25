@@ -19,10 +19,16 @@
         <div class="field-group">
             <label for="serverUrl">Server URL</label>
             <input class="text" type="text" id="serverUrl" name="serverUrl" value="@settings.getServerUrl">
+            <a href="#" id="serverurlDialog">
+                <span class="aui-icon aui-icon-small aui-iconfont-help"></span>
+            </a>
         </div>
         <div class="field-group">
             <label for="domain">Google Enterprise Domain</label>
             <input class="text" type="text" id="domain" name="domain" value="@settings.getDomain()">
+            <a href="#" id="googledomainDialog">
+                <span class="aui-icon aui-icon-small aui-iconfont-help"></span>
+            </a>
         </div>
         <div class="field-group">
             <label for="jiraUrl">Jira Url</label>
@@ -38,10 +44,16 @@
                 <option value="false">Personal Contacts Folder</option>
                 <option value="true">Enterprise Directory Folder</option>
             </select>
+            <a href="#" id="contactfolderDialog">
+                <span class="aui-icon aui-icon-small aui-iconfont-help"></span>
+            </a>
         </div>
         <div class="field-group">
             <label for="cronExpression">Quartz Cron Expression</label>
             <input class="text" type="text" id="cronExpresson" name="cronExpression" value="@settings.getCronExpression()">
+            <a href="#" id="cronDialog">
+                <span class="aui-icon aui-icon-small aui-iconfont-help"></span>
+            </a>
         </div>
         <div class="buttons-container">
             <div class="buttons">
@@ -50,7 +62,12 @@
         </div>
     }
 
-    <h1>Accounts</h1>
+    <h1>Accounts
+        <a href="/help/provider?provider=SALESFORCE" id="providerHelp">
+            <span class="aui-icon aui-icon-small aui-iconfont-help"></span>
+        </a>
+    </h1>
+
 
     @form(routes.AccountController.save(SALESFORCE.toString()), args = 'class -> "aui", 'name -> (SALESFORCE+"form"), 'id -> (SALESFORCE+"form")) {
     }
@@ -99,7 +116,9 @@
                 <td>
                     <a href="javascript:document.@account.getProvider()form.submit()" id="save_@account.getProvider" class="save-btn" style="display: none"><button class="aui-button btn-mini"><span title="Save" class="aui-icon aui-icon-small aui-iconfont-approve"></span></button></a>
                     <a href="#" id="edit_@account.getProvider"><button class="aui-button btn-mini"><span title="Edit" class="aui-icon aui-icon-small aui-iconfont-edit"></span></button></a>
+                    @if(!account.getProvider.equals(ServiceProvider.CONFLUENCE)) {
                     <a href="/accounts/authorize/@account.getProvider"><button class="aui-button btn-mini"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button></a>
+                    }
                     <a href="#" onclick="$('#status_@account.getProvider').load('/accounts/check/@account.getProvider')"><button class="aui-button btn-mini"><span title="Check Status" class="aui-icon aui-icon-small aui-iconfont-build"></span></button></a>
                 </td>
                 <td id="status_@account.getProvider"></td>
@@ -144,7 +163,7 @@
                 $(this).hide();
                 jQuery('.editCell'+provider).hide();
                 jQuery('.textCell'+provider).show();
-            });
+            });s
 
             var sel = document.getElementById ("saveInDirectory") ;
             var matching = "@Settings.getSettings().getSaveInDirectory()";
@@ -156,6 +175,11 @@
                 }
             }
         });
+
+        AJS.InlineDialog(AJS.$("#serverurlDialog"), "serverurlDialog", "help/serverurl");
+        AJS.InlineDialog(AJS.$("#googledomainDialog"), "googledomainDialog", "help/googledomain");
+        AJS.InlineDialog(AJS.$("#contactfolderDialog"), "contactfolderDialog", "help/contactfolder")
+        AJS.InlineDialog(AJS.$("#cronDialog"), "cronDialog", "help/cron")
 
     </script>
 

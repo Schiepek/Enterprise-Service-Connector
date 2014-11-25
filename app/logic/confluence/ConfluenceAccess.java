@@ -44,7 +44,7 @@ public class ConfluenceAccess {
         int exceptionCounter = 0;
         Map<ConfluenceUser, String[]> userGroupMap = new HashMap<>();
 
-        for (int i = 0; i < alluserscontainer.getAllResults().length/80; i++) { //TODO delete REDUCER /xx
+        for (int i = 0; i < alluserscontainer.getAllResults().length; i++) { //TODO delete REDUCER /xx
             String username = alluserscontainer.getAllResults()[i];
             if(!username.contains("\uFFFD")) {
                 String[] param = { username };

@@ -1,0 +1,117 @@
+@(provider: models.ServiceProvider)
+
+@main("Provider") {
+    <nav class="aui-navgroup aui-navgroup-horizontal">
+        <div class="aui-navgroup-inner">
+            <div class="aui-navgroup-primary">
+                <ul class="aui-nav">
+                @for(providerNav <- ServiceProvider.values()) {
+                    <li class="@if(provider.equals(providerNav)) {aui-nav-selected} else {}"><a href="/help/provider?provider=@providerNav">@providerNav</a></li>
+                }
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="Provider_Help_Content">
+        @if(provider.equals(ServiceProvider.SALESFORCE)) {
+            <h2>Salesforce Authorization</h2>
+            <p>For Salesforce we use Oauth 2.0.</p>
+            <p>Make sure https is activated on your server</p>
+            <p>Following steps are necessary to authorize with Salesforce</p>
+            <ul>
+                <li><p>Login into Salesforce.com</p></li>
+                <li><p>Click on "Setup" in the upper right corner</p></li>
+                <li><p>On the left side in the "build" section click on "Create" and then on "Apps"</p></li>
+                <li><p>In the "Connected apps" Section click on "new"</p></li>
+                <li><p>Fill out the mandatory fields, the values are unimportant</p></li>
+                <li><p>Click on "Enable Oauth Settings" and select all the scopes</p></li>
+                <li><p>
+                    Fill out the callback uri. The Uri is YOURSERVER + /salesforce/callback. For example https://ec-76.aws.fyayc.net/salesforce/callback</p></li>
+                <li><p>Open your new App von "Create" >> "Apps" >> "Connected Apps"</p></li>
+                <li><p>Now you have the Consumer-Key and the Consumer-Secret. Keep this page open.</p></li>
+                <li><p>Go on "settings" of your Enterprise Service Connector Application</p></li>
+                <li><p>
+                    Enter the Consumer-Key as Client-Id and the Consumer-Secret as Client-Secret in the Salesforce Account and save it</p></li>
+                <li><p>With the authorize Button you are able to register your Application with Salesforce</p></li>
+                <li><p>Check it with the status button</p></li>
+            </ul>
+        }
+        @if(provider.equals(ServiceProvider.GMAIL)) {
+            <h2>Google Authorization</h2>
+            <p>For Google we use Oauth 2.0</p>
+            <p>Following steps are necessary to authorize with Google</p>
+            <ul>
+                <li><p>Login into Google</p></li>
+                <li><p>Open the <a href="https://console.developers.google.com">Google Developer Console</a></p></li>
+                <li><p>Create a new project. The name of the project is unimportant</p></li>
+                <li><p>Click on "APIs and auth" and on "Consent Screen"</p></li>
+                <li><p>Enter an email-address and a name for your project. You can type any name you want</p></li>
+                <li><p>Click on "APIs and auth" and on "APIs"</p></li>
+                <li><p>Make sure AdminSDK and ContactsAPI are activated</p></li>
+                <li><p>Click on "APIs and auth" and on "Credentials"</p></li>
+                <li><p>Create a new Oauth Client Id, the type is "Web-application"</p></li>
+                <li><p>
+                    Fill out the callback uri. The Uri is YOURSERVER + /gmail/callback. For example https://ec-76.aws.fyayc.net/gmail/callback</p></li>
+                <li><p>Now you have the Client-Id and the Client-Secret. Keep this page open.</p></li>
+                <li><p>Go on "settings" of your Enterprise Service Connector Application</p></li>
+                <li><p>Enter the  Client-Id and the  Client-Secret in the Gmail Account and save it</p></li>
+                <li><p>With the authorize Button you are able to register your Application with Google</p></li>
+                <li><p>Check it with the status button</p></li>
+            </ul>
+            <h2>Additional Information for Refresh Tokens</h2>
+            <p>With the first authorization request of the esc-Application to Google, you get an accesstoken and a refreshtoken</p>
+            <p>For the following authorization requests you just receive accesstokens</p>
+            <p>The refreshtoken (stored in your database) is responsible to get new accesstokens during the servicerequests regularly</p>
+            <p>But if the database is deleted or you lost your refreshtoken for other reasons, you need a new refreshtoken</p>
+            <p>To get a new one:</p>
+            <ul>
+                <li><p>Login into Google</p></li>
+                <li><p>Open the <a href="https://www.google.com/settings/security">Security Settings</a></p></li>
+                <li><p>Click on Apps and Websited "View All" and "Revoke Access" of your project</p></li>
+                <li><p>With a new authorization Request of the esc-app you get a new refreshtoken</p></li>
+                <li><p>Check it with the status button</p></li>
+            </ul>
+        }
+        @if(provider.equals(ServiceProvider.GOOGLEPHONE)) {
+            <h2>Googlephone Authorization</h2>
+            <p>It's the same way like Google Authorization but with one difference</p>
+            <p>The Callback Uri is YOURSERVER + /googlephone/callback. For example https://ec-76.aws.fyayc.net/googlephone/callback</p>
+        }
+        @if(provider.equals(ServiceProvider.JIRA)) {
+            <h2>Jira Authorization</h2>
+            <p>For Jira we use Oauth 1.0</p>
+            <p>First you need to generate a RSA (PKCS) Key-Value Pair</p>
+            <ul>
+                <li><p>Use the OpenSSL Console</p></li>
+                <li><p>Enter the following commands</p></li>
+                <li><p>openssl genrsa -out RSA.pem 1024   (this is the privateKey don't use this file for the key)</p></li>
+                <li><p>openssl rsa -in RSA.pem -pubout -out RSA.pub  (this is the public key)</p></li>
+                <li><p>openssl pkcs8 -in private.pem -topk8 -nocrypt -out private.pk8  (use the .pk8 file for the private key)</p></li>
+            </ul>
+            <p>Now we have to register an application link in jira</p>
+            <ul>
+                <li><p>Login into Jira</p></li>
+                <li><p>In the upper right corner click on the "settings-symbol" and on "Add-ons"</p></li>
+                <li><p>Click on application-links on the left side</p></li>
+                <li><p>Create a new application link with your server url</p></li>
+                <li><p>Fill out the Application name and select "Generic Application", then click "Continue"</p></li>
+                <li><p>Next to the new application click on "edit" and then on the left side on "Incoming Authentication"</p></li>
+                <li><p>Fill out the Consumer Name and the Consumer Key. You can define these values as you want</p></li>
+                <li><p>Fill out the Consumer Callback Url. The Uri is YOURSERVER + /jira/callback. For example https://ec-76.aws.fyayc.net/jira/callback</p></li>
+                <li><p>Fill out the public key with your generated file (openssl)</p></li>
+                <li><p>Go on "settings" of your Enterprise Service Connector Application</p></li>
+                <li><p>Enter the  Client-Id (the Jira Consumer Key) and the  Client-Secret (The Private key of your .pk8 file) in the Jira Account and save it</p></li>
+                <li><p>With the authorize Button you are able to register your Application with Jira</p></li>
+                <li><p>Check it with the status button</p></li>
+            </ul>
+        }
+        @if(provider.equals(ServiceProvider.CONFLUENCE)) {
+            <h2>Confluence Authorization</h2>
+            <ul>
+                <li><p>Go on "settings" of your Enterprise Service Connector Application</p></li>
+                <li><p>Enter the  Client-Id (Confluence Username) and the  Client-Secret (Confluence Password) in the Confluenece Account and save it</p></li>
+                <li><p>Check it with the status button</p></li>
+            </ul>
+        }
+    </div>
+}
