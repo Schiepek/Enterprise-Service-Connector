@@ -7,7 +7,10 @@
         <title>@title</title>
         @ac.aui.styles()
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
+        @ac.aui.scripts()
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     </head>
     <body>
@@ -52,7 +55,8 @@
             </div>
         </section>
 
-        @ac.aui.scripts()
+
         <script src="//127.0.0.1:1990/confluence/atlassian-connect/all.js" type="text/javascript" data-options="sizeToParent:true"></script>
+        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
     </body>
 </html>

@@ -25,7 +25,7 @@ public class ServiceUser {
     private String phoneMobile;
     private String phoneCompany;
     private String salesforceId;
-    @ManyToMany(mappedBy="members", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy="members", fetch = FetchType.EAGER)
     private List<ServiceGroup> groups;
 
     public ServiceUser() {

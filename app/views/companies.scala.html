@@ -52,11 +52,21 @@
                     <td>@user.getFunction</td>
                     <td>@user.getCompany</td>
                     <td>
-                        E-Mail: @user.getMail<br />
-                        Phone: @user.getPhoneWork<br />
-                        Mobile: @user.getPhoneMobile<br />
-                        Company Phone: @user.getPhoneCompany<br />
-                        Salesforce: <a>@user.getSalesforceId</a>
+                        @if(user.getMail) {
+                            E-Mail: <a href="mailto:@user.getMail">@user.getMail</a><br />
+                        }
+                        @if(user.getPhoneWork) {
+                            Phone: @user.getPhoneWork<br />
+                        }
+                        @if(user.getPhoneMobile) {
+                            Mobile: @user.getPhoneMobile<br />
+                        }
+                        @if(user.getPhoneCompany) {
+                            Company Phone: @user.getPhoneCompany<br />
+                        }
+                        @if(user.getSalesforceId) {
+                            <a target="_blank" href="@user.getSalesforceId">Salesforce Contact</a>
+                        }
                     </td>
                 </tr>
             }
