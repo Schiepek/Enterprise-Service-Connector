@@ -40,7 +40,7 @@ public class UserController extends Controller {
     @Transactional
     public static Result companies() {
         Date lastImport = Settings.getSettings().getLastImport();
-        return ok(companies.render(ServiceUser.allCompanies(), lastImport));
+        return ok(companies.render(ServiceUser.all(), lastImport));
     }
 
     @Transactional

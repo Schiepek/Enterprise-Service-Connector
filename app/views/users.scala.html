@@ -11,7 +11,7 @@
     }
 
 
-    <table id="user_table" class="aui content-report-table-macro tablesorter">
+    <table id="user_table" class="display aui content-report-table-macro tablesorter">
         <thead>
             <tr>
                 <th>Name</th>
@@ -76,7 +76,27 @@
                 { 'bSortable': false, 'aTargets': [3] },
                 { 'bSortable': false, 'aTargets': [-1] }
                 ],
-                "order": [[0, "asc"]]
+                "scrollY": 1000,
+                "scrollX": true,
+                "order": [[0, "asc"]],
+                "drawCallback": function ( settings ) {
+                    var api = this.api();
+                    var rows = api.rows( {page:'current'} ).nodes();
+                    var last=null;
+
+                    api.column(4, {page:'current'} ).data().each( function ( group, i )$
+                    if ( last !== group ) {
+                    last = group;
+                    if ( group == '' ) {
+                    group = 'Company unknown';
+                    }
+                    $(rows).eq( i ).before(
+                    '   <tr class="group"><td colspan="5">'+group+'</td></tr>'
+                    );
+
+
+                    }
+                } );
             });
         } );
     </script>
