@@ -83,7 +83,11 @@ public class ServiceGroup {
         Predicate hasProvider = cb.equal(c.get("provider"), provider);
         cq.where(cb.and(isGroupName, hasProvider));
         Query query = JPA.em().createQuery(cq);
-        return (ServiceGroup) query.getSingleResult();
+        try {
+            return (ServiceGroup) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public static List<ServiceGroup> serviceGroups(ServiceProvider provider) {

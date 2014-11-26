@@ -53,7 +53,9 @@ public class ServiceUser {
         this.salesforceId = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/" + contact.getId();
         for (String group : groups) {
                 ServiceGroup g = ServiceGroup.getGroupByGroupname(group, provider);
-                g.addMember(this);
+                if(g != null) {
+                    g.addMember(this);
+                }
         }
 
     }
@@ -74,7 +76,9 @@ public class ServiceUser {
         this.mail = mail;
         for (String group : groups) {
             ServiceGroup g = ServiceGroup.getGroupByGroupname(group, provider);
-            g.addMember(this);
+            if (g!=null) {
+                g.addMember(this);
+            }
         }
     }
 
