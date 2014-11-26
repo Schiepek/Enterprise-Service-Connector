@@ -16,9 +16,8 @@ GET         /confluence/callback                 controllers.AccountController.c
 GET         /accounts                            controllers.AccountController.index
 GET         /accounts/authorize/:provider        controllers.AccountController.authorize(provider: String)
 POST        /accounts/save/:provider             controllers.AccountController.save(provider: String)
-POST        /accounts/transfer                   controllers.AccountController.transferContacts()
-POST        /accounts/transferphone              controllers.AccountController.transferContactsToPhone()
 POST        /accounts/delete                     controllers.AccountController.deleteContacts()
+POST        /accounts/deletephone                controllers.AccountController.deletePhoneContacts()
 POST        /accounts/settings                   controllers.AccountController.setSettings()
 GET         /accounts/check/:provider            controllers.AccountController.checkStatus(provider: String)
 
@@ -28,6 +27,8 @@ GET         /users/companies                     controllers.UserController.comp
 GET         /users/services                      controllers.UserController.services()
 GET         /users/import                        controllers.UserController.importView()
 POST        /users/import/start                  controllers.UserController.importData()
+POST        /users/transfer                      controllers.UserController.transferContacts()
+POST        /users/transferphone                 controllers.UserController.transferContactsToPhone()
 
 # Logs
 GET         /logs                                controllers.LoggingController.index()

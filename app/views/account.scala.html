@@ -116,11 +116,12 @@
                 <td>
                     <a href="javascript:document.@account.getProvider()form.submit()" id="save_@account.getProvider" class="save-btn" style="display: none"><button class="aui-button btn-mini"><span title="Save" class="aui-icon aui-icon-small aui-iconfont-approve"></span></button></a>
                     <a href="#" id="edit_@account.getProvider"><button class="aui-button btn-mini"><span title="Edit" class="aui-icon aui-icon-small aui-iconfont-edit"></span></button></a>
+                    <a href="#" id="cancel_@account.getProvider" style="display: none"><button class="aui-button btn-mini"><span title="Cancel" class="aui-icon aui-icon-small aui-iconfont-remove"></span></button></a>
                     @if(!account.getProvider.equals(ServiceProvider.CONFLUENCE)) {
-                    <a href="/accounts/authorize/@account.getProvider"><button class="aui-button btn-mini"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button></a>
+                    <a href="/accounts/authorize/@account.getProvider" id="auth_@account.getProvider"><button class="aui-button btn-mini"><span title="Authorize" class="aui-icon aui-icon-small aui-iconfont-unlocked"></span></button></a>
                     }
                     <a href="#" onclick="$('#status_@account.getProvider').load('/accounts/check/@account.getProvider')"><button class="aui-button btn-mini"><span title="Check Status" class="aui-icon aui-icon-small aui-iconfont-build"></span></button></a>
-                    <a href="#" id="cancel_@account.getProvider" style="display: none"><button class="aui-button btn-mini"><span title="Cancel" class="aui-icon aui-icon-small aui-iconfont-remove"></span></button></a>
+
                 </td>
                 <td id="status_@account.getProvider"></td>
             </tr>
@@ -128,22 +129,15 @@
         </tbody>
     </table>
 
-
-    @form(routes.AccountController.transferContacts(), args = 'class -> "aui") {
-        <div class="buttons">
-            <input class="button submit" type="submit" value="Transfer Contacts">
-        </div>
-    }
-
-    @form(routes.AccountController.transferContactsToPhone(), args = 'class -> "aui") {
-        <div class="buttons">
-            <input class="button submit" type="submit" value="Transfer Contacts To Phone">
-        </div>
-    }
-
     @form(routes.AccountController.deleteContacts(), args = 'class -> "aui") {
         <div class="buttons">
-            <input class="button submit" type="submit" value="Delete Contacts">
+            <input class="button submit" type="submit" value="Delete contacts in google enterprise account">
+        </div>
+    }
+
+    @form(routes.AccountController.deletePhoneContacts(), args = 'class -> "aui") {
+        <div class="buttons">
+            <input class="button submit" type="submit" value="Delete contacts in google phone account">
         </div>
     }
 
@@ -155,6 +149,7 @@
                 jQuery('#save_'+provider).show();
                 jQuery('#cancel_'+provider).show();
                 $(this).hide();
+                jQuery('#auth_'+provider).hide();
                 jQuery('.editCell'+provider).show();
                 jQuery('.textCell'+provider).hide();
 
@@ -163,6 +158,7 @@
             jQuery("a[id^='save']").click(function() {
                 var provider = $(this).attr('id' ).replace('save_', '');
                 jQuery('#edit_'+provider).show();
+                jQuery('#auth_'+provider).show();
                 jQuery('#cancel'+provider).hide();
                 $(this).hide();
                 jQuery('.editCell'+provider).hide();
@@ -173,6 +169,7 @@
                 var provider = $(this).attr('id' ).replace('cancel_', '');
                 jQuery('#edit_'+provider).show();
                 jQuery('#save_'+provider).hide();
+                jQuery('#auth_'+provider).show();
                 $(this).hide();
                 jQuery('.editCell'+provider).hide();
                 jQuery('.textCell'+provider).show();

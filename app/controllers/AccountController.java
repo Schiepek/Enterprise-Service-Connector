@@ -2,7 +2,6 @@ package controllers;
 
 import com.google.gdata.util.ServiceException;
 import global.Global;
-import global.TransferException;
 import logic.confluence.ConfluenceAccess;
 import logic.confluence.ConfluenceConnector;
 import logic.general.AES128Encryptor;
@@ -10,7 +9,6 @@ import logic.gmail.GMailConnector;
 import logic.gmail.GMailContactAccess;
 import logic.jira.JiraAccess;
 import logic.jira.JiraConnector;
-import logic.salesforce.SalesForceAccess;
 import logic.salesforce.SalesForceConnector;
 import models.APIConfig;
 import models.Logging;
@@ -27,7 +25,6 @@ import views.html.account;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.ParseException;
 
 public class AccountController extends Controller {
 
@@ -121,30 +118,14 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result transferContacts() throws
-            IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-        try {
-            new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
-        } catch (Exception e) {
-            throw new TransferException(e.getMessage());
-       }
-        return index();
-    }
-
-    @Transactional
-    public static Result transferContactsToPhone() throws
-            IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-        try {
-            new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts());
-        } catch (Exception e) {
-            throw new TransferException(e.getMessage());
-        }
-        return index();
-    }
-
-    @Transactional
     public static Result deleteContacts() throws IOException, ServiceException {
         new GMailContactAccess().deleteContacts();
+        return index();
+    }
+
+    @Transactional
+    public static Result deletePhoneContacts() throws IOException, ServiceException {
+        new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).deleteContacts();
         return index();
     }
 

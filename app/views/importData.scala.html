@@ -4,18 +4,35 @@
 
 @main("Import") {
 
-    This import is to create the groups and user lists manually instead of using cronjob<br/>
-    The Job can take up to 30 minutes<br/>
-    Last import:
+    <h2>Group Import</h2>
+    <p>This import creates the groups and user lists manually instead of using cronjob</p>
+    <p>The Job can take up to 30 minutes</p>
+    <p>Last import:</p>
     @if(lastImport != null) {
-        @lastImport.format("dd.M.yyyy HH:mm:ss")<br />
+       <p>@lastImport.format("dd.M.yyyy HH:mm:ss")</p>
     } else {
-        no import executed yet<br />
+        <p>no import executed yet</p>
     }
 
     @form(routes.UserController.importData(), args = 'class -> "aui") {
         <div class="buttons">
-            <input class="button submit" type="submit" value="start Import">
+            <input class="button submit" type="submit" value="Start Group Import">
+        </div>
+    }
+
+    <h2>Salesforce > Google Contact Transfer</h2>
+    <p>This import creates the contacts in your google account manually instead of using cronjob</p>
+    <p>The Job can take up to 30 minutes</p>
+
+    @form(routes.UserController.transferContacts(), args = 'class -> "aui") {
+        <div class="buttons">
+            <input class="button submit" type="submit" value="Transfer contacts to enterprise account">
+        </div>
+    }
+
+    @form(routes.UserController.transferContactsToPhone(), args = 'class -> "aui") {
+        <div class="buttons">
+            <input class="button submit" type="submit" value="Transfer contacts to phone">
         </div>
     }
 
