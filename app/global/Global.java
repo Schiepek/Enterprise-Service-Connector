@@ -61,7 +61,12 @@ public class Global extends AcGlobalSettings {
                 TimeUnit.MILLISECONDS);
         Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
             JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
-            //TODO Invoke GoogleContactstransfer and importGroupData
+
+            //TODO Invoke GoogleContactstransfer and importGroupData DELETE COMMENTS
+            //JPA.withTransaction(() -> new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts()));
+            //JPA.withTransaction(() -> new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts()));
+            //JPA.withTransaction(() -> new ServiceDataImport().importData());
+
             schedule();
         }, Akka.system().dispatcher());
     }
