@@ -44,6 +44,7 @@ public class SalesForceAccess {
             "Account.Name," +
             "Account.Website," +
             "Account.Phone," +
+            "Account.LastModifiedDate," +
             "ReportsTo.FirstName," +
             "ReportsTo.LastName," +
             "LastModifiedDate," +

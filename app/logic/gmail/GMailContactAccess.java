@@ -24,6 +24,7 @@ public class GMailContactAccess {
     private String GROUP_DEFAULT;
     private String SALESFORCE_INSTANCE = APIConfig.getAPIConfig(ServiceProvider.SALESFORCE).getInstance() + "/";
     private String LAST_MODIFIED = "Last Modified";
+    private String ACCOUNT_LAST_MODIFIED = "Account Last Modified";
     private String SALESFORCE_ID = "Salesforce Id";
     private String F_BRANCH = "f-Branch";
     private String F_CONTACT = "f-Contact";
@@ -61,10 +62,10 @@ public class GMailContactAccess {
         int exceptionCount = 0;
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
-        //int counter = 0; //TODO remove reducer
+        int counter = 0; //TODO remove reducer
         for (SalesforceContact contact : container.getContacts()) {
-            //counter++;
-            //if (counter > 20) break; //TODO remove reducer
+            counter++; //TODO remove reducer
+            if (counter > 20) break; //TODO remove reducer
             try {
                 c = contact;
                 entry = getContact(googleContacts);
@@ -133,12 +134,15 @@ public class GMailContactAccess {
     private boolean hasNewValues() throws ServiceException, java.text.ParseException, IOException {
         if (entry == null) return false;
         String transferDate = EscDateTimeParser.parseSfDateToString((c.getLastModifiedDate()));
+        String acctransferDate = EscDateTimeParser.parseSfDateToString(c.getAccountLastModifiedDate());
         String googleDate = null;
+        String googleAccountDate = null;
         for (UserDefinedField field : entry.getUserDefinedFields()) {
             if (field.getKey().equals(LAST_MODIFIED)) googleDate = field.getValue();
+            if (field.getKey().equals(ACCOUNT_LAST_MODIFIED)) googleAccountDate = field.getValue();
         }
         if (googleDate == null) return true;
-        return !transferDate.equals(googleDate);//TODO Account LAST EDITED???
+        return !transferDate.equals(googleDate) || !acctransferDate.equals(googleAccountDate);
     }
 
     private void createContactEntry(String groupId, URL feedUrl) throws ServiceException, java.text.ParseException, IOException {
@@ -162,6 +166,7 @@ public class GMailContactAccess {
         createUserField(F_CONTACT, c.getF_contact());
         createUserField(F_BRANCH, c.getOwnerName());
         createUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
+        createUserField(ACCOUNT_LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getAccountLastModifiedDate()));
 
         service.insert(feedUrl, entry);
         addLoggingInformation("CREATE");
@@ -183,6 +188,7 @@ public class GMailContactAccess {
         updateUserField(F_CONTACT, c.getF_contact());
         updateUserField(F_BRANCH, c.getOwnerName());
         updateUserField(LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getLastModifiedDate()));
+        updateUserField(ACCOUNT_LAST_MODIFIED, EscDateTimeParser.parseSfDateToString(c.getAccountLastModifiedDate()));
 
         URL editUrl = new URL(entry.getEditLink().getHref());
         service.update(editUrl, entry);

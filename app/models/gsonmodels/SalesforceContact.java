@@ -113,6 +113,11 @@ public class SalesforceContact {
         return Account != null ? Account.getPhone() : null;
     }
 
+    public String getAccountLastModifiedDate() {
+        return Account != null ? Account.getLastModifiedDate() : null;
+    }
+
+
     public String getName() {
         return FirstName + " " + LastName;
     }
