@@ -27,8 +27,8 @@
                 <li><p>Click on "Enable Oauth Settings" and select all the scopes</p></li>
                 <li><p>
                     Fill out the callback uri. The Uri is YOURSERVER + /salesforce/callback. For example https://ec-76.aws.fyayc.net/salesforce/callback</p></li>
-                <li><p>Open your new App von "Create" >> "Apps" >> "Connected Apps"</p></li>
-                <li><p>Now you have the Consumer-Key and the Consumer-Secret. Keep this page open.</p></li>
+                <li><p>Open your new App with "Create" >> "Apps" >> "Connected Apps"</p></li>
+                <li><p>Now you have the Consumer-Key and the Consumer-Secret. Keep this page open</p></li>
                 <li><p>Go on "settings" of your Enterprise Service Connector Application</p></li>
                 <li><p>
                     Enter the Consumer-Key as Client-Id and the Consumer-Secret as Client-Secret in the Salesforce Account and save it</p></li>
@@ -59,15 +59,15 @@
                 <li><p>Check it with the status button</p></li>
             </ul>
             <h2>Additional Information for Refresh Tokens</h2>
-            <p>With the first authorization request of the esc-Application to Google, you get an accesstoken and a refreshtoken</p>
-            <p>For the following authorization requests you just receive accesstokens</p>
-            <p>The refreshtoken (stored in your database) is responsible to get new accesstokens during the servicerequests regularly</p>
-            <p>But if the database is deleted or you lost your refreshtoken for other reasons, you need a new refreshtoken</p>
+            <p>With the first authorization request of the esc-Application to Google, you get an accesstoken and a refreshtoken.</p>
+            <p>For the following authorization requests you just receive accesstokens.</p>
+            <p>The refreshtoken (stored in your database) is responsible to get new accesstokens during the servicerequests regularly.</p>
+            <p>But if the database is deleted or you lost your refreshtoken for other reasons, you need a new refreshtoken.</p>
             <p>To get a new one:</p>
             <ul>
                 <li><p>Login into Google</p></li>
                 <li><p>Open the <a href="https://www.google.com/settings/security">Security Settings</a></p></li>
-                <li><p>Click on Apps and Websited "View All" and "Revoke Access" of your project</p></li>
+                <li><p>Click on Apps and Websites "View All" and "Revoke Access" of your project</p></li>
                 <li><p>With a new authorization Request of the esc-app you get a new refreshtoken</p></li>
                 <li><p>Check it with the status button</p></li>
             </ul>

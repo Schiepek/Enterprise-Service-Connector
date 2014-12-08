@@ -2,7 +2,12 @@ package global;
 
 import akka.actor.Cancellable;
 import com.atlassian.connect.play.java.play.AcGlobalSettings;
+import logic.general.ServiceDataImport;
+import logic.gmail.GMailContactAccess;
+import logic.salesforce.SalesForceAccess;
+import models.APIConfig;
 import models.Logging;
+import models.ServiceProvider;
 import models.Settings;
 import play.Application;
 import play.db.jpa.JPA;
@@ -62,10 +67,9 @@ public class Global extends AcGlobalSettings {
         Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
             JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
 
-            //TODO Invoke GoogleContactstransfer and importGroupData DELETE COMMENTS
-            //JPA.withTransaction(() -> new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts()));
-            //JPA.withTransaction(() -> new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts()));
-            //JPA.withTransaction(() -> new ServiceDataImport().importData());
+            JPA.withTransaction(() -> new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts()));
+            JPA.withTransaction(() -> new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts()));
+            JPA.withTransaction(() -> new ServiceDataImport().importData());
 
             schedule();
         }, Akka.system().dispatcher());
