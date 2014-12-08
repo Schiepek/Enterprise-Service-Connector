@@ -3,10 +3,7 @@ package logic.general;
 import logic.confluence.ConfluenceDataImport;
 import logic.gmail.GMailDataImport;
 import logic.jira.JiraDataImport;
-import models.ServiceAlias;
-import models.ServiceGroup;
-import models.ServiceUser;
-import models.Settings;
+import models.*;
 import play.db.jpa.JPA;
 
 import java.util.Date;
@@ -20,6 +17,7 @@ public class ServiceDataImport {
         new JiraDataImport().importData();
         Settings settings = Settings.getSettings();
         settings.setLastImport(new Date());
+        Logging.log("Group Data Import successfull");
     }
 
     private void deleteData() {

@@ -62,10 +62,7 @@ public class GMailContactAccess {
         int exceptionCount = 0;
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
-        int counter = 0; //TODO remove reducer
         for (SalesforceContact contact : container.getContacts()) {
-            counter++; //TODO remove reducer
-            if (counter > 20) break; //TODO remove reducer
             try {
                 c = contact;
                 entry = getContact(googleContacts);
