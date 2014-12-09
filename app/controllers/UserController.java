@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.gdata.util.ServiceException;
+import global.GroupImportException;
 import global.TransferException;
 import logic.general.ServiceDataImport;
 import logic.gmail.GMailContactAccess;
@@ -12,6 +13,7 @@ import models.ServiceUser;
 import models.Settings;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -34,29 +36,39 @@ public class UserController extends Controller {
 
     @Transactional
     public static Result importData() throws Exception {
-        new ServiceDataImport().importData();
+        new Thread(() -> JPA.withTransaction(() -> {
+            try {
+                JPA.withTransaction(() -> new ServiceDataImport().importData());
+            } catch (Exception e) {
+                throw new GroupImportException(e.getMessage());
+            }
+        })).start();
         return importView();
     }
 
     @Transactional
     public static Result transferContacts() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-        try {
-            new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
-        } catch (Exception e) {
-            throw new TransferException(e.getMessage());
-        }
+        new Thread(() -> JPA.withTransaction(() -> {
+            try {
+                new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts());
+            } catch (Exception e) {
+                throw new TransferException(e.getMessage());
+            }
+        })).start();
         return importView();
     }
 
     @Transactional
     public static Result transferContactsToPhone() throws
             IOException, OAuthProblemException, OAuthSystemException, ServiceException, ParseException {
-        try {
-            new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts());
-        } catch (Exception e) {
-            throw new TransferException(e.getMessage());
-        }
+        new Thread(() -> JPA.withTransaction(() ->  {
+            try {
+                new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts());
+            } catch (Exception e) {
+                throw new TransferException(e.getMessage());
+            }
+        })).start();
         return importView();
     }
 

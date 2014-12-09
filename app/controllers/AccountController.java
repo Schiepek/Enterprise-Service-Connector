@@ -18,6 +18,7 @@ import net.oauth.OAuthException;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import play.data.Form;
+import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -119,13 +120,14 @@ public class AccountController extends Controller {
 
     @Transactional
     public static Result deleteContacts() throws IOException, ServiceException {
-        new GMailContactAccess().deleteContacts();
+        new Thread(() ->  JPA.withTransaction(() -> new GMailContactAccess().deleteContacts())).start();
         return index();
     }
 
     @Transactional
     public static Result deletePhoneContacts() throws IOException, ServiceException {
-        new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).deleteContacts();
+        new Thread(() ->  JPA.withTransaction(() -> new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).
+                deleteContacts())).start();
         return index();
     }
 
