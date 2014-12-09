@@ -35,13 +35,17 @@ public class GMailContactAccess {
     private List<String> loggingInformation = new ArrayList<>();
 
     public GMailContactAccess() throws IOException {
-        this(APIConfig.getAPIConfig(ServiceProvider.GMAIL));
+        this(APIConfig.getAPIConfig(ServiceProvider.GMAIL), Settings.getSettings());
     }
 
     public GMailContactAccess(APIConfig config) throws IOException {
+        this(config, Settings.getSettings());
+    }
+
+    public GMailContactAccess(APIConfig config, Settings settings) throws IOException {
         this.account = config;
         service = new GMailConnector(config).getContactService();
-        setDirectorySettings(Settings.getSettings());
+        setDirectorySettings(settings);
     }
 
     private void setDirectorySettings(Settings settings) {
