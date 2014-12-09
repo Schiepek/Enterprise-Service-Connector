@@ -75,7 +75,7 @@ public class Logging {
         log.save();
     }
 
-    public static void logTransfer(List<String> transferInformation) throws IOException {
+    public static void logTransfer(List<String> transferInformation, ServiceProvider provider) throws IOException {
         PrintWriter out = null;
         BufferedWriter bufWriter;
 
@@ -99,7 +99,7 @@ public class Logging {
         }
         out.println("*********************************************************************");
         out.close();
-        Logging.log("Salesforce > Gmail Transfer successfull: " + transferInformation.size() + " Contacts modified");
+        Logging.log("Salesforce > " + provider.toString() + " Transfer successfull: " + transferInformation.size() + " Contacts modified");
     }
 
     public static Logging getLast() {

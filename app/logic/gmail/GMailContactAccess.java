@@ -87,7 +87,7 @@ public class GMailContactAccess {
                 del.delete();
             }
         }
-        Logging.logTransfer(loggingInformation);
+        Logging.logTransfer(loggingInformation, account.getProvider());
     }
 
     public void deleteContacts() throws IOException, ServiceException {
@@ -98,7 +98,7 @@ public class GMailContactAccess {
                 del.delete();
             }
         }
-        Logging.logTransfer(loggingInformation);
+        Logging.logTransfer(loggingInformation, account.getProvider());
     }
 
     private ContactEntry getContact(HashMap<String, ContactEntry> googleContacts) throws IOException, ServiceException {

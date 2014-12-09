@@ -11,11 +11,13 @@ import java.util.Date;
 public class ServiceDataImport {
 
     public void importData() throws Exception {
+        Settings settings = Settings.getSettings();
         deleteData();
-        new GMailDataImport().importData();
+        if(settings.getSaveInDirectory()) {
+            new GMailDataImport().importData();
+        }
         new ConfluenceDataImport().importData();
         new JiraDataImport().importData();
-        Settings settings = Settings.getSettings();
         settings.setLastImport(new Date());
         Logging.log("Group Data Import successfull");
     }
