@@ -53,9 +53,9 @@ public class GmailTest {
 
         // Config for Gmail Account test.fyayc@gmail.com
         config = new APIConfig();
-        config.setClientId("806785363902-r6ra00o651o2skfplosa6f37rhog9asn.apps.googleusercontent.com");
-        config.setClientSecret("aA22bOel1pJ_2JH80KIKMnH-");
-        config.setRefreshToken("1/lUnvzxVjenoUeVC24XY6iw7IpH_mlQ0qXxVdOuY6udh90RDknAdJa_sgfheVM0XT");
+        config.setClientId("292109578290-pfr0iqckm5amqfrn7fi7rivpqcs8hhva.apps.googleusercontent.com");
+        config.setClientSecret("ZEPWiRZsfAGPwTEYXOF0kzsx");
+        config.setRefreshToken("1/OPXt-8FjuEQKbeu9hsyP6rHarfmd62nb28zbAX9geio");
         config.setProvider(ServiceProvider.GMAIL);
 
         settings = new Settings();
@@ -93,11 +93,7 @@ public class GmailTest {
             assertThat(contacts.size()).isEqualTo(0);
 
             Logging l = Logging.getLast();
-            if (size == 0) {
-                assertThat(l.getMessage()).isEqualTo("contact transfer: no new data");
-            } else {
-                assertThat(l.getMessage()).isEqualTo("contact transfer: " + size +" deleted");
-            }
+            assertThat(l.getMessage()).isEqualTo("Salesforce > GMAIL Transfer successfull: " + size + " Contacts modified");
         });
     }
 
@@ -150,7 +146,8 @@ public class GmailTest {
                             "}," +
                             "\"Name\":\"Edge Communications\"," +
                             "\"Website\":\"http://edgecomm.com\"," +
-                            "\"Phone\":\"(512) 757-6000\"" +
+                            "\"Phone\":\"(512) 757-6000\"," +
+                            "\"LastModifiedDate\":\"2014-09-24T08:50:23.000+0000\"" +
                         "}," +
                         "\"ReportsTo\":null," +
                         "\"LastModifiedDate\":\"2014-09-24T08:50:23.000+0000\"," +
@@ -180,8 +177,9 @@ public class GmailTest {
             method.setAccessible(true);
             HashMap<String, ContactEntry> contacts = (HashMap<String, ContactEntry>) method.invoke(new GMailContactAccess(config, settings), feedUrl);
 
+
             Logging l = Logging.getLast();
-            assertThat(l.getMessage()).isEqualTo("contact transfer: 1 created ");
+            assertThat(l.getMessage()).isEqualTo("Salesforce > GMAIL Transfer successfull: 1 Contacts modified");
 
             assertThat(contacts.size()).isEqualTo(1);
 
