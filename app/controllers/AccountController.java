@@ -1,7 +1,7 @@
 package controllers;
 
-import com.google.gdata.util.ServiceException;
 import global.Global;
+import global.TransferException;
 import logic.confluence.ConfluenceAccess;
 import logic.confluence.ConfluenceConnector;
 import logic.general.AES128Encryptor;
@@ -10,10 +10,7 @@ import logic.gmail.GMailContactAccess;
 import logic.jira.JiraAccess;
 import logic.jira.JiraConnector;
 import logic.salesforce.SalesForceConnector;
-import models.APIConfig;
-import models.Logging;
-import models.ServiceProvider;
-import models.Settings;
+import models.*;
 import net.oauth.OAuthException;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -26,6 +23,7 @@ import views.html.account;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class AccountController extends Controller {
 
@@ -34,12 +32,16 @@ public class AccountController extends Controller {
 
     @Transactional
     public static Result index() {
-        return ok(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm));
+        return ok(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm, models.Status.NOTHING));
+    }
+
+    public static Result index(models.Status status) {
+        return ok(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm, status));
     }
 
     @Transactional
     public static Result errorRequest() {
-        return badRequest(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm));
+        return badRequest(account.render(APIConfig.all(), apiForm, Settings.getSettings(), settingsForm,  models.Status.NOTHING));
     }
 
     @Transactional
@@ -119,16 +121,38 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result deleteContacts() throws IOException, ServiceException {
-        new Thread(() ->  JPA.withTransaction(() -> new GMailContactAccess().deleteContacts())).start();
+    public static Result genericDataProcess(models.Status status) throws Exception {
+        if (!Global.getStatus().contains(status)) {
+            new Thread(() -> JPA.withTransaction(() -> {
+                try {
+                    Global.addStatus(status);
+                    switch (status) {
+                        case DELETEGMAILCONTACTS:
+                            new GMailContactAccess().deleteContacts();
+                            break;
+                        case DELETEGOOGLEPHONECONTACTS:
+                            new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).deleteContacts();
+                            break;
+                    }
+                    Global.removeStatus(status);
+                } catch (Exception e) {
+                    throw new TransferException(status, e.getMessage());
+                }
+            })).start();
+        } else {
+            return index(status);
+        }
         return index();
     }
 
     @Transactional
-    public static Result deletePhoneContacts() throws IOException, ServiceException {
-        new Thread(() ->  JPA.withTransaction(() -> new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).
-                deleteContacts())).start();
-        return index();
+    public static Result deleteContacts() throws Exception {
+        return genericDataProcess(models.Status.DELETEGMAILCONTACTS);
+    }
+
+    @Transactional
+    public static Result deletePhoneContacts() throws Exception {
+        return genericDataProcess(models.Status.DELETEGOOGLEPHONECONTACTS);
     }
 
     @Transactional
@@ -159,6 +183,10 @@ public class AccountController extends Controller {
             return ok("<span class=\"aui-lozenge aui-lozenge-error\">NOK</span>");
         }
         return ok("<span class=\"aui-lozenge aui-lozenge-success\">OK</span>");
+    }
+
+    public static List<models.Status> status() {
+        return Global.getStatus();
     }
 
 }

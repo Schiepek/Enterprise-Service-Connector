@@ -73,11 +73,7 @@ public class Settings {
     }
 
     public void setCronExpression(String cronExpression) {
-        //boolean hasChanged = this.cronExpression.equals(cronExpression);
         this.cronExpression = cronExpression;
-      //  if (Time.CronExpression.isValidExpression(getCronExpression())&& hasChanged) {
-      //      Global.setNewScheduler();
-       // }
     }
 
     public void save() {

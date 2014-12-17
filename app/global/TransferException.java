@@ -1,5 +1,16 @@
 package global;
 
+import models.Status;
+
 public class TransferException extends RuntimeException {
-    public TransferException(String message) { super(message); }
+    private Status status;
+
+    public TransferException(Status status ,String message) {
+        super("Exception during: " + status.toString() + " / " + message);
+        this.status = status;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
 }

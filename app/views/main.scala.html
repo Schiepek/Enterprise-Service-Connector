@@ -35,7 +35,6 @@
                             <div class="aui-navgroup-inner">
                                 <div class="aui-nav-heading"><strong>General</strong></div>
                                 <ul class="aui-nav">
-                                    @*<li class="aui-nav-selected"><a href="#">Selected foo</a></li>*@
                                     <li><a href="/users">Users</a></li>
                                     <li><a href="/users/companies">Companies</a></li>
                                     <li><a href="/users/services">Services</a></li>
@@ -45,6 +44,12 @@
                                 <ul class="aui-nav">
                                 <li><a href="/accounts">Settings</a></li>
                                 <li><a href="/logs">Log</a></li>
+                                </ul>
+                                <div class="aui-nav-heading"><strong>Status</strong></div>
+                                <ul id="statuslist" class="aui-nav">
+                                    @for(stat <- AccountController.status()) {
+                                        <li><a>@stat.toString</a></li>
+                                    }
                                 </ul>
                             </div>
                         </nav>
@@ -59,5 +64,19 @@
 
         <script src="//127.0.0.1:1990/confluence/atlassian-connect/all.js" type="text/javascript" data-options="sizeToParent:true"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+        <script>
+            function loadXMLDoc()
+            {
+                var xmlhttp;
+                xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+                    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                        document.getElementById("statuslist" ).innerHTML="<li><a>" + xmlhttp.responseText + "</a></li>";
+                    }
+                 }
+                xmlhttp.open("GET","ajax_info.txt",true);
+                xmlhttp.send();
+            }
+        </script>
     </body>
 </html>

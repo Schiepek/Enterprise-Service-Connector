@@ -5,10 +5,7 @@ import com.atlassian.connect.play.java.play.AcGlobalSettings;
 import logic.general.ServiceDataImport;
 import logic.gmail.GMailContactAccess;
 import logic.salesforce.SalesForceAccess;
-import models.APIConfig;
-import models.Logging;
-import models.ServiceProvider;
-import models.Settings;
+import models.*;
 import play.Application;
 import play.db.jpa.JPA;
 import play.libs.Akka;
@@ -24,6 +21,7 @@ import views.html.notFound;
 import javax.jdo.annotations.Transactional;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static play.mvc.Results.badRequest;
@@ -33,12 +31,14 @@ import static play.mvc.Results.notFound;
 public class Global extends AcGlobalSettings {
 
     private static Cancellable scheduler;
+    private static TransferStatus transferstatus;
 
     @Override
     public void onStart(Application application) {
         super.onStart(application);
         JPA.withTransaction(() -> Logging.log("PLAY START"));
         schedule();
+        transferstatus = new TransferStatus();
     }
 
     @Override
@@ -80,6 +80,9 @@ public class Global extends AcGlobalSettings {
         if (play.api.Play.isDev(play.api.Play.current())) {
             return super.onError(request, t);
         }
+        if (t instanceof TransferException) {
+            transferstatus.removeStatus(((TransferException) t).getStatus());
+        }
         JPA.withTransaction(() -> Logging.log(t.getMessage()));
         return Promise.<SimpleResult>pure(notFound(
                 error.render()
@@ -103,5 +106,17 @@ public class Global extends AcGlobalSettings {
         } catch (Throwable t) {
             Logging.log("Scheduling Error: " + t.getMessage());
         }
+    }
+
+    public static void addStatus(Status status) {
+        transferstatus.addStatus(status);
+    }
+
+    public static void removeStatus(Status status) {
+        transferstatus.removeStatus(status);
+    }
+
+    public static List<Status> getStatus() {
+        return transferstatus.getStatusList();
     }
 }

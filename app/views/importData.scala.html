@@ -1,4 +1,4 @@
-@(lastImport: Date)
+@(lastImport: Date, errorStatus: Status)
 
 @import helper._
 
@@ -19,6 +19,15 @@
             <input class="button submit" type="submit" value="Start Group Import">
         </div>
     }
+    @if(errorStatus.equals(Status.GROUPIMPORT)) {
+        <div class="aui-message aui-message-error">
+            <p class="title">
+                <strong>Error!</strong>
+            </p>
+            <p>You cannot import user/group Data, beacause this process is already running</p>
+        </div>
+    }
+
 
     <h2>Salesforce > Google Contact Transfer</h2>
     <p>This import creates the contacts in your google account manually instead of using cronjob</p>
@@ -29,10 +38,26 @@
             <input class="button submit" type="submit" value="Transfer contacts to enterprise account">
         </div>
     }
+    @if(errorStatus.equals(Status.GMAILTRANSFER)) {
+        <div class="aui-message aui-message-error">
+            <p class="title">
+                <strong>Error!</strong>
+            </p>
+            <p>You cannot transfer Google Contacts, beacause this process is already running</p>
+        </div>
+    }
 
     @form(routes.UserController.transferContactsToPhone(), args = 'class -> "aui") {
         <div class="buttons">
             <input class="button submit" type="submit" value="Transfer contacts to phone">
+        </div>
+    }
+    @if(errorStatus.equals(Status.GOOGLEPHONETRANSFER)) {
+        <div class="aui-message aui-message-error">
+            <p class="title">
+                <strong>Error!</strong>
+            </p>
+            <p>You cannot transfer Google Contacts to your phonebook account, beacause this process is already running</p>
         </div>
     }
 

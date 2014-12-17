@@ -1,7 +1,9 @@
 @(accounts: List[models.APIConfig],
         mailForm: Form[models.APIConfig],
         settings: models.Settings,
-        settingsForm: Form[models.Settings])
+        settingsForm: Form[models.Settings],
+        errorStatus: Status
+        )
 @import models.ServiceProvider.GMAIL
 @import models.ServiceProvider.GOOGLEPHONE
 @import models.ServiceProvider.SALESFORCE
@@ -134,10 +136,26 @@
             <input class="button submit" type="submit" value="Delete contacts in google enterprise account">
         </div>
     }
+    @if(errorStatus.equals(Status.DELETEGMAILCONTACTS)) {
+        <div class="aui-message aui-message-error">
+            <p class="title">
+                <strong>Error!</strong>
+            </p>
+            <p>You cannot delete Google contacts, beacause this process is already running</p>
+        </div>
+    }
 
     @form(routes.AccountController.deletePhoneContacts(), args = 'class -> "aui") {
         <div class="buttons">
             <input class="button submit" type="submit" value="Delete contacts in google phone account">
+        </div>
+    }
+    @if(errorStatus.equals(Status.DELETEGOOGLEPHONECONTACTS)) {
+        <div class="aui-message aui-message-error">
+            <p class="title">
+                <strong>Error!</strong>
+            </p>
+            <p>You cannot delete Google phonebook contacts, beacause this process is already running</p>
         </div>
     }
 
