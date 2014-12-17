@@ -30,7 +30,7 @@ public class ServiceDataImportTest {
         Config additionalConfig = ConfigFactory.parseFile(new File("conf/test.conf"));
         additionalConfigurations = new Configuration(additionalConfig);
 
-        // Config for Gmail Account test@darioandreoli.ch
+        // Config for Gmail Account test@darioandreoli.ch !!!not acrive any more!!!
         gmailConfig = new APIConfig();
         gmailConfig.setClientId("671544857019-rsv3s7g7j1b9a4l6c0e204m2dc7mndsd.apps.googleusercontent.com");
         gmailConfig.setClientSecret("nL8BiPbnRdL8tWNQP81KDvry");
