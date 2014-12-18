@@ -121,7 +121,7 @@ public class AccountController extends Controller {
     }
 
     @Transactional
-    public static Result genericDataProcess(models.Status status) throws Exception {
+    public static Result genericDataProcess(models.Status status) {
         if (!Global.getStatus().contains(status)) {
             new Thread(() -> JPA.withTransaction(() -> {
                 try {

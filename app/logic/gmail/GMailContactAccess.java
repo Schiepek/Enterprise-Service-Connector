@@ -66,10 +66,7 @@ public class GMailContactAccess {
         int exceptionCount = 0;
         URL feedUrl = new URL(CONTACT_FEED_URL);
         HashMap<String, ContactEntry> googleContacts = getAllContacts(feedUrl);
-        int count = 0; //TODO delete
         for (SalesforceContact contact : container.getContacts()) {
-            count++; //TODO delete
-            if(count > 50) return; //TODO delete
             try {
                 c = contact;
                 entry = getContact(googleContacts);

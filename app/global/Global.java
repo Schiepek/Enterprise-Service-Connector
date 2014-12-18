@@ -2,10 +2,11 @@ package global;
 
 import akka.actor.Cancellable;
 import com.atlassian.connect.play.java.play.AcGlobalSettings;
-import logic.general.ServiceDataImport;
-import logic.gmail.GMailContactAccess;
-import logic.salesforce.SalesForceAccess;
-import models.*;
+import controllers.UserController;
+import models.Logging;
+import models.Settings;
+import models.Status;
+import models.TransferStatus;
 import play.Application;
 import play.db.jpa.JPA;
 import play.libs.Akka;
@@ -66,11 +67,16 @@ public class Global extends AcGlobalSettings {
                 TimeUnit.MILLISECONDS);
         Akka.system().scheduler().scheduleOnce(d, (Runnable) () -> {
             JPA.withTransaction(() -> Logging.log("Scheduled Task executed"));
-
-            JPA.withTransaction(() -> new GMailContactAccess(APIConfig.getAPIConfig(ServiceProvider.GOOGLEPHONE)).transferContacts(new SalesForceAccess().getSalesforceContacts()));
-            JPA.withTransaction(() -> new GMailContactAccess().transferContacts(new SalesForceAccess().getSalesforceContacts()));
-            JPA.withTransaction(() -> new ServiceDataImport().importData());
-
+            try {
+                JPA.withTransaction(() -> UserController.genericDataProcess(Status.GMAILTRANSFER));
+                JPA.withTransaction(() -> UserController.genericDataProcess(Status.GOOGLEPHONETRANSFER));
+                JPA.withTransaction(() -> UserController.genericDataProcess(Status.GROUPIMPORT));
+            } catch (Throwable t) {
+                if (t instanceof TransferException) {
+                    transferstatus.removeStatus(((TransferException) t).getStatus());
+                }
+                JPA.withTransaction(() -> Logging.log(t.getMessage()));
+            }
             schedule();
         }, Akka.system().dispatcher());
     }
