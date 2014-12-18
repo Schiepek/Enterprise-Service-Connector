@@ -47,9 +47,4 @@ public class ConfluenceConnector {
         config.setAccessToken(message.getToken());
         config.save();
     }
-
-    public OAuthAccessor getAccessor() {
-        return accessor;
-    }
-
 }
